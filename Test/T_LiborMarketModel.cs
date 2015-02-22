@@ -201,6 +201,7 @@ namespace TestSuite
         }
     
         [TestMethod()]
+        [TestCategory("Slow")]
         public void testCalibration()
         {
             //("Testing calibration of a Libor forward model...");
@@ -301,6 +302,7 @@ namespace TestSuite
         }
 
         [TestMethod()]
+        [TestCategory("Slow")]
         public void testSwaptionPricing() 
         {
             //"Testing forward swap and swaption pricing...");

@@ -233,6 +233,7 @@ namespace TestSuite
 		}
 
 		[TestMethod()]
+        [TestCategory("Slow")]
 		public void testConsistency()
 		{
 			// Testing consistency between yoy inflation cap,floor and collar...
