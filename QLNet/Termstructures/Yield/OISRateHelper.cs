@@ -35,8 +35,8 @@ namespace QLNet
          settlementDays_ = settlementDays;
          tenor_ = tenor;
          overnightIndex_ = overnightIndex;
-         overnightIndex_.registerWith(update);
-         initializeDates();
+          overnightIndex_.notifyObserversEvent += (Callback)update;
+          initializeDates();
       }
 
       public OvernightIndexedSwap swap() { return swap_; }
@@ -92,10 +92,9 @@ namespace QLNet
     
          : base(fixedRate) 
       {
+          overnightIndex.notifyObserversEvent += (Callback)update;
 
-        overnightIndex.registerWith(update);
-
-        // dummy OvernightIndex with curve/swap arguments
+          // dummy OvernightIndex with curve/swap arguments
         // review here
         IborIndex clonedIborIndex = overnightIndex.clone(termStructureHandle_);
         OvernightIndex clonedOvernightIndex = clonedIborIndex as OvernightIndex;

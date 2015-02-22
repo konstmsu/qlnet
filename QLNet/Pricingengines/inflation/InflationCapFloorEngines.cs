@@ -38,8 +38,8 @@ namespace QLNet
 			index_ = index;
 			volatility_ = vol;
 
-			index_.registerWith( update );
-			volatility_.registerWith(update);
+		    index_.notifyObserversEvent += (Callback)update;
+		    volatility_.registerWith(update);
 		}
 
       public YoYInflationIndex index() { return index_;}

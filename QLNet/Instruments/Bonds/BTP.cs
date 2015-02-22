@@ -215,8 +215,8 @@ namespace QLNet
          swapRates_ = new InitializedList<double?>(nSwaps_, null);
 
          basket_.registerWith(update);
-         euriborIndex_.registerWith(update);
-         discountCurve_.registerWith(update);
+          euriborIndex_.notifyObserversEvent += (Callback)update;
+          discountCurve_.registerWith(update);
 
          double dummyRate = 0.05;
          for (int i=0; i<nSwaps_; ++i) 

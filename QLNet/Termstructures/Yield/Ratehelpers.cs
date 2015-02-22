@@ -313,7 +313,7 @@ namespace QLNet {
             fwdStart_ = fwdStart;
 
             // add observers
-            iborIndex_.registerWith(update);
+            iborIndex_.notifyObserversEvent += (Callback)update;
             spread_.registerWith(update);
 
             initializeDates();
@@ -352,7 +352,7 @@ namespace QLNet {
             fwdStart_ = fwdStart;
 
             // add observers
-            iborIndex_.registerWith(update);
+            iborIndex_.notifyObserversEvent += (Callback)update;
             spread_.registerWith(update);
 
             initializeDates();
@@ -385,7 +385,7 @@ namespace QLNet {
             fwdStart_ = fwdStart;
 
             // add observers
-            iborIndex_.registerWith(update);
+            iborIndex_.notifyObserversEvent += (Callback)update;
             spread_.registerWith(update);
 
             initializeDates();
@@ -407,7 +407,7 @@ namespace QLNet {
             fwdStart_ = fwdStart;
 
             // add observers
-            iborIndex_.registerWith(update);
+            iborIndex_.notifyObserversEvent += (Callback)update;
             spread_.registerWith(update);
 
             initializeDates();
@@ -500,8 +500,8 @@ namespace QLNet {
             bmaIndex_ = bmaIndex;
             iborIndex_ = iborIndex;
 
-            iborIndex_.registerWith(update);
-            bmaIndex_.registerWith(update);
+            iborIndex_.notifyObserversEvent += (Callback)update;
+            bmaIndex_.notifyObserversEvent += (Callback)update;
 
             initializeDates();
         }

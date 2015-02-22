@@ -30,15 +30,19 @@ namespace QLNet
             public GenericModelEngine(ModelType model)
             {
                 model_=model;
-                model_.registerWith(update);
+                model_.notifyObserversEvent += (Callback)update;
             }
 
             public void setModel(ModelType model) {
                 if (model_ != null)
-                    model_.unregisterWith(update);
+                {
+                    model_.notifyObserversEvent -= (Callback)update;
+                }
                 model_ = model;
                 if (model_ != null)
-                    model_.registerWith(update);
+                {
+                    model_.notifyObserversEvent += (Callback)update;
+                }
                 update();
             }
 

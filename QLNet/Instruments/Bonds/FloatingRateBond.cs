@@ -56,8 +56,8 @@ namespace QLNet {
             if (redemptions_.Count != 1)
                 throw new ApplicationException("multiple redemptions created");
 
-            index.registerWith(update);
-        }
+            index.notifyObserversEvent += (Callback)update;
+            }
 
         //public FloatingRateBond(int settlementDays, double faceAmount, Date startDate, Date maturityDate, Frequency couponFrequency,
         //                        Calendar calendar, IborIndex index, DayCounter accrualDayCounter,
@@ -124,8 +124,8 @@ namespace QLNet {
             if (redemptions_.Count != 1)
                 throw new ApplicationException("multiple redemptions created");
 
-            index.registerWith(update);
-        }
+            index.notifyObserversEvent += (Callback)update;
+            }
 
     }
 }

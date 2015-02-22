@@ -73,8 +73,7 @@ namespace QLNet
 
          Utils.QL_REQUIRE( !cashflows().empty(), () => "bond with no cashflows!" );
 
-         index.registerWith(update);
-
+          index.notifyObserversEvent += (Callback)update;
       }
    }
 }

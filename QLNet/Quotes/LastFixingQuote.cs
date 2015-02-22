@@ -32,7 +32,7 @@ namespace QLNet
       public LastFixingQuote(Index index) 
       {
          index_ = index;
-         index_.registerWith(update);
+          index_.notifyObserversEvent += (Callback)update;
       }
 
       //! Quote interface

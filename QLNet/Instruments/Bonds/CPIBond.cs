@@ -78,7 +78,7 @@ namespace QLNet
 
             calculateNotionalsFromCashflows();
 
-            cpiIndex_.registerWith(update);
+            cpiIndex_.notifyObserversEvent += (Callback)update;
 
             foreach ( CashFlow i in cashflows_) 
                 i.registerWith(update);

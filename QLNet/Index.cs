@@ -93,9 +93,8 @@ namespace QLNet {
 
         #region observable interface
         public event Callback notifyObserversEvent;
-        public void registerWith(Callback handler) { notifyObserversEvent += handler; }
-        public void unregisterWith(Callback handler) { notifyObserversEvent -= handler; }
-        protected void notifyObservers() {
+
+	    protected void notifyObservers() {
             Callback handler = notifyObserversEvent;
             if (handler != null) {
                 handler();

@@ -43,7 +43,7 @@ namespace QLNet
 			fixedLegDayCounter_ = fixedLegDayCounter;
 			includeFirstSwaplet_ = includeFirstSwaplet;
 
-			index_.registerWith(update);
+		    index_.notifyObserversEvent += (Callback)update;
 		}
 
 		public override void addTimesTo( List<double> times )

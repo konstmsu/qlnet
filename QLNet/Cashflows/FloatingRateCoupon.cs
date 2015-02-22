@@ -60,8 +60,8 @@ namespace QLNet
             dayCounter_ = index_.dayCounter();
 
          // add as observer
-         index_.registerWith(update);
-         Settings.registerWith(update);
+          index_.notifyObserversEvent += (Callback)update;
+          Settings.registerWith(update);
       }
 
       // need by CashFlowVectors

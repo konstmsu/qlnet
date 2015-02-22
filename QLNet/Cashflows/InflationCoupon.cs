@@ -53,8 +53,8 @@ namespace QLNet
          dayCounter_= dayCounter;
          fixingDays_ = fixingDays;
 
-         index_.registerWith(update);
-         Settings.registerWith(update);
+          index_.notifyObserversEvent += (Callback)update;
+          Settings.registerWith(update);
       }
 
       //! \name CashFlow interface

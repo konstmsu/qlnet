@@ -50,7 +50,7 @@ namespace QLNet
 			strike_ = strike;
 			nominal_ = nominal;
 
-			index_ .registerWith(update);
+		    index_.notifyObserversEvent += (Callback)update;
 		}
 
 		SwaptionHelper( Date exerciseDate,
@@ -77,7 +77,7 @@ namespace QLNet
 			strike_ = strike;
 			nominal_ = nominal;
 
-			index_.registerWith( update );
+		    index_.notifyObserversEvent += (Callback)update;
 		}
 
 		SwaptionHelper(  Date exerciseDate,
@@ -104,7 +104,7 @@ namespace QLNet
 			strike_ = strike;
 			nominal_ = nominal;
 
-			index_.registerWith( update );
+		    index_.notifyObserversEvent += (Callback)update;
 		}
  
 

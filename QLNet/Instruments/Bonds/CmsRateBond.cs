@@ -64,9 +64,7 @@ namespace QLNet
              if (redemptions_.Count != 1)
                 throw new ApplicationException("multiple redemptions created");
 
-             index.registerWith(update);
-
-        
-        }
+             index.notifyObserversEvent += (Callback)update;
+         }
     }
 }

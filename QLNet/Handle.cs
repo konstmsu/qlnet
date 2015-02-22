@@ -84,17 +84,19 @@ namespace QLNet {
             public void linkTo(T h, bool registerAsObserver) {
                 if (!h.Equals(h_) || (isObserver_ != registerAsObserver)) {
 
-                    if (h_ != null && isObserver_) {
-                        h_.unregisterWith(update);
+                    if (h_ != null && isObserver_)
+                    {
+                        h_.notifyObserversEvent -= (Callback)update;
                     }
-                    
+
                     h_ = h;
                     isObserver_ = registerAsObserver;
 
-                    if (h_ != null && isObserver_) {
-                        h_.registerWith(update);
+                    if (h_ != null && isObserver_)
+                    {
+                        h_.notifyObserversEvent += (Callback)update;
                     }
-                    
+
                     // finally, notify observers of this of the change in the underlying object
                     notifyObservers();
                 }
