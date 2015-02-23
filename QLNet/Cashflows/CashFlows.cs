@@ -1148,7 +1148,7 @@ namespace QLNet
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -1181,7 +1181,7 @@ namespace QLNet
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -1200,7 +1200,7 @@ namespace QLNet
       public static double zSpread(Leg leg, double npv, YieldTermStructure discount, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.0)
       {
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
