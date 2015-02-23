@@ -42,13 +42,13 @@ namespace QLNet {
                      the bond after creating the helper, so that the
                      helper has sole ownership of it.
         */
-        public BondHelper(Handle<Quote> price, Bond bond, bool useCleanPrice = true) : base(price) {
+        public BondHelper(Handle<Quote> price, Bond bond, SavedSettings settings, bool useCleanPrice = true) : base(price) {
             bond_ = bond;
 
             latestDate_ = bond_.maturityDate();
             initializeDates();
 
-            IPricingEngine bondEngine = new DiscountingBondEngine(termStructureHandle_);
+            IPricingEngine bondEngine = new DiscountingBondEngine(termStructureHandle_, settings);
             bond_.setPricingEngine(bondEngine);
 
             useCleanPrice_ = useCleanPrice;
@@ -91,9 +91,9 @@ namespace QLNet {
         //                   Date issueDate = null);
         public FixedRateBondHelper(Handle<Quote> price, int settlementDays, double faceAmount, Schedule schedule, List<double> coupons, DayCounter dayCounter, BusinessDayConvention paymentConvention, double redemption, Date issueDate, SavedSettings settings, Calendar paymentCalendar = null, Period exCouponPeriod = null, Calendar exCouponCalendar = null, BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, bool exCouponEndOfMonth = false, bool useCleanPrice = true)
             : base(price, new FixedRateBond(settlementDays, faceAmount, schedule,
-                                                 coupons, dayCounter, settings, paymentConvention: paymentConvention,
-                                                 redemption: redemption, issueDate: issueDate, paymentCalendar: paymentCalendar, 
-                                                 exCouponPeriod: exCouponPeriod, exCouponCalendar: exCouponCalendar, exCouponConvention: exCouponConvention, exCouponEndOfMonth: exCouponEndOfMonth), useCleanPrice)
+                coupons, dayCounter, settings, paymentConvention: paymentConvention,
+                redemption: redemption, issueDate: issueDate, paymentCalendar: paymentCalendar, 
+                exCouponPeriod: exCouponPeriod, exCouponCalendar: exCouponCalendar, exCouponConvention: exCouponConvention, exCouponEndOfMonth: exCouponEndOfMonth), settings, useCleanPrice)
         {
             fixedRateBond_ = bond_ as FixedRateBond;
         }
@@ -106,8 +106,8 @@ namespace QLNet {
 
         public CPIBondHelper(Handle<Quote> price, int settlementDays, double faceAmount, bool growthOnly, double baseCPI, Period observationLag, ZeroInflationIndex cpiIndex, InterpolationType observationInterpolation, Schedule schedule, List<double> fixedRate, DayCounter dayCounter, BusinessDayConvention paymentConvention, double redemption, Date issueDate, SavedSettings settings, Calendar paymentCalendar = null, Period exCouponPeriod = null, Calendar exCouponCalendar = null, BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, bool exCouponEndOfMonth = false, bool useCleanPrice = true)
             : base(price, new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI, observationLag, cpiIndex, observationInterpolation, schedule,
-                                      fixedRate, dayCounter, settings, paymentConvention: paymentConvention, issueDate: issueDate, paymentCalendar: paymentCalendar, exCouponPeriod: exCouponPeriod, exCouponCalendar: exCouponCalendar,
-                                      exCouponConvention: exCouponConvention, exCouponEndOfMonth: exCouponEndOfMonth), useCleanPrice)
+                fixedRate, dayCounter, settings, paymentConvention: paymentConvention, issueDate: issueDate, paymentCalendar: paymentCalendar, exCouponPeriod: exCouponPeriod, exCouponCalendar: exCouponCalendar,
+                exCouponConvention: exCouponConvention, exCouponEndOfMonth: exCouponEndOfMonth), settings, useCleanPrice)
         {
             cpiBond_ = bond_ as CPIBond;
         }

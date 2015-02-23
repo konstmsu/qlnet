@@ -121,7 +121,7 @@ namespace QLNet
          // this is the Instrument interface, so it doesn't use
          // BondFunctions, and includeSettlementDateFlows is true
          // (unless QL_TODAY_PAYMENTS will set it to false later on)
-         return CashFlows.isExpired(cashflows_, true, Settings.evaluationDate());
+         return CashFlows.isExpired(cashflows_, true, _settings, Settings.evaluationDate());
       }
 
       #endregion
@@ -279,7 +279,7 @@ namespace QLNet
          if (currentNotional == 0.0)
             return 0.0;
 
-         return BondFunctions.accruedAmount(this, settlement);
+         return BondFunctions.accruedAmount(this, _settings, settlement);
 
       }
 
@@ -294,7 +294,7 @@ namespace QLNet
       */
       public virtual double nextCouponRate(Date settlement = null)
       {
-         return BondFunctions.nextCouponRate(this, settlement);
+         return BondFunctions.nextCouponRate(this, _settings, settlement);
       }
 
       //! Previous coupon already paid at a given date
@@ -307,17 +307,17 @@ namespace QLNet
       */
       public double previousCouponRate(Date settlement = null)
       {
-         return BondFunctions.previousCouponRate(this, settlement);
+         return BondFunctions.previousCouponRate(this, _settings, settlement);
       }
 
       public Date nextCashFlowDate(Date settlement = null)
       {
-         return BondFunctions.nextCashFlowDate(this, settlement);
+         return BondFunctions.nextCashFlowDate(this, _settings, settlement);
       }
 
       public Date previousCashFlowDate(Date settlement = null)
       {
-         return BondFunctions.previousCashFlowDate(this, settlement);
+         return BondFunctions.previousCashFlowDate(this, _settings, settlement);
       }
 
       protected override void setupExpired()

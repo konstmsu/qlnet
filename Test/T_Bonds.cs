@@ -173,7 +173,7 @@ namespace TestSuite
                    FixedRateBond bond = new FixedRateBond(settlementDays, vars.faceAmount, sch, new List<double>() { coupons[k] },
                                                          bondDayCount, settings, paymentConvention: paymentConvention, redemption: redemption, issueDate: issue);
 
-                  IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
+                  IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve, settings);
                   bond.setPricingEngine(bondEngine);
 
                   for (int m = 0; m < yields.Length; m++)
@@ -242,7 +242,7 @@ namespace TestSuite
           FixedRateBond bond1 = new FixedRateBond(settlementDays, vars.faceAmount, sch1, new List<double>() { 0.025 },
                                  bondDayCount, settings, paymentConvention: BusinessDayConvention.ModifiedFollowing, redemption: 100.0, issueDate: new Date(1, Month.November, 2004));
 
-         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
+         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve, settings);
          bond1.setPricingEngine(bondEngine);
 
          double marketPrice1 = 99.203125;
@@ -432,7 +432,7 @@ namespace TestSuite
                               vars.faceAmount, new Date(30, Month.November, 2008), BusinessDayConvention.ModifiedFollowing,
                               100.0, new Date(30, Month.November, 2004), settings);
 
-         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
+         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve, settings);
          bond1.setPricingEngine(bondEngine);
 
          double cachedPrice1 = 88.551726;
@@ -507,7 +507,7 @@ namespace TestSuite
                              new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing,
                              redemption: 100.0, issueDate: new Date(30, Month.November, 2004));
 
-         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
+         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve, settings);
          bond1.setPricingEngine(bondEngine);
 
          double cachedPrice1 = 99.298100;
@@ -606,7 +606,7 @@ namespace TestSuite
                                 false,
                                 100.0, new Date(30, Month.November, 2004), settings);
 
-         IPricingEngine bondEngine = new DiscountingBondEngine(riskFreeRate);
+         IPricingEngine bondEngine = new DiscountingBondEngine(riskFreeRate, settings);
          bond1.setPricingEngine(bondEngine);
 
          Utils.setCouponPricer(bond1.cashflows(), pricer);
@@ -636,7 +636,7 @@ namespace TestSuite
                                 false,
                                 100.0, new Date(30, Month.November, 2004), settings);
 
-         IPricingEngine bondEngine2 = new DiscountingBondEngine(discountCurve);
+         IPricingEngine bondEngine2 = new DiscountingBondEngine(discountCurve, settings);
          bond2.setPricingEngine(bondEngine2);
 
          Utils.setCouponPricer(bond2.cashflows(), pricer);
@@ -796,7 +796,7 @@ namespace TestSuite
 
           SavedSettings settings=new SavedSettings();
           AmortizingFixedRateBond bond = BondFactory.makeAmortizingFixedBond(startDate, bondLength, dCounter, payFrequency, amount, rate, settings);
-         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
+         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve, settings);
          bond.setPricingEngine(bondEngine);
 
          // cached values
@@ -984,7 +984,7 @@ namespace TestSuite
                                                                PassThroughRate,
                                                                psa100, settings);
 
-         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
+         IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve, settings);
          bond.setPricingEngine(bondEngine);
 
          // Calculate Monthly Expecting Cashflow

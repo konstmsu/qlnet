@@ -346,7 +346,7 @@ namespace Bonds {
              double faceAmount = 100;
 
              // Pricing engine
-             IPricingEngine bondEngine = new DiscountingBondEngine(discountingTermStructure);
+             IPricingEngine bondEngine = new DiscountingBondEngine(discountingTermStructure, settings);
 
              // Zero coupon bond
             ZeroCouponBond zeroCouponBond = new ZeroCouponBond(

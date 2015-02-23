@@ -57,68 +57,68 @@ namespace QLNet
 
       #region CashFlow inspectors
 
-      public static CashFlow previousCashFlow(Bond bond, Date refDate = null)
+      public static CashFlow previousCashFlow(Bond bond, SavedSettings settings, Date refDate = null)
       {
          if (refDate == null)
             refDate = bond.settlementDate();
 
-         return CashFlows.previousCashFlow(bond.cashflows(), false, refDate);
+         return CashFlows.previousCashFlow(bond.cashflows(), false, settings, refDate);
       }
-      public static CashFlow nextCashFlow(Bond bond, Date refDate = null)
+      public static CashFlow nextCashFlow(Bond bond, SavedSettings settings, Date refDate = null)
       {
          if (refDate == null)
             refDate = bond.settlementDate();
 
-         return CashFlows.nextCashFlow(bond.cashflows(), false, refDate);
+         return CashFlows.nextCashFlow(bond.cashflows(), false, settings, refDate);
       }
-      public static Date previousCashFlowDate(Bond bond, Date refDate = null)
+      public static Date previousCashFlowDate(Bond bond, SavedSettings settings, Date refDate = null)
       {
          if (refDate == null)
             refDate = bond.settlementDate();
 
-         return CashFlows.previousCashFlowDate(bond.cashflows(), false, refDate);
+         return CashFlows.previousCashFlowDate(bond.cashflows(), false, settings, refDate);
       }
-      public static Date nextCashFlowDate(Bond bond, Date refDate = null)
+      public static Date nextCashFlowDate(Bond bond, SavedSettings settings, Date refDate = null)
       {
          if (refDate == null)
             refDate = bond.settlementDate();
 
-         return CashFlows.nextCashFlowDate(bond.cashflows(), false, refDate);
+         return CashFlows.nextCashFlowDate(bond.cashflows(), false, settings, refDate);
       }
-      public static double? previousCashFlowAmount(Bond bond, Date refDate = null)
+      public static double? previousCashFlowAmount(Bond bond, SavedSettings settings, Date refDate = null)
       {
          if (refDate == null)
             refDate = bond.settlementDate();
 
-         return CashFlows.previousCashFlowAmount(bond.cashflows(), false, refDate);
+         return CashFlows.previousCashFlowAmount(bond.cashflows(), false, settings, refDate);
       }
-      public static double? nextCashFlowAmount(Bond bond, Date refDate = null)
+      public static double? nextCashFlowAmount(Bond bond, SavedSettings settings, Date refDate = null)
       {
          if (refDate == null)
             refDate = bond.settlementDate();
 
-         return CashFlows.nextCashFlowAmount(bond.cashflows(), false, refDate);
+         return CashFlows.nextCashFlowAmount(bond.cashflows(), false, settings, refDate);
       }
 
       #endregion
 
       #region Coupon inspectors
 
-      public static double previousCouponRate(Bond bond, Date settlementDate = null)
+      public static double previousCouponRate(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
 
-         return CashFlows.previousCouponRate(bond.cashflows(), false, settlementDate);
+         return CashFlows.previousCouponRate(bond.cashflows(), false, settings, settlementDate);
       }
-      public static double nextCouponRate(Bond bond, Date settlementDate = null)
+      public static double nextCouponRate(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
 
-         return CashFlows.nextCouponRate(bond.cashflows(), false, settlementDate);
+         return CashFlows.nextCouponRate(bond.cashflows(), false, settings, settlementDate);
       }
-      public static Date accrualStartDate(Bond bond, Date settlementDate = null)
+      public static Date accrualStartDate(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -127,9 +127,9 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.accrualStartDate(bond.cashflows(), false, settlementDate);
+         return CashFlows.accrualStartDate(bond.cashflows(), false, settings, settlementDate);
       }
-      public static Date accrualEndDate(Bond bond, Date settlementDate = null)
+      public static Date accrualEndDate(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -138,9 +138,9 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.accrualEndDate(bond.cashflows(), false, settlementDate);
+         return CashFlows.accrualEndDate(bond.cashflows(), false, settings, settlementDate);
       }
-      public static Date referencePeriodStart(Bond bond, Date settlementDate = null)
+      public static Date referencePeriodStart(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -149,9 +149,9 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.referencePeriodStart(bond.cashflows(), false, settlementDate);
+         return CashFlows.referencePeriodStart(bond.cashflows(), false, settings, settlementDate);
       }
-      public static Date referencePeriodEnd(Bond bond, Date settlementDate = null)
+      public static Date referencePeriodEnd(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -160,9 +160,9 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.referencePeriodEnd(bond.cashflows(), false, settlementDate);
+         return CashFlows.referencePeriodEnd(bond.cashflows(), false, settings, settlementDate);
       }
-      public static double accrualPeriod(Bond bond, Date settlementDate = null)
+      public static double accrualPeriod(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -171,9 +171,9 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.accrualPeriod(bond.cashflows(), false, settlementDate);
+         return CashFlows.accrualPeriod(bond.cashflows(), false, settings, settlementDate);
       }
-      public static int accrualDays(Bond bond, Date settlementDate = null)
+      public static int accrualDays(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -182,9 +182,9 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.accrualDays(bond.cashflows(), false, settlementDate);
+         return CashFlows.accrualDays(bond.cashflows(), false, settings, settlementDate);
       }
-      public static double accruedPeriod(Bond bond, Date settlementDate = null)
+      public static double accruedPeriod(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -193,9 +193,9 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.accruedPeriod(bond.cashflows(), false, settlementDate);
+         return CashFlows.accruedPeriod(bond.cashflows(), false, settings, settlementDate);
       }
-      public static double accruedDays(Bond bond, Date settlementDate = null)
+      public static double accruedDays(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -204,9 +204,9 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.accruedDays(bond.cashflows(), false, settlementDate);
+         return CashFlows.accruedDays(bond.cashflows(), false, settings, settlementDate);
       }
-      public static double accruedAmount(Bond bond, Date settlementDate = null)
+      public static double accruedAmount(Bond bond, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -215,14 +215,14 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.accruedAmount(bond.cashflows(), false, settlementDate) * 100.0 / bond.notional(settlementDate);
+         return CashFlows.accruedAmount(bond.cashflows(), false, settings, settlementDate) * 100.0 / bond.notional(settlementDate);
       }
 
       #endregion
 
       #region YieldTermStructure functions
 
-      public static double cleanPrice(Bond bond, YieldTermStructure discountCurve, Date settlementDate = null)
+      public static double cleanPrice(Bond bond, YieldTermStructure discountCurve, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -232,7 +232,7 @@ namespace QLNet
                    " settlementDate date (maturity being " +
                    bond.maturityDate() + ")");
 
-         double dirtyPrice = CashFlows.npv(bond.cashflows(), discountCurve, false, settlementDate) *
+         double dirtyPrice = CashFlows.npv(bond.cashflows(), discountCurve, false, settings, settlementDate: settlementDate) *
                              100.0 / bond.notional(settlementDate);
          return dirtyPrice - bond.accruedAmount(settlementDate);
       }
@@ -395,8 +395,7 @@ namespace QLNet
 
       #region Z-spread functions
 
-      public static double cleanPrice(Bond bond, YieldTermStructure discount, double zSpread, DayCounter dayCounter, Compounding compounding,
-                                Frequency frequency, Date settlementDate = null)
+      public static double cleanPrice(Bond bond, YieldTermStructure discount, double zSpread, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -405,7 +404,7 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         double dirtyPrice = CashFlows.npv(bond.cashflows(), discount, zSpread, dayCounter, compounding, frequency, false, settlementDate) *
+         double dirtyPrice = CashFlows.npv(bond.cashflows(), discount, zSpread, dayCounter, compounding, frequency, false, settings, settlementDate: settlementDate) *
                              100.0 / bond.notional(settlementDate);
          return dirtyPrice - bond.accruedAmount(settlementDate);
       }

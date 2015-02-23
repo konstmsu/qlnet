@@ -195,7 +195,7 @@ namespace QLNet
          cashflows.Add( r );
 
          // Calculate Amortizing Yield ( Effective Rate )
-         Date testDate = CashFlows.previousCashFlowDate(cashflows, false, _tradeDate);
+         Date testDate = CashFlows.previousCashFlowDate(cashflows, false, _settings, _tradeDate);
          return CashFlows.yield(cashflows, _marketValue, _dCounter, Compounding.Simple, _payFrequency,
                                   false, _settings, settlementDate: testDate);
       }

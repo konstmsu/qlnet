@@ -215,15 +215,16 @@ namespace TestSuite
 						.withNotionals(100.0)
 						.withPaymentAdjustment(BusinessDayConvention.Following);
 
-			double accruedPeriod = CashFlows.accruedPeriod(leg, false);
+            SavedSettings settings = new SavedSettings();
+            double accruedPeriod = CashFlows.accruedPeriod(leg, false, settings);
 			if (accruedPeriod == 0.0)
 				Assert.Fail("null accrued period with default settlement date");
 
-			int accruedDays = CashFlows.accruedDays(leg, false);
+			int accruedDays = CashFlows.accruedDays(leg, false, settings);
 			if (accruedDays == 0)
 				Assert.Fail("no accrued days with default settlement date");
 
-			double accruedAmount = CashFlows.accruedAmount(leg, false);
+		    double accruedAmount = CashFlows.accruedAmount(leg, false, settings);
 			if (accruedAmount == 0.0)
 				Assert.Fail("null accrued amount with default settlement date");
 	}

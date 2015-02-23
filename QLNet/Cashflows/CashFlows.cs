@@ -258,7 +258,7 @@ namespace QLNet
               settings_ = settings;
 
               if (settlementDate == null)
-               settlementDate = Settings.evaluationDate();
+                  settlementDate = settings.evaluationDate();
 
             if (npvDate == null)
                npvDate = settlementDate;
@@ -312,9 +312,9 @@ namespace QLNet
          ZeroSpreadedTermStructure curve_;
          private bool includeSettlementDateFlows_;
          private Date settlementDate_, npvDate_;
+          SavedSettings _settings;
 
-         public ZSpreadFinder(Leg leg,YieldTermStructure discountCurve,double npv,DayCounter dc,Compounding comp,Frequency freq,
-                              bool includeSettlementDateFlows, Date settlementDate, Date npvDate, SavedSettings settings)
+          public ZSpreadFinder(Leg leg, YieldTermStructure discountCurve, double npv, DayCounter dc, Compounding comp, Frequency freq, bool includeSettlementDateFlows, Date settlementDate, Date npvDate, SavedSettings settings, SavedSettings settings1)
          {
             leg_ = leg;
             npv_ = npv;
@@ -334,12 +334,13 @@ namespace QLNet
             // if the discount curve allows extrapolation, let's
             // the spreaded curve do too.
             curve_.enableExtrapolation(discountCurve.allowsExtrapolation());
+              _settings = settings;
          }
 
          public override double value(double zSpread)
          {
             zSpread_.setValue(zSpread);
-            double NPV = CashFlows.npv(leg_, curve_, includeSettlementDateFlows_, settlementDate_, npvDate_);
+            double NPV = CashFlows.npv(leg_, curve_, includeSettlementDateFlows_, _settings, settlementDate: settlementDate_, npvDate: npvDate_);
                 return npv_ - NPV;
          }
 
@@ -414,13 +415,13 @@ namespace QLNet
          }
          return d;
       }
-      public static bool isExpired(Leg leg, bool includeSettlementDateFlows,Date settlementDate = null)
+      public static bool isExpired(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
          if (leg.empty())
             return true;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
          for (int i = leg.Count; i > 0; --i)
             if (!leg[i - 1].hasOccurred(settlementDate,includeSettlementDateFlows))
@@ -431,42 +432,42 @@ namespace QLNet
 
       #region CashFlow functions
       //! the last cashflow paying before or at the given date
-      public static CashFlow previousCashFlow(Leg leg, bool includeSettlementDateFlows,Date settlementDate = null) 
+      public static CashFlow previousCashFlow(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
          if (leg.empty()) return null;
 
-         Date d = (settlementDate == null ? Settings.evaluationDate() : settlementDate);
+         Date d = (settlementDate == null ? settings.evaluationDate() : settlementDate);
          return  leg.LastOrDefault(x => x.hasOccurred(d, includeSettlementDateFlows));
       }
       //! the first cashflow paying after the given date
-      public static CashFlow nextCashFlow(Leg leg, bool includeSettlementDateFlows, Date settlementDate = null)
+      public static CashFlow nextCashFlow(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
          if (leg.empty()) return null;
 
-         Date d = (settlementDate == null ? Settings.evaluationDate() : settlementDate);
+         Date d = (settlementDate == null ? settings.evaluationDate() : settlementDate);
 
          // the first coupon paying after d is the one we're after
          return leg.FirstOrDefault(x => !x.hasOccurred(d, includeSettlementDateFlows));
       }
-      public static Date previousCashFlowDate(Leg leg, bool includeSettlementDateFlows,Date settlementDate = null) 
+      public static Date previousCashFlowDate(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
-        CashFlow cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
+        CashFlow cf = previousCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
 
         if (cf == null)
             return null;
 
         return cf.date();
       }
-      public static Date nextCashFlowDate(Leg leg,bool includeSettlementDateFlows,Date settlementDate = null) 
+      public static Date nextCashFlowDate(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return null;
          return cf.date();
       }
-      public static double? previousCashFlowAmount(Leg leg,bool includeSettlementDateFlows,Date settlementDate = null) 
+      public static double? previousCashFlowAmount(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
         
-         CashFlow cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = previousCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
 
          if (cf==null) return null;
 
@@ -476,9 +477,9 @@ namespace QLNet
          return result;
 
       }
-      public static double? nextCashFlowAmount(Leg leg,bool includeSettlementDateFlows,Date settlementDate = null) 
+      public static double? nextCashFlowAmount(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
 
          if (cf == null) return null;
 
@@ -491,19 +492,19 @@ namespace QLNet
 
       #region Coupon inspectors
      
-      public static double previousCouponRate(List<CashFlow> leg, bool includeSettlementDateFlows, Date settlementDate = null)
+      public static double previousCouponRate(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
-         CashFlow cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = previousCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          return aggregateRate(leg, cf);
       }
-      public static double nextCouponRate(List<CashFlow> leg, bool includeSettlementDateFlows, Date settlementDate = null)
+      public static double nextCouponRate(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          return aggregateRate(leg, cf);
       }
-      public static double nominal(Leg leg, bool includeSettlementDateFlows,  Date settlementDate = null) 
+      public static double nominal(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return 0.0;
 
          Date paymentDate = cf.date();
@@ -516,9 +517,9 @@ namespace QLNet
          }
         return 0.0;
     }
-      public static Date accrualStartDate(Leg leg,bool includeSettlementDateFlows,Date settlementDate = null) 
+      public static Date accrualStartDate(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
-        CashFlow cf = nextCashFlow(leg,includeSettlementDateFlows,settlementDate);
+        CashFlow cf = nextCashFlow(leg,includeSettlementDateFlows, settings, settlementDate);
         if ( cf == null) return null;
 
         Date paymentDate = cf.date();
@@ -531,9 +532,9 @@ namespace QLNet
          }
          return null;
     }
-      public static Date accrualEndDate(Leg leg,bool includeSettlementDateFlows,Date settlementDate = null) 
+      public static Date accrualEndDate(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
-         CashFlow cf = nextCashFlow(leg,includeSettlementDateFlows,settlementDate);
+         CashFlow cf = nextCashFlow(leg,includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return null;
 
          Date paymentDate = cf.date();
@@ -546,9 +547,9 @@ namespace QLNet
          }
          return null;
       }
-      public static Date referencePeriodStart(Leg leg, bool includeSettlementDateFlows,Date settlementDate= null) 
+      public static Date referencePeriodStart(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
-         CashFlow cf = nextCashFlow(leg,includeSettlementDateFlows,settlementDate);
+         CashFlow cf = nextCashFlow(leg,includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return null;
          Date paymentDate = cf.date();
 
@@ -560,9 +561,9 @@ namespace QLNet
          }
          return null;
       }
-      public static Date referencePeriodEnd(Leg leg, bool includeSettlementDateFlows,Date settlementDate = null)
+      public static Date referencePeriodEnd(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return null;
          Date paymentDate = cf.date();
 
@@ -574,9 +575,9 @@ namespace QLNet
          }
          return null;
       }
-      public static double accrualPeriod(Leg leg, bool includeSettlementDateFlows,Date settlementDate = null)
+      public static double accrualPeriod(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return 0;
          Date paymentDate = cf.date();
 
@@ -588,9 +589,9 @@ namespace QLNet
          }
          return 0;
       }
-      public static int accrualDays(Leg leg, bool includeSettlementDateFlows,Date settlementDate = null)
+      public static int accrualDays(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return 0;
          Date paymentDate = cf.date();
 
@@ -602,12 +603,12 @@ namespace QLNet
          }
          return 0;
       }
-      public static double accruedPeriod(Leg leg, bool includeSettlementDateFlows, Date settlementDate = null) 
+      public static double accruedPeriod(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null) 
       {
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows,  settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return 0;
 
          Date paymentDate = cf.date();
@@ -619,12 +620,12 @@ namespace QLNet
          }
          return 0;
     }
-      public static int accruedDays(Leg leg, bool includeSettlementDateFlows,Date settlementDate = null)
+      public static int accruedDays(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
 			if ( settlementDate == null )
-				settlementDate = Settings.evaluationDate();
+                settlementDate = settings.evaluationDate();
 
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return 0;
          Date paymentDate = cf.date();
 
@@ -636,12 +637,12 @@ namespace QLNet
          }
          return 0;
       }
-      public static double accruedAmount(Leg leg, bool includeSettlementDateFlows,Date settlementDate = null)
+      public static double accruedAmount(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
 			if ( settlementDate == null )
 				settlementDate = Settings.evaluationDate();
 
-         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
+         CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return 0;
          Date paymentDate = cf.date();
          double result = 0.0;
@@ -675,15 +676,14 @@ namespace QLNet
       #region YieldTermStructure functions
 
       //! NPV of the cash flows. The NPV is the sum of the cash flows, each discounted according to the given term structure.
-      public static double npv(Leg leg,YieldTermStructure discountCurve, bool includeSettlementDateFlows,
-                               Date settlementDate = null, Date npvDate = null) 
+      public static double npv(Leg leg, YieldTermStructure discountCurve, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null) 
       {
 
          if (leg.empty())
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -1179,9 +1179,7 @@ namespace QLNet
       //  according to the z-spreaded term structure.  The result
       //  is affected by the choice of the z-spread compounding
       //  and the relative frequency and day counter.
-      public static double npv(Leg leg,YieldTermStructure discountCurve,double zSpread,DayCounter dc,Compounding comp,
-                               Frequency freq,bool includeSettlementDateFlows,
-                               Date settlementDate = null,Date npvDate = null) 
+      public static double npv(Leg leg, YieldTermStructure discountCurve, double zSpread, DayCounter dc, Compounding comp, Frequency freq, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null) 
       {
          if (leg.empty())
             return 0.0;
@@ -1200,7 +1198,7 @@ namespace QLNet
 
          spreadedCurve.enableExtrapolation(discountCurveHandle.link.allowsExtrapolation());
 
-         return npv(leg, spreadedCurve, includeSettlementDateFlows, settlementDate, npvDate);
+         return npv(leg, spreadedCurve, includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
       }
       //! implied Z-spread.
       public static double zSpread(Leg leg, double npv, YieldTermStructure discount, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.0)
@@ -1214,7 +1212,7 @@ namespace QLNet
          Brent solver = new Brent();
          solver.setMaxEvaluations(maxIterations);
          ZSpreadFinder objFunction = new ZSpreadFinder(leg,discount,npv,dayCounter, compounding, frequency, 
-            includeSettlementDateFlows, settlementDate, npvDate, settings);
+            includeSettlementDateFlows, settlementDate, npvDate, settings, settings);
          double step = 0.01;
          return solver.solve(objFunction, accuracy, guess, step);
       }

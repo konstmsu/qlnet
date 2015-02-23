@@ -681,7 +681,7 @@ namespace TestSuite {
                                    vars.bondDayCounter, settings, paymentConvention: vars.bondConvention,
                                    redemption: vars.bondRedemption, issueDate: issue);
 
-                IPricingEngine bondEngine = new DiscountingBondEngine(curveHandle);
+                IPricingEngine bondEngine = new DiscountingBondEngine(curveHandle, settings);
                 bond.setPricingEngine(bondEngine);
 
                 double expectedPrice = vars.bondData[i].price,

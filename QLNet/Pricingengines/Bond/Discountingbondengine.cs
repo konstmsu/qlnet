@@ -26,14 +26,16 @@ namespace QLNet
    {
       private Handle<YieldTermStructure> discountCurve_;
       private bool? includeSettlementDateFlows_;
+       SavedSettings _settings;
 
-      public Handle<YieldTermStructure> discountCurve() {return discountCurve_; }
+       public Handle<YieldTermStructure> discountCurve() {return discountCurve_; }
 
-      public DiscountingBondEngine(Handle<YieldTermStructure> discountCurve, bool? includeSettlementDateFlows = null) 
+      public DiscountingBondEngine(Handle<YieldTermStructure> discountCurve, SavedSettings settings, bool? includeSettlementDateFlows = null) 
       {
          discountCurve_ = discountCurve;
          discountCurve_.registerWith(update);
          includeSettlementDateFlows_ = includeSettlementDateFlows;
+          _settings = settings;
       }
 
       public override void calculate() 
@@ -48,9 +50,8 @@ namespace QLNet
 
          results_.value = CashFlows.npv(arguments_.cashflows,
                                         discountCurve_,
-                                        includeRefDateFlows,
-                                        results_.valuationDate,
-                                        results_.valuationDate);
+                                        includeRefDateFlows, _settings, settlementDate: results_.valuationDate,
+                                        npvDate: results_.valuationDate);
 
          results_.cash = CashFlows.cash(arguments_.cashflows, arguments_.settlementDate);
 
@@ -67,9 +68,8 @@ namespace QLNet
             results_.settlementValue =
                 CashFlows.npv(arguments_.cashflows,
                                discountCurve_,
-                               false,
-                               arguments_.settlementDate,
-                               arguments_.settlementDate);
+                               false, _settings, settlementDate: arguments_.settlementDate,
+                               npvDate: arguments_.settlementDate);
          }
       }
    }

@@ -430,7 +430,7 @@ namespace TestSuite
                                                 new ActualActual(ActualActual.Convention.ISDA), settings, paymentConvention: BusinessDayConvention.Following,
                                                 redemption: 100.0, issueDate: new Date(4,Month.January,2005));
 
-         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure);
+         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
          IPricingEngine swapEngine = new DiscountingSwapEngine(vars.termStructure);
          fixedBond1.setPricingEngine(bondEngine);
 
@@ -725,7 +725,7 @@ namespace TestSuite
                            new ActualActual(ActualActual.Convention.ISDA), settings, paymentConvention: BusinessDayConvention.Following,
                            redemption: 100.0, issueDate: new Date(4,Month.January,2005));
 
-         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure);
+         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
          IPricingEngine swapEngine = new DiscountingSwapEngine(vars.termStructure);
          fixedBond1.setPricingEngine(bondEngine);
 
@@ -1111,7 +1111,7 @@ namespace TestSuite
                            new ActualActual(ActualActual.Convention.ISDA), settings, paymentConvention: BusinessDayConvention.Following,
                            redemption: 100.0, issueDate: new Date(4,Month.January,2005));
 
-         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure);
+         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
          fixedBond1.setPricingEngine(bondEngine);
 
          double fixedBondImpliedValue1 = fixedBond1.cleanPrice();
@@ -1119,7 +1119,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YC...
          double fixedBondCleanPrice1 = BondFunctions.cleanPrice( fixedBond1, vars.termStructure, vars.spread,
-            new Actual365Fixed(), vars.compounding, Frequency.Annual, fixedBondSettlementDate1);
+            new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, fixedBondSettlementDate1);
          double tolerance = 1.0e-13;
          double error1 = Math.Abs(fixedBondImpliedValue1-fixedBondCleanPrice1);
          if (error1>tolerance) {
@@ -1151,7 +1151,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double fixedBondCleanPrice2 = BondFunctions.cleanPrice(fixedBond2, vars.termStructure, vars.spread,
-            new Actual365Fixed(), vars.compounding, Frequency.Annual, fixedBondSettlementDate2);
+            new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, fixedBondSettlementDate2);
          double error3 = Math.Abs(fixedBondImpliedValue2-fixedBondCleanPrice2);
          if (error3>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:" +
@@ -1188,7 +1188,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double floatingBondCleanPrice1 = BondFunctions.cleanPrice(floatingBond1, vars.termStructure, vars.spread,
-            new Actual365Fixed(), vars.compounding, Frequency.Semiannual, fixedBondSettlementDate1);
+            new Actual365Fixed(), vars.compounding, Frequency.Semiannual, settings, fixedBondSettlementDate1);
          double error5 = Math.Abs(floatingBondImpliedValue1-floatingBondCleanPrice1);
          if (error5>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:" +
@@ -1224,7 +1224,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double floatingBondCleanPrice2 = BondFunctions.cleanPrice(floatingBond2, vars.termStructure,
-            vars.spread, new Actual365Fixed(), vars.compounding, Frequency.Semiannual, fixedBondSettlementDate1);
+            vars.spread, new Actual365Fixed(), vars.compounding, Frequency.Semiannual, settings, fixedBondSettlementDate1);
          double error7 = Math.Abs(floatingBondImpliedValue2-floatingBondCleanPrice2);
          if (error7>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:"
@@ -1260,7 +1260,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double cmsBondCleanPrice1 = BondFunctions.cleanPrice(cmsBond1, vars.termStructure, vars.spread,
-            new Actual365Fixed(), vars.compounding, Frequency.Annual, cmsBondSettlementDate1);
+            new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, cmsBondSettlementDate1);
          double error9 = Math.Abs(cmsBondImpliedValue1-cmsBondCleanPrice1);
          if (error9>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:"
@@ -1295,7 +1295,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double cmsBondCleanPrice2 = BondFunctions.cleanPrice(cmsBond2, vars.termStructure, vars.spread,
-            new Actual365Fixed(), vars.compounding, Frequency.Annual, cmsBondSettlementDate2);
+            new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, cmsBondSettlementDate2);
          double error11 = Math.Abs(cmsBondImpliedValue2-cmsBondCleanPrice2);
          if (error11>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:"
@@ -1320,7 +1320,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double zeroCpnBondCleanPrice1 = BondFunctions.cleanPrice(zeroCpnBond1,vars.termStructure, vars.spread,
-                                 new Actual365Fixed(), vars.compounding, Frequency.Annual, zeroCpnBondSettlementDate1);
+                                 new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, zeroCpnBondSettlementDate1);
          double error13 = Math.Abs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
          if (error13>tolerance) {
             Assert.Fail("wrong clean price for zero coupon bond:"
@@ -1346,7 +1346,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double zeroCpnBondCleanPrice2 = BondFunctions.cleanPrice(zeroCpnBond2,vars.termStructure, vars.spread,
-                                 new Actual365Fixed(), vars.compounding, Frequency.Annual, zeroCpnBondSettlementDate2);
+                                 new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, zeroCpnBondSettlementDate2);
          double error15 = Math.Abs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
          if (error15>tolerance) {
             Assert.Fail("wrong clean price for zero coupon bond:"
@@ -1391,7 +1391,7 @@ namespace TestSuite
           SavedSettings settings=new SavedSettings();
           Bond fixedBond1 = new Bond(settlementDays, bondCalendar, vars.faceAmount,
                   fixedBondMaturityDate1, settings, fixedBondStartDate1, fixedBondLeg1);
-         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure);
+         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
          IPricingEngine swapEngine= new DiscountingSwapEngine(vars.termStructure);
          fixedBond1.setPricingEngine(bondEngine);
 
@@ -1731,7 +1731,7 @@ namespace TestSuite
           SavedSettings settings=new SavedSettings();
           Bond fixedBond1 = new Bond(settlementDays, bondCalendar, vars.faceAmount, fixedBondMaturityDate1, 
             settings,fixedBondStartDate1, fixedBondLeg1);
-         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure);
+         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
          IPricingEngine swapEngine = new DiscountingSwapEngine(vars.termStructure);
          fixedBond1.setPricingEngine(bondEngine);
 
@@ -2154,7 +2154,7 @@ namespace TestSuite
           SavedSettings settings=new SavedSettings();
           Bond fixedBond1 = new Bond(settlementDays, bondCalendar, vars.faceAmount, fixedBondMaturityDate1,settings, fixedBondStartDate1,
                   fixedBondLeg1);
-         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure);
+         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
          fixedBond1.setPricingEngine(bondEngine);
 
          double fixedBondImpliedValue1 = fixedBond1.cleanPrice();
@@ -2162,7 +2162,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double fixedBondCleanPrice1 = BondFunctions.cleanPrice(fixedBond1, vars.termStructure, vars.spread,
-            new Actual365Fixed(), vars.compounding, Frequency.Annual, fixedBondSettlementDate1);
+            new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, fixedBondSettlementDate1);
          double tolerance = 1.0e-13;
          double error1 = Math.Abs(fixedBondImpliedValue1-fixedBondCleanPrice1);
          if (error1>tolerance) {
@@ -2199,7 +2199,7 @@ namespace TestSuite
          // bond's frequency + coumpounding and daycounter of the YieldCurve
 
          double fixedBondCleanPrice2 = BondFunctions.cleanPrice(fixedBond2, vars.termStructure, vars.spread,
-            new Actual365Fixed(), vars.compounding, Frequency.Annual, fixedBondSettlementDate2);
+            new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, fixedBondSettlementDate2);
          double error3 = Math.Abs(fixedBondImpliedValue2-fixedBondCleanPrice2);
          if (error3>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:"
@@ -2240,7 +2240,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double floatingBondCleanPrice1 = BondFunctions.cleanPrice(floatingBond1, vars.termStructure, vars.spread, 
-            new Actual365Fixed(), vars.compounding, Frequency.Semiannual, fixedBondSettlementDate1);
+            new Actual365Fixed(), vars.compounding, Frequency.Semiannual, settings, fixedBondSettlementDate1);
          double error5 = Math.Abs(floatingBondImpliedValue1-floatingBondCleanPrice1);
          if (error5>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:"
@@ -2280,7 +2280,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double floatingBondCleanPrice2 = BondFunctions.cleanPrice(floatingBond2, vars.termStructure, vars.spread, 
-            new Actual365Fixed(), vars.compounding, Frequency.Semiannual,  fixedBondSettlementDate1);
+            new Actual365Fixed(), vars.compounding, Frequency.Semiannual, settings, fixedBondSettlementDate1);
          double error7 = Math.Abs(floatingBondImpliedValue2-floatingBondCleanPrice2);
          if (error7>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:"
@@ -2321,8 +2321,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double cmsBondCleanPrice1 = BondFunctions.cleanPrice(cmsBond1, vars.termStructure, vars.spread,
-            new Actual365Fixed(), vars.compounding, Frequency.Annual,
-            cmsBondSettlementDate1);
+            new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, cmsBondSettlementDate1);
          double error9 = Math.Abs(cmsBondImpliedValue1-cmsBondCleanPrice1);
          if (error9>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:"
@@ -2361,8 +2360,7 @@ namespace TestSuite
          // standard market conventions:
          // bond's frequency + coumpounding and daycounter of the YieldCurve
          double cmsBondCleanPrice2 = BondFunctions.cleanPrice(cmsBond2, vars.termStructure, vars.spread,
-            new Actual365Fixed(), vars.compounding, Frequency.Annual,
-            cmsBondSettlementDate2);
+            new Actual365Fixed(), vars.compounding, Frequency.Annual, settings, cmsBondSettlementDate2);
          double error11 = Math.Abs(cmsBondImpliedValue2-cmsBondCleanPrice2);
          if (error11>tolerance) {
             Assert.Fail("wrong clean price for fixed bond:"
@@ -2393,8 +2391,7 @@ namespace TestSuite
                                  vars.termStructure,
                                  vars.spread,
                                  new Actual365Fixed(),
-                                 vars.compounding, Frequency.Annual,
-                                 zeroCpnBondSettlementDate1);
+                                 vars.compounding, Frequency.Annual, settings, zeroCpnBondSettlementDate1);
          double error13 = Math.Abs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
          if (error13>tolerance) {
             Assert.Fail("wrong clean price for zero coupon bond:"
@@ -2426,8 +2423,7 @@ namespace TestSuite
                                  vars.termStructure,
                                  vars.spread,
                                  new Actual365Fixed(),
-                                 vars.compounding, Frequency.Annual,
-                                 zeroCpnBondSettlementDate2);
+                                 vars.compounding, Frequency.Annual, settings, zeroCpnBondSettlementDate2);
          double error15 = Math.Abs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
          if (error15>tolerance) {
             Assert.Fail("wrong clean price for zero coupon bond:"
@@ -2469,7 +2465,7 @@ namespace TestSuite
          // generic bond
          Bond fixedBond1 = new  Bond(settlementDays, bondCalendar, vars.faceAmount,
                   fixedBondMaturityDate1, settings,fixedBondStartDate1, fixedBondLeg1);
-         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure);
+         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
          fixedBond1.setPricingEngine(bondEngine);
 
          // equivalent specialized fixed rate bond
@@ -2964,7 +2960,7 @@ namespace TestSuite
          // generic bond
          Bond fixedBond1 = new Bond(settlementDays, bondCalendar, vars.faceAmount,
                   fixedBondMaturityDate1, settings,fixedBondStartDate1, fixedBondLeg1);
-         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure);
+         IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
          IPricingEngine swapEngine = new DiscountingSwapEngine(vars.termStructure);
          fixedBond1.setPricingEngine(bondEngine);
 

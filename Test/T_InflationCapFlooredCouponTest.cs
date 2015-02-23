@@ -638,7 +638,8 @@ namespace TestSuite
 
          // Testing inflation capped/floored coupon against inflation capfloor instrument...
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          int[] lengths = { 1, 2, 3, 5, 7, 10, 15, 20 };
          // vol is low ...
@@ -703,7 +704,7 @@ namespace TestSuite
                                                             0.0);// spread
 
                         // N.B. nominals are 10e6
-                        double capped = CashFlows.npv(leg2,vars.nominalTS,false);
+                        double capped = CashFlows.npv(leg2,vars.nominalTS,false, settings);
                         if ( Math.Abs(capped - (swap.NPV() - cap.NPV())) > 1.0e-6) 
                         {
                            Assert.Fail(
@@ -718,7 +719,7 @@ namespace TestSuite
 
 
                         // N.B. nominals are 10e6
-                        double floored = CashFlows.npv(leg3,vars.nominalTS,false);
+                         double floored = CashFlows.npv(leg3,vars.nominalTS,false, settings);
                         if ( Math.Abs(floored - (swap.NPV() + floor.NPV())) > 1.0e-6) 
                         {
                            Assert.Fail(

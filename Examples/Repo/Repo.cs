@@ -91,7 +91,7 @@ namespace Repo {
 											 bondDayCountConvention, settings, paymentConvention: bondBusinessDayConvention,
 											 redemption: bondRedemption,
 											 issueDate: bondIssueDate);
-			bond.setPricingEngine(new DiscountingBondEngine(bondCurve));
+			bond.setPricingEngine(new DiscountingBondEngine(bondCurve, settings));
 
 			bondCurve.linkTo(new FlatForward(repoSettlementDate,
 									   bond.yield(bondCleanPrice,
