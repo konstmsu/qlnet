@@ -38,23 +38,25 @@ namespace QLNet
    public class BlackCallableFixedRateBondEngine : CallableFixedRateBond.Engine 
    {
       //! volatility is the quoted fwd yield volatility, not price vol
-      public BlackCallableFixedRateBondEngine(Handle<Quote> fwdYieldVol, Handle<YieldTermStructure> discountCurve)
+      public BlackCallableFixedRateBondEngine(Handle<Quote> fwdYieldVol, Handle<YieldTermStructure> discountCurve, SavedSettings settings)
       {
          volatility_ = new Handle<CallableBondVolatilityStructure>( new CallableBondConstantVolatility(0, new NullCalendar(),
                                                                                                fwdYieldVol,
                                                                                                new Actual365Fixed()));
          discountCurve_ = discountCurve;
+          settings_ = settings;
 
-         volatility_.registerWith(update);
+          volatility_.registerWith(update);
          discountCurve_.registerWith(update);
       }
       //! volatility is the quoted fwd yield volatility, not price vol
       public BlackCallableFixedRateBondEngine(Handle<CallableBondVolatilityStructure> yieldVolStructure,
-                                              Handle<YieldTermStructure> discountCurve)
+                                              Handle<YieldTermStructure> discountCurve, SavedSettings settings)
       {
          volatility_ = yieldVolStructure;
          discountCurve_ = discountCurve;
-         volatility_.registerWith(update);
+          settings_ = settings;
+          volatility_.registerWith(update);
          discountCurve_.registerWith(update);
       }
 
@@ -103,7 +105,9 @@ namespace QLNet
       
       private Handle<CallableBondVolatilityStructure> volatility_;
       private Handle<YieldTermStructure> discountCurve_;
-      // present value of all coupons paid during the life of option
+       readonly SavedSettings settings_;
+
+       // present value of all coupons paid during the life of option
       private double spotIncome()
       {
          //! settle date of embedded option assumed same as that of bond
@@ -156,14 +160,13 @@ namespace QLNet
                                          dayCounter,
                                          Compounding.Compounded,
                                          frequency,
-                                         false,
-                                         exerciseDate);
+                                         false, settings_, settlementDate: exerciseDate);
 
          InterestRate fwdRate = new InterestRate(fwdYtm, dayCounter, Compounding.Compounded, frequency);
 
          double fwdDur = CashFlows.duration(fixedLeg,
                                             fwdRate,
-                                            Duration.Type.Modified,false,
+                                            Duration.Type.Modified,false, settings_,
                                             exerciseDate);
 
          double cashStrike = arguments_.callabilityPrices[0];
@@ -195,12 +198,11 @@ namespace QLNet
    {
 
       //! volatility is the quoted fwd yield volatility, not price vol
-      public BlackCallableZeroCouponBondEngine(Handle<Quote> fwdYieldVol,Handle<YieldTermStructure> discountCurve)
-      : base(fwdYieldVol, discountCurve) {}
+      public BlackCallableZeroCouponBondEngine(Handle<Quote> fwdYieldVol, Handle<YieldTermStructure> discountCurve, SavedSettings settings)
+      : base(fwdYieldVol, discountCurve, settings) {}
 
       //! volatility is the quoted fwd yield volatility, not price vol
-      public BlackCallableZeroCouponBondEngine(Handle<CallableBondVolatilityStructure> yieldVolStructure,
-                                               Handle<YieldTermStructure> discountCurve)
-      : base(yieldVolStructure, discountCurve) {}
+      public BlackCallableZeroCouponBondEngine(Handle<CallableBondVolatilityStructure> yieldVolStructure, Handle<YieldTermStructure> discountCurve, SavedSettings settings)
+      : base(yieldVolStructure, discountCurve, settings) {}
    }
 }

@@ -27,20 +27,8 @@ namespace QLNet
    //! amortizing CMS-rate bond
    public class AmortizingCmsRateBond : Bond
    {
-      public AmortizingCmsRateBond( int settlementDays,
-                               List<double> notionals,
-                               Schedule schedule,
-                               SwapIndex index,
-                               DayCounter paymentDayCounter,
-                               BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                               int fixingDays = 0,
-                               List<double> gearings = null,
-                               List<double> spreads = null,
-                               List<double> caps = null,
-                               List<double> floors = null,
-                               bool inArrears = false,
-                               Date issueDate = null)
-         :base(settlementDays, schedule.calendar(), issueDate)
+      public AmortizingCmsRateBond(int settlementDays, List<double> notionals, Schedule schedule, SwapIndex index, DayCounter paymentDayCounter, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, int fixingDays = 0, List<double> gearings = null, List<double> spreads = null, List<double> caps = null, List<double> floors = null, bool inArrears = false, Date issueDate = null)
+         :base(settlementDays, schedule.calendar(), settings, issueDate)
       {
          // Optional value check
          if ( gearings == null ) gearings = new List<double>(){1.0};

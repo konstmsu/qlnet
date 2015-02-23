@@ -83,14 +83,14 @@ namespace Repo {
 								  bondCalendar,bondBusinessDayConvention,
 								  bondBusinessDayConvention,
 								  DateGeneration.Rule.Backward,false);
-			FixedRateBond bond = new FixedRateBond(bondSettlementDays,
+		    SavedSettings settings=new SavedSettings();
+		    FixedRateBond bond = new FixedRateBond(bondSettlementDays,
 											 faceAmount,
 											 bondSchedule,
 											 new List<double>() { bondCoupon },
-											 bondDayCountConvention,
-											 bondBusinessDayConvention,
-											 bondRedemption,
-											 bondIssueDate);
+											 bondDayCountConvention, settings, paymentConvention: bondBusinessDayConvention,
+											 redemption: bondRedemption,
+											 issueDate: bondIssueDate);
 			bond.setPricingEngine(new DiscountingBondEngine(bondCurve));
 
 			bondCurve.linkTo(new FlatForward(repoSettlementDate,

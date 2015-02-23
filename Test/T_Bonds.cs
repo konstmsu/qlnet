@@ -93,10 +93,11 @@ namespace TestSuite
                         Schedule sch = new Schedule(dated, maturity, new Period(frequencies[l]), vars.calendar,
                                                     accrualConvention, accrualConvention, DateGeneration.Rule.Backward, false);
 
-                        FixedRateBond bond = new FixedRateBond(settlementDays, vars.faceAmount, sch,
+                         SavedSettings settings=new SavedSettings();
+                         FixedRateBond bond = new FixedRateBond(settlementDays, vars.faceAmount, sch,
                                                                new List<double>() { coupons[k] },
-                                                               bondDayCount, paymentConvention,
-                                                               redemption, issue);
+                                                               bondDayCount, settings, paymentConvention: paymentConvention,
+                                                               redemption: redemption, issueDate: issue);
 
                         for (int m = 0; m < yields.Length; m++)
                         {
@@ -168,8 +169,9 @@ namespace TestSuite
                   Schedule sch = new Schedule(dated, maturity, new Period(frequencies[l]), vars.calendar,
                                               accrualConvention, accrualConvention, DateGeneration.Rule.Backward, false);
 
-                  FixedRateBond bond = new FixedRateBond(settlementDays, vars.faceAmount, sch, new List<double>() { coupons[k] },
-                                                         bondDayCount, paymentConvention, redemption, issue);
+                   SavedSettings settings=new SavedSettings();
+                   FixedRateBond bond = new FixedRateBond(settlementDays, vars.faceAmount, sch, new List<double>() { coupons[k] },
+                                                         bondDayCount, settings, paymentConvention: paymentConvention, redemption: redemption, issueDate: issue);
 
                   IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
                   bond.setPricingEngine(bondEngine);
@@ -236,8 +238,9 @@ namespace TestSuite
                                       bondCalendar, BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
                                       DateGeneration.Rule.Backward, false);
 
-         FixedRateBond bond1 = new FixedRateBond(settlementDays, vars.faceAmount, sch1, new List<double>() { 0.025 },
-                                 bondDayCount, BusinessDayConvention.ModifiedFollowing, 100.0, new Date(1, Month.November, 2004));
+          SavedSettings settings=new SavedSettings();
+          FixedRateBond bond1 = new FixedRateBond(settlementDays, vars.faceAmount, sch1, new List<double>() { 0.025 },
+                                 bondDayCount, settings, paymentConvention: BusinessDayConvention.ModifiedFollowing, redemption: 100.0, issueDate: new Date(1, Month.November, 2004));
 
          IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
          bond1.setPricingEngine(bondEngine);
@@ -250,8 +253,8 @@ namespace TestSuite
                                       DateGeneration.Rule.Backward, false);
 
          FixedRateBond bond2 = new FixedRateBond(settlementDays, vars.faceAmount, sch2, new List<double>() { 0.035 },
-                                      bondDayCount, BusinessDayConvention.ModifiedFollowing,
-                                      100.0, new Date(15, Month.November, 2004));
+                                      bondDayCount, settings, paymentConvention: BusinessDayConvention.ModifiedFollowing,
+                                      redemption: 100.0, issueDate: new Date(15, Month.November, 2004));
 
          bond2.setPricingEngine(bondEngine);
 
@@ -376,8 +379,7 @@ namespace TestSuite
                                       BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false);
 
          FixedRateBond bond3 = new FixedRateBond(settlementDays, vars.faceAmount, sch3, new List<double>() { 0.02875 },
-                             new ActualActual(ActualActual.Convention.ISMA),
-                             BusinessDayConvention.ModifiedFollowing, 100.0, new Date(30, Month.November, 2004));
+                             new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing, redemption: 100.0, issueDate: new Date(30, Month.November, 2004));
 
          bond3.setPricingEngine(bondEngine);
 
@@ -425,9 +427,10 @@ namespace TestSuite
          double tolerance = 1.0e-6;
 
          // plain
-         ZeroCouponBond bond1 = new ZeroCouponBond(settlementDays, new UnitedStates(UnitedStates.Market.GovernmentBond),
+          SavedSettings settings=new SavedSettings();
+          ZeroCouponBond bond1 = new ZeroCouponBond(settlementDays, new UnitedStates(UnitedStates.Market.GovernmentBond),
                               vars.faceAmount, new Date(30, Month.November, 2008), BusinessDayConvention.ModifiedFollowing,
-                              100.0, new Date(30, Month.November, 2004));
+                              100.0, new Date(30, Month.November, 2004), settings);
 
          IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
          bond1.setPricingEngine(bondEngine);
@@ -445,7 +448,7 @@ namespace TestSuite
 
          ZeroCouponBond bond2 = new ZeroCouponBond(settlementDays, new UnitedStates(UnitedStates.Market.GovernmentBond),
                               vars.faceAmount, new Date(30, Month.November, 2007), BusinessDayConvention.ModifiedFollowing,
-                              100.0, new Date(30, Month.November, 2004));
+                              100.0, new Date(30, Month.November, 2004), settings);
 
          bond2.setPricingEngine(bondEngine);
 
@@ -462,7 +465,7 @@ namespace TestSuite
 
          ZeroCouponBond bond3 = new ZeroCouponBond(settlementDays, new UnitedStates(UnitedStates.Market.GovernmentBond),
                               vars.faceAmount, new Date(30, Month.November, 2006), BusinessDayConvention.ModifiedFollowing,
-                              100.0, new Date(30, Month.November, 2004));
+                              100.0, new Date(30, Month.November, 2004), settings);
 
          bond3.setPricingEngine(bondEngine);
 
@@ -499,9 +502,10 @@ namespace TestSuite
                       new UnitedStates(UnitedStates.Market.GovernmentBond),
                       BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false);
 
-         FixedRateBond bond1 = new FixedRateBond(settlementDays, vars.faceAmount, sch, new List<double>() { 0.02875 },
-                             new ActualActual(ActualActual.Convention.ISMA), BusinessDayConvention.ModifiedFollowing,
-                             100.0, new Date(30, Month.November, 2004));
+          SavedSettings settings=new SavedSettings();
+          FixedRateBond bond1 = new FixedRateBond(settlementDays, vars.faceAmount, sch, new List<double>() { 0.02875 },
+                             new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing,
+                             redemption: 100.0, issueDate: new Date(30, Month.November, 2004));
 
          IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
          bond1.setPricingEngine(bondEngine);
@@ -525,9 +529,8 @@ namespace TestSuite
          couponRates[3] = 0.0325;
 
          FixedRateBond bond2 = new FixedRateBond(settlementDays, vars.faceAmount, sch, couponRates,
-                               new ActualActual(ActualActual.Convention.ISMA),
-                               BusinessDayConvention.ModifiedFollowing,
-                               100.0, new Date(30, Month.November, 2004));
+                               new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing,
+                               redemption: 100.0, issueDate: new Date(30, Month.November, 2004));
 
          bond2.setPricingEngine(bondEngine);
 
@@ -550,9 +553,8 @@ namespace TestSuite
                        null, new Date(30, Month.November, 2008));
 
          FixedRateBond bond3 = new FixedRateBond(settlementDays, vars.faceAmount, sch3,
-                               couponRates, new ActualActual(ActualActual.Convention.ISMA),
-                               BusinessDayConvention.ModifiedFollowing,
-                               100.0, new Date(30, Month.November, 2004));
+                               couponRates, new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing,
+                               redemption: 100.0, issueDate: new Date(30, Month.November, 2004));
 
          bond3.setPricingEngine(bondEngine);
 
@@ -595,13 +597,14 @@ namespace TestSuite
                                      BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
                                      DateGeneration.Rule.Backward, false);
 
-         FloatingRateBond bond1 = new FloatingRateBond(settlementDays, vars.faceAmount, sch,
+          SavedSettings settings=new SavedSettings();
+          FloatingRateBond bond1 = new FloatingRateBond(settlementDays, vars.faceAmount, sch,
                                 index, new ActualActual(ActualActual.Convention.ISMA),
                                 BusinessDayConvention.ModifiedFollowing, fixingDays,
                                 new List<double>(), new List<double>(),
                                 new List<double>(), new List<double>(),
                                 false,
-                                100.0, new Date(30, Month.November, 2004));
+                                100.0, new Date(30, Month.November, 2004), settings);
 
          IPricingEngine bondEngine = new DiscountingBondEngine(riskFreeRate);
          bond1.setPricingEngine(bondEngine);
@@ -631,7 +634,7 @@ namespace TestSuite
                                 new List<double>(), new List<double>(),
                                 new List<double>(), new List<double>(),
                                 false,
-                                100.0, new Date(30, Month.November, 2004));
+                                100.0, new Date(30, Month.November, 2004), settings);
 
          IPricingEngine bondEngine2 = new DiscountingBondEngine(discountCurve);
          bond2.setPricingEngine(bondEngine2);
@@ -666,7 +669,7 @@ namespace TestSuite
                                 new List<double>(), spreads,
                                 new List<double>(), new List<double>(),
                                 false,
-                                100.0, new Date(30, Month.November, 2004));
+                                100.0, new Date(30, Month.November, 2004), settings);
 
          bond3.setPricingEngine(bondEngine2);
 
@@ -751,13 +754,14 @@ namespace TestSuite
                               DateGeneration.Rule.Backward, false);
 
 
-            FixedRateBond bond = new FixedRateBond(settlementDays,
+             SavedSettings settings=new SavedSettings();
+             FixedRateBond bond = new FixedRateBond(settlementDays,
                                                    faceAmount,
                                                    schedule,
-                                                   couponRates,
-                                                   BusinessDayConvention.Following,
-                                                   redemption,
-                                                   issueDate);
+                                                   couponRates, settings,
+                                                   paymentConvention: BusinessDayConvention.Following,
+                                                   redemption: redemption,
+                                                   issueDate: issueDate);
 
             double cachedPrice = prices[bondIndex];
 
@@ -790,7 +794,8 @@ namespace TestSuite
          double rate = 0.06;
          var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(startDate, new SimpleQuote(rate), new Thirty360()));
 
-         AmortizingFixedRateBond bond = BondFactory.makeAmortizingFixedBond(startDate, bondLength, dCounter, payFrequency, amount, rate);
+          SavedSettings settings=new SavedSettings();
+          AmortizingFixedRateBond bond = BondFactory.makeAmortizingFixedBond(startDate, bondLength, dCounter, payFrequency, amount, rate, settings);
          IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
          bond.setPricingEngine(bondEngine);
 
@@ -968,7 +973,8 @@ namespace TestSuite
 
          // 400 Million Pass-Through with a 5.5% Pass-through Rate, a WAC of 6.0%, and a WAM of 358 Months,
          // Assuming 100% PSA
-         MBSFixedRateBond bond = BondFactory.makeMBSFixedBond(startDate,
+          SavedSettings settings=new SavedSettings();
+          MBSFixedRateBond bond = BondFactory.makeMBSFixedBond(startDate,
                                                                bondLength,
                                                                originalLenght,
                                                                dCounter,
@@ -976,7 +982,7 @@ namespace TestSuite
                                                                amount,
                                                                WACrate,
                                                                PassThroughRate,
-                                                               psa100);
+                                                               psa100, settings);
 
          IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve);
          bond.setPricingEngine(bondEngine);
@@ -1048,7 +1054,7 @@ namespace TestSuite
 
          // Build Bond
          AmortizingBond bond = BondFactory.makeAmortizingBond(faceValue, marketValue, couponRate,
-            issueDate, maturirtyDate, tradeDate, paymentFrequency, dc, AmortizingMethod.EffectiveInterestRate);
+            issueDate, maturirtyDate, tradeDate, paymentFrequency, dc, AmortizingMethod.EffectiveInterestRate, new SavedSettings());
 
          // Amortizing Yield ( Effective Rate )
          double y1 = bond.Yield() ;
@@ -1088,7 +1094,7 @@ namespace TestSuite
 
          // Build Bond
          AmortizingBond bond = BondFactory.makeAmortizingBond(faceValue, marketValue, couponRate,
-            issueDate, maturirtyDate, tradeDate, paymentFrequency, dc, AmortizingMethod.EffectiveInterestRate);
+            issueDate, maturirtyDate, tradeDate, paymentFrequency, dc, AmortizingMethod.EffectiveInterestRate, new SavedSettings());
 
          // Amortizing Yield ( Effective Rate )
          double y1 = bond.Yield();

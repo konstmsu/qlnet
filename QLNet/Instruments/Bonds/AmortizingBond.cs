@@ -31,18 +31,8 @@ namespace QLNet
    public class AmortizingBond : Bond
    {
          
-      public AmortizingBond(double FaceValue,
-                            double MarketValue,
-                            double CouponRate,
-                            Date IssueDate,
-                            Date MaturityDate,
-                            Date TradeDate,
-                            Frequency payFrequency,
-                            DayCounter dCounter,
-                            AmortizingMethod Method,
-                            Calendar calendar,
-                            double gYield = 0) :
-         base(0, new TARGET(), IssueDate)
+      public AmortizingBond(double FaceValue, double MarketValue, double CouponRate, Date IssueDate, Date MaturityDate, Date TradeDate, Frequency payFrequency, DayCounter dCounter, AmortizingMethod Method, Calendar calendar, SavedSettings settings, double gYield = 0) :
+         base(0, new TARGET(), settings, IssueDate)
       {
          _faceValue = FaceValue;
          _marketValue = MarketValue;
@@ -76,6 +66,7 @@ namespace QLNet
                break;
          }
 
+          _settings = settings;
       }
 
       public bool isPremium()
@@ -206,7 +197,7 @@ namespace QLNet
          // Calculate Amortizing Yield ( Effective Rate )
          Date testDate = CashFlows.previousCashFlowDate(cashflows, false, _tradeDate);
          return CashFlows.yield(cashflows, _marketValue, _dCounter, Compounding.Simple, _payFrequency,
-                                  false, testDate);
+                                  false, _settings, settlementDate: testDate);
       }
 
       // temporary testing function
@@ -235,6 +226,6 @@ namespace QLNet
       protected double _yield;
       protected double _originalPayment;
       protected bool _isPremium;
-
+       SavedSettings _settings;
    }
 }

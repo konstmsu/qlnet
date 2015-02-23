@@ -30,9 +30,8 @@ namespace QLNet {
         //               BusinessDayConvention paymentConvention = Following,
         //               double redemption = 100.0,
         //               Date issueDate = Date());
-        public ZeroCouponBond(int settlementDays, Calendar calendar, double faceAmount, Date maturityDate,
-                              BusinessDayConvention paymentConvention, double redemption, Date issueDate)
-            : base(settlementDays, calendar, issueDate) {
+        public ZeroCouponBond(int settlementDays, Calendar calendar, double faceAmount, Date maturityDate, BusinessDayConvention paymentConvention, double redemption, Date issueDate, SavedSettings settings)
+            : base(settlementDays, calendar, settings, issueDate) {
 
             maturityDate_ = maturityDate;
             Date redemptionDate = calendar_.adjust(maturityDate, paymentConvention);

@@ -32,13 +32,12 @@ namespace QLNet
    */
    public class CCTEU : FloatingRateBond 
    {
-      public CCTEU(Date maturityDate,double spread,Handle<YieldTermStructure> fwdCurve = null,
-                   Date startDate = null,Date issueDate = null)
+      public CCTEU(Date maturityDate, double spread, SavedSettings settings, Handle<YieldTermStructure> fwdCurve = null, Date startDate = null, Date issueDate = null)
          :base(3, 100.0,
                        new Schedule(startDate,
-                                maturityDate, new Period(6,TimeUnit.Months),
-                                new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                DateGeneration.Rule.Backward, true),
+                           maturityDate, new Period(6,TimeUnit.Months),
+                           new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
+                           DateGeneration.Rule.Backward, true),
                        new Euribor6M(fwdCurve != null ? fwdCurve : new Handle<YieldTermStructure>() ),
                        new Actual360(),
                        BusinessDayConvention.Following,
@@ -49,7 +48,7 @@ namespace QLNet
                        new List<double>(), // floors
                        false, // in arrears
                        100.0, // redemption
-                       issueDate) {}
+                       issueDate, settings) {}
 
       #region Bond interface
 
@@ -71,26 +70,24 @@ namespace QLNet
    */
    public class BTP : FixedRateBond 
    {
-      public BTP(Date maturityDate,double fixedRate,Date startDate = null,Date issueDate = null)
+      public BTP(Date maturityDate, double fixedRate, SavedSettings settings, Date startDate = null, Date issueDate = null)
          :base(3, 100.0,new Schedule(startDate,
-                             maturityDate, new Period(6,TimeUnit.Months),
-                             new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                             DateGeneration.Rule.Backward, true),
+             maturityDate, new Period(6,TimeUnit.Months),
+             new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
+             DateGeneration.Rule.Backward, true),
                     new List<double>{fixedRate},
-                    new ActualActual(ActualActual.Convention.ISMA),
-                    BusinessDayConvention.ModifiedFollowing, 100.0, issueDate, new TARGET()) { }
+                    new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing, redemption: 100.0, issueDate: issueDate, paymentCalendar: new TARGET()) { }
 
       /*! constructor needed for legacy non-par redemption BTPs.
           As of today the only remaining one is IT123456789012
           that will redeem 99.999 on xx-may-2037 */
-      public BTP(Date maturityDate, double fixedRate, double redemption,Date startDate = null,Date issueDate = null)
+      public BTP(Date maturityDate, double fixedRate, double redemption, SavedSettings settings, Date startDate = null, Date issueDate = null)
       :base(3, 100.0, new Schedule(startDate,
-                             maturityDate, new Period(6,TimeUnit.Months),
-                             new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                             DateGeneration.Rule.Backward, true),
+          maturityDate, new Period(6,TimeUnit.Months),
+          new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
+          DateGeneration.Rule.Backward, true),
                     new List<double>{fixedRate},
-                    new ActualActual(ActualActual.Convention.ISMA),
-                    BusinessDayConvention.ModifiedFollowing, redemption, issueDate, new TARGET()) { }
+                    new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing, redemption: redemption, issueDate: issueDate, paymentCalendar: new TARGET()) { }
       #region Bond interface
  
       //! accrued amount at a given date
@@ -200,12 +197,13 @@ namespace QLNet
 
    public class RendistatoCalculator : LazyObject 
    {
-      public RendistatoCalculator(RendistatoBasket basket, Euribor euriborIndex, Handle<YieldTermStructure> discountCurve)
+      public RendistatoCalculator(RendistatoBasket basket, Euribor euriborIndex, Handle<YieldTermStructure> discountCurve, SavedSettings settings)
       {
          basket_ = basket;
          euriborIndex_ = euriborIndex;
          discountCurve_ = discountCurve;
-         yields_ = new InitializedList<double>(basket_.size(), 0.05); 
+          settings_ = settings;
+          yields_ = new InitializedList<double>(basket_.size(), 0.05); 
          durations_ = new List<double>(basket_.size());
          nSwaps_ = 15;  // TODO: generalize number of swaps and their lenghts
          swaps_ = new List<VanillaSwap>(nSwaps_);
@@ -316,13 +314,12 @@ namespace QLNet
          {
             yields_[i] = BondFunctions.yield(btps[i], quotes[i].link.value(),
                                              new ActualActual(ActualActual.Convention.ISMA), 
-                                             Compounding.Compounded, Frequency.Annual,
-                                             bondSettlementDate,
+                                             Compounding.Compounded, Frequency.Annual, settings_, bondSettlementDate,
                                              // accuracy, maxIterations, guess
-                                             1.0e-10, 100, yields_[i]);
+                                             accuracy: 1.0e-10, maxIterations: 100, guess: yields_[i]);
 
             durations_[i] = BondFunctions.duration(btps[i], yields_[i],new ActualActual(ActualActual.Convention.ISMA), 
-                                                   Compounding.Compounded, Frequency.Annual,Duration.Type.Modified, 
+                                                   Compounding.Compounded, Frequency.Annual, settings_,Duration.Type.Modified, 
                                                    bondSettlementDate);
          }
 
@@ -342,20 +339,18 @@ namespace QLNet
                                                     100.0,      // faceAmount
                                                     swaps_[0].fixedSchedule(),
                                                     new List<double>() { swapRates_[0].Value },
-                                                    fixedDayCount,
-                                                    BusinessDayConvention.Following, // paymentConvention
-                                                    100.0);    // redemption
+                                                    fixedDayCount, settings_, paymentConvention: BusinessDayConvention.Following, // paymentConvention
+                                                    redemption: 100.0);    // redemption
          swapBondYields_[0] = BondFunctions.yield(swapBond,
                                                   100.0, // floating leg NPV including end payment
                                                   new ActualActual(ActualActual.Convention.ISMA), 
-                                                  Compounding.Compounded, Frequency.Annual,
-                                                  bondSettlementDate,
+                                                  Compounding.Compounded, Frequency.Annual, settings_, bondSettlementDate,
                                                   // accuracy, maxIterations, guess
-                                                  1.0e-10, 100, swapBondYields_[0].Value);
+                                                  accuracy: 1.0e-10, maxIterations: 100, guess: swapBondYields_[0].Value);
 
          swapBondDurations_[0] = BondFunctions.duration(swapBond, swapBondYields_[0].Value,
                                                         new ActualActual(ActualActual.Convention.ISMA), 
-                                                        Compounding.Compounded, Frequency.Annual,
+                                                        Compounding.Compounded, Frequency.Annual, settings_,
                                                         Duration.Type.Modified, bondSettlementDate);
          for (int i=1; i<nSwaps_; ++i) 
          {
@@ -364,20 +359,18 @@ namespace QLNet
                                                        100.0,      // faceAmount
                                                        swaps_[i].fixedSchedule(),
                                                        new List<double>(){swapRates_[i].Value},
-                                                       fixedDayCount,
-                                                       BusinessDayConvention.Following, // paymentConvention
-                                                       100.0);    // redemption
+                                                       fixedDayCount, settings_, paymentConvention: BusinessDayConvention.Following, // paymentConvention
+                                                       redemption: 100.0);    // redemption
 
             swapBondYields_[i] = BondFunctions.yield(swapBond2, 100.0, // floating leg NPV including end payment
                                                      new ActualActual(ActualActual.Convention.ISMA), 
-                                                     Compounding.Compounded, Frequency.Annual,
-                                                     bondSettlementDate,
+                                                     Compounding.Compounded, Frequency.Annual, settings_, bondSettlementDate,
                                                      // accuracy, maxIterations, guess
-                                                     1.0e-10, 100, swapBondYields_[i].Value);
+                                                     accuracy: 1.0e-10, maxIterations: 100, guess: swapBondYields_[i].Value);
             
             swapBondDurations_[i] = BondFunctions.duration(swapBond2, swapBondYields_[i].Value,
                                                            new ActualActual(ActualActual.Convention.ISMA), 
-                                                           Compounding.Compounded, Frequency.Annual,
+                                                           Compounding.Compounded, Frequency.Annual, settings_,
                                                            Duration.Type.Modified, bondSettlementDate);
             if (swapBondDurations_[i] > duration_) 
             {
@@ -405,7 +398,8 @@ namespace QLNet
       private List<double> swapLenghts_;
       private InitializedList<double?> swapBondDurations_;
       private InitializedList<double?> swapBondYields_, swapRates_;
-    }
+       readonly SavedSettings settings_;
+   }
 
    //! RendistatoCalculator equivalent swap lenth Quote adapter
    public class RendistatoEquivalentSwapLengthQuote : Quote 

@@ -135,6 +135,8 @@ namespace Bonds {
                 quoteHandle[i].linkTo(quote[i]);
             }
 
+            SavedSettings settings = new SavedSettings();
+
             // Definition of the rate helpers
             List<FixedRateBondHelper> bondsHelpers = new List<FixedRateBondHelper>();
             for (int i=0; i<numberOfBonds; i++) {
@@ -152,7 +154,7 @@ namespace Bonds {
                                                                          new ActualActual(ActualActual.Convention.Bond),
                                                                          BusinessDayConvention.Unadjusted,
                                                                          redemption,
-                                                                         issueDates[i]);
+                                                                         issueDates[i], settings);
 
                 bondsHelpers.Add(bondHelper);
             }
@@ -347,14 +349,14 @@ namespace Bonds {
              IPricingEngine bondEngine = new DiscountingBondEngine(discountingTermStructure);
 
              // Zero coupon bond
-             ZeroCouponBond zeroCouponBond = new ZeroCouponBond(
+            ZeroCouponBond zeroCouponBond = new ZeroCouponBond(
                      settlementDays,
                      new UnitedStates(UnitedStates.Market.GovernmentBond),
                      faceAmount,
                      new Date(15, Month.August,2013),
                      BusinessDayConvention.Following,
                      116.92,
-                     new Date(15, Month.August,2003));
+                     new Date(15, Month.August,2003), settings);
 
              zeroCouponBond.setPricingEngine(bondEngine);
 
@@ -370,8 +372,9 @@ namespace Bonds {
                      fixedBondSchedule,
                      new List<double>() { 0.045 },
                      new ActualActual(ActualActual.Convention.Bond),
-                     BusinessDayConvention.ModifiedFollowing,
-                     100.0, new Date(15, Month.May, 2007));
+                     settings,
+                     paymentConvention: BusinessDayConvention.ModifiedFollowing,
+                     redemption: 100.0, issueDate: new Date(15, Month.May, 2007));
 
              fixedRateBond.setPricingEngine(bondEngine);
 
@@ -406,7 +409,7 @@ namespace Bonds {
                      // Fixing in arrears
                      true,
                      100.0,
-                     new Date(21, Month.October, 2005));
+                     new Date(21, Month.October, 2005), settings);
 
              floatingRateBond.setPricingEngine(bondEngine);
 

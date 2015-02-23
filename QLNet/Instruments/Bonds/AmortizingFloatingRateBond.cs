@@ -28,20 +28,8 @@ namespace QLNet
    //! amortizing floating-rate bond (possibly capped and/or floored)
    public class AmortizingFloatingRateBond : Bond
    {
-      public AmortizingFloatingRateBond(int settlementDays,
-                                        List<double> notionals,
-                                        Schedule schedule,
-                                        IborIndex index,
-                                        DayCounter accrualDayCounter,
-                                        BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                                        int fixingDays = 0,
-                                        List<double> gearings = null,
-                                        List<double> spreads = null,
-                                        List<double> caps = null,
-                                        List<double> floors = null,
-                                        bool inArrears = false,
-                                        Date issueDate = null)
-         :base(settlementDays, schedule.calendar(), issueDate)
+      public AmortizingFloatingRateBond(int settlementDays, List<double> notionals, Schedule schedule, IborIndex index, DayCounter accrualDayCounter, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, int fixingDays = 0, List<double> gearings = null, List<double> spreads = null, List<double> caps = null, List<double> floors = null, bool inArrears = false, Date issueDate = null)
+         :base(settlementDays, schedule.calendar(), settings, issueDate)
       {
          if ( gearings == null ) 
             gearings = new List<double>() {1, 1.0};

@@ -89,16 +89,11 @@ namespace QLNet {
         //                   BusinessDayConvention paymentConv = Following,
         //                   double redemption = 100.0,
         //                   Date issueDate = null);
-        public FixedRateBondHelper(Handle<Quote> price, int settlementDays, double faceAmount, Schedule schedule,
-                                   List<double> coupons, DayCounter dayCounter, BusinessDayConvention paymentConvention,
-                                   double redemption, Date issueDate, Calendar paymentCalendar = null,
-			                       Period exCouponPeriod = null, Calendar exCouponCalendar = null,
-                                   BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, bool exCouponEndOfMonth = false,
-                                   bool useCleanPrice = true)
+        public FixedRateBondHelper(Handle<Quote> price, int settlementDays, double faceAmount, Schedule schedule, List<double> coupons, DayCounter dayCounter, BusinessDayConvention paymentConvention, double redemption, Date issueDate, SavedSettings settings, Calendar paymentCalendar = null, Period exCouponPeriod = null, Calendar exCouponCalendar = null, BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, bool exCouponEndOfMonth = false, bool useCleanPrice = true)
             : base(price, new FixedRateBond(settlementDays, faceAmount, schedule,
-                                                 coupons, dayCounter, paymentConvention,
-                                                 redemption, issueDate, paymentCalendar, 
-                                                 exCouponPeriod, exCouponCalendar, exCouponConvention, exCouponEndOfMonth), useCleanPrice)
+                                                 coupons, dayCounter, settings, paymentConvention: paymentConvention,
+                                                 redemption: redemption, issueDate: issueDate, paymentCalendar: paymentCalendar, 
+                                                 exCouponPeriod: exCouponPeriod, exCouponCalendar: exCouponCalendar, exCouponConvention: exCouponConvention, exCouponEndOfMonth: exCouponEndOfMonth), useCleanPrice)
         {
             fixedRateBond_ = bond_ as FixedRateBond;
         }
@@ -109,16 +104,10 @@ namespace QLNet {
         protected CPIBond cpiBond_;
         public CPIBond cpiBond() { return cpiBond_; }
 
-        public CPIBondHelper(Handle<Quote> price, int settlementDays, double faceAmount, bool growthOnly, double baseCPI, 
-                                   Period observationLag, ZeroInflationIndex cpiIndex, InterpolationType observationInterpolation, 
-                                   Schedule schedule, List<double> fixedRate, DayCounter dayCounter, BusinessDayConvention paymentConvention,
-                                   double redemption, Date issueDate, Calendar paymentCalendar = null,
-                                   Period exCouponPeriod = null, Calendar exCouponCalendar = null,
-                                   BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, bool exCouponEndOfMonth = false,
-                                   bool useCleanPrice = true)
+        public CPIBondHelper(Handle<Quote> price, int settlementDays, double faceAmount, bool growthOnly, double baseCPI, Period observationLag, ZeroInflationIndex cpiIndex, InterpolationType observationInterpolation, Schedule schedule, List<double> fixedRate, DayCounter dayCounter, BusinessDayConvention paymentConvention, double redemption, Date issueDate, SavedSettings settings, Calendar paymentCalendar = null, Period exCouponPeriod = null, Calendar exCouponCalendar = null, BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, bool exCouponEndOfMonth = false, bool useCleanPrice = true)
             : base(price, new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI, observationLag, cpiIndex, observationInterpolation, schedule,
-                                      fixedRate, dayCounter, paymentConvention, issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
-                                      exCouponConvention, exCouponEndOfMonth), useCleanPrice)
+                                      fixedRate, dayCounter, settings, paymentConvention: paymentConvention, issueDate: issueDate, paymentCalendar: paymentCalendar, exCouponPeriod: exCouponPeriod, exCouponCalendar: exCouponCalendar,
+                                      exCouponConvention: exCouponConvention, exCouponEndOfMonth: exCouponEndOfMonth), useCleanPrice)
         {
             cpiBond_ = bond_ as CPIBond;
         }

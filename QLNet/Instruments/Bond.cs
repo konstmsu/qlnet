@@ -39,7 +39,7 @@ namespace QLNet
           data, if available.  Therefore, redemptions must not be
           included in the passed cash flows.
       */
-      public Bond(int settlementDays, Calendar calendar, Date issueDate = null, List<CashFlow> coupons = null)
+      public Bond(int settlementDays, Calendar calendar, SavedSettings settings, Date issueDate = null, List<CashFlow> coupons = null)
       {
          settlementDays_ = settlementDays;
          calendar_ = calendar;
@@ -64,6 +64,7 @@ namespace QLNet
          }
 
          Settings.registerWith(update);
+          _settings = settings;
       }
 
       //! old constructor for non amortizing bonds.
@@ -71,8 +72,7 @@ namespace QLNet
                    redemption. No other cash flow can have a date
                    later than the redemption date.
       */
-      public Bond(int settlementDays, Calendar calendar, double faceAmount, Date maturityDate, Date issueDate =null,
-                  List<CashFlow> cashflows = null)
+      public Bond(int settlementDays, Calendar calendar, double faceAmount, Date maturityDate, SavedSettings settings, Date issueDate = null, List<CashFlow> cashflows = null)
       {
          settlementDays_ = settlementDays;
          calendar_ = calendar;
@@ -110,6 +110,7 @@ namespace QLNet
          }
 
          Settings.registerWith(update);
+          _settings = settings;
       }
       #endregion
 
@@ -236,7 +237,7 @@ namespace QLNet
          if (currentNotional == 0.0)
             return 0.0;
 
-         return BondFunctions.yield(this, cleanPrice(), dc, comp, freq,settlementDate(), accuracy, maxEvaluations);
+         return BondFunctions.yield(this, cleanPrice(), dc, comp, freq, _settings, settlementDate(), accuracy: accuracy, maxIterations: maxEvaluations);
       }
 
       //! clean price given a yield and settlement date
@@ -266,7 +267,7 @@ namespace QLNet
          if (currentNotional == 0.0)
             return 0.0;
 
-         return BondFunctions.yield(this, cleanPrice, dc, comp, freq, settlement, accuracy, maxEvaluations);
+         return BondFunctions.yield(this, cleanPrice, dc, comp, freq, _settings, settlement, accuracy: accuracy, maxIterations: maxEvaluations);
       }
 
       //! accrued amount at a given date
@@ -478,7 +479,8 @@ namespace QLNet
       protected List<CashFlow> redemptions_ = new List<CashFlow>(); // the redemptions
       protected Date maturityDate_, issueDate_;
       protected double? settlementValue_;
-      //public double faceAmount() { return notionals_.First(); }
+       SavedSettings _settings;
+       //public double faceAmount() { return notionals_.First(); }
 
       #endregion
 

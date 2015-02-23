@@ -30,15 +30,8 @@ namespace QLNet
       protected DayCounter dayCounter_;
       protected Schedule schedule_;
 
-      public AmortizingFixedRateBond(
-                          int settlementDays,
-                          List<double> notionals,
-                          Schedule schedule,
-                          List<double> coupons,
-                          DayCounter accrualDayCounter,
-                          BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                          Date issueDate = null)
-         :base(settlementDays, schedule.calendar(), issueDate)
+      public AmortizingFixedRateBond(int settlementDays, List<double> notionals, Schedule schedule, List<double> coupons, DayCounter accrualDayCounter, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, Date issueDate = null)
+         :base(settlementDays, schedule.calendar(), settings, issueDate)
       {
          frequency_ = schedule.tenor().frequency();
          dayCounter_ = accrualDayCounter;
@@ -58,18 +51,8 @@ namespace QLNet
             throw new ApplicationException("bond with no cashflows!");
       }
 
-      public AmortizingFixedRateBond(
-                          int settlementDays,
-                          Calendar calendar,
-                          double faceAmount,
-                          Date startDate,
-                          Period bondTenor,
-                          Frequency sinkingFrequency,
-                          double coupon,
-                          DayCounter accrualDayCounter,
-                          BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                          Date issueDate = null)
-         :base(settlementDays, calendar, issueDate)
+      public AmortizingFixedRateBond(int settlementDays, Calendar calendar, double faceAmount, Date startDate, Period bondTenor, Frequency sinkingFrequency, double coupon, DayCounter accrualDayCounter, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, Date issueDate = null)
+         :base(settlementDays, calendar, settings, issueDate)
       {
          frequency_ = sinkingFrequency;
          dayCounter_ = accrualDayCounter;

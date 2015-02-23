@@ -31,24 +31,8 @@ namespace QLNet
      */
     public class CPIBond : Bond
     {
-        public CPIBond(int settlementDays,
-                double faceAmount,
-                bool growthOnly,
-                double baseCPI,
-                Period observationLag,
-                ZeroInflationIndex cpiIndex,
-                InterpolationType observationInterpolation,
-                Schedule schedule,
-                List<double> fixedRate,
-                DayCounter accrualDayCounter,
-                BusinessDayConvention paymentConvention = BusinessDayConvention.ModifiedFollowing,
-                Date issueDate = null,
-                Calendar paymentCalendar = null,
-                Period exCouponPeriod = null,
-                Calendar exCouponCalendar = null,
-					 BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted,
-                bool exCouponEndOfMonth = false)                
-            :base(settlementDays, paymentCalendar == null ? schedule.calendar() : paymentCalendar, issueDate)
+        public CPIBond(int settlementDays, double faceAmount, bool growthOnly, double baseCPI, Period observationLag, ZeroInflationIndex cpiIndex, InterpolationType observationInterpolation, Schedule schedule, List<double> fixedRate, DayCounter accrualDayCounter, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.ModifiedFollowing, Date issueDate = null, Calendar paymentCalendar = null, Period exCouponPeriod = null, Calendar exCouponCalendar = null, BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, bool exCouponEndOfMonth = false)                
+            :base(settlementDays, paymentCalendar == null ? schedule.calendar() : paymentCalendar, settings, issueDate)
         {
             frequency_ = schedule.tenor().frequency();
             dayCounter_ = accrualDayCounter;

@@ -33,15 +33,10 @@ namespace QLNet
  
 
       //! simple annual compounding coupon rates      
-      public FixedRateBond(int settlementDays, double faceAmount, Schedule schedule,List<double> coupons, 
-                           DayCounter accrualDayCounter, BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                           double redemption = 100, Date issueDate = null,Calendar paymentCalendar = null,
-			                  Period exCouponPeriod = null,
-                           Calendar exCouponCalendar = null,
-									BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted,
-                           bool exCouponEndOfMonth = false)
-         : base(settlementDays, paymentCalendar == null ? schedule.calendar() : paymentCalendar, 
-                issueDate) 
+      public FixedRateBond(int settlementDays, double faceAmount, Schedule schedule, List<double> coupons, DayCounter accrualDayCounter, SavedSettings settings, 
+          BusinessDayConvention paymentConvention = BusinessDayConvention.Following, double redemption = 100, Date issueDate = null, Calendar paymentCalendar = null,
+          Period exCouponPeriod = null, Calendar exCouponCalendar = null, BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, bool exCouponEndOfMonth = false)
+         : base(settlementDays, paymentCalendar == null ? schedule.calendar() : paymentCalendar, settings, issueDate) 
       {
          frequency_ = schedule.tenor().frequency();
          dayCounter_ = accrualDayCounter;
@@ -68,28 +63,12 @@ namespace QLNet
       
       /*! simple annual compounding coupon rates
           with internal schedule calculation */
-      public FixedRateBond(int settlementDays, 
-                           Calendar calendar,
-                           double faceAmount,
-                           Date startDate,
-                           Date maturityDate,
-                           Period tenor,
-                           List<double> coupons,
-                           DayCounter accrualDayCounter,
-                           BusinessDayConvention accrualConvention = BusinessDayConvention.Following,
-                           BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                           double redemption = 100,
-                           Date issueDate = null,
-                           Date stubDate = null,
-                           DateGeneration.Rule rule = DateGeneration.Rule.Backward,
-                           bool endOfMonth = false,
-                           Calendar paymentCalendar = null,
-									Period exCouponPeriod = null,
-                           Calendar exCouponCalendar = null,
-									BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted,
-                           bool exCouponEndOfMonth = false)
-         : base(settlementDays, paymentCalendar == null ? calendar : paymentCalendar, 
-                issueDate) 
+      public FixedRateBond(int settlementDays, Calendar calendar, double faceAmount, Date startDate, Date maturityDate, Period tenor, List<double> coupons, DayCounter accrualDayCounter, 
+          SavedSettings settings, BusinessDayConvention accrualConvention = BusinessDayConvention.Following, BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
+          double redemption = 100, Date issueDate = null, Date stubDate = null, DateGeneration.Rule rule = DateGeneration.Rule.Backward, bool endOfMonth = false,
+          Calendar paymentCalendar = null, Period exCouponPeriod = null, Calendar exCouponCalendar = null, BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, 
+          bool exCouponEndOfMonth = false)
+         : base(settlementDays, paymentCalendar == null ? calendar : paymentCalendar, settings, issueDate) 
       {
 
          frequency_ = tenor.frequency();
@@ -148,21 +127,11 @@ namespace QLNet
             throw new ApplicationException("multiple redemptions created");
       }
 
-      public FixedRateBond(int settlementDays,
-                           double faceAmount,
-                           Schedule schedule,
-                           List<InterestRate> coupons,
-                           BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                           double redemption = 100,
-                           Date issueDate = null,
-                           Calendar paymentCalendar = null,
-			                  Period exCouponPeriod = null,
-									Calendar exCouponCalendar = null,
-									BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted,
-									bool exCouponEndOfMonth = false)
+      public FixedRateBond(int settlementDays, double faceAmount, Schedule schedule, List<InterestRate> coupons, SavedSettings settings, 
+          BusinessDayConvention paymentConvention = BusinessDayConvention.Following, double redemption = 100, Date issueDate = null, Calendar paymentCalendar = null, 
+          Period exCouponPeriod = null, Calendar exCouponCalendar = null, BusinessDayConvention exCouponConvention = BusinessDayConvention.Unadjusted, bool exCouponEndOfMonth = false)
 
-         : base(settlementDays,paymentCalendar == null ? schedule.calendar() : paymentCalendar,
-                issueDate)
+         : base(settlementDays,paymentCalendar == null ? schedule.calendar() : paymentCalendar, settings, issueDate)
       {
       
          frequency_ = schedule.tenor().frequency();

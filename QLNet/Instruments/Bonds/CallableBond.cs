@@ -109,12 +109,8 @@ namespace QLNet
          base.setupArguments(args);
       }
 
-      protected CallableBond( int settlementDays,
-                              Schedule schedule,
-                              DayCounter paymentDayCounter,
-                              Date issueDate = null,
-                              CallabilitySchedule putCallSchedule = null)
-         : base(settlementDays, schedule.calendar(), issueDate)
+      protected CallableBond(int settlementDays, Schedule schedule, DayCounter paymentDayCounter, SavedSettings settings, Date issueDate = null, CallabilitySchedule putCallSchedule = null)
+         : base(settlementDays, schedule.calendar(), settings, issueDate)
       {
          if (putCallSchedule == null)
             putCallSchedule = new CallabilitySchedule();
@@ -191,11 +187,12 @@ namespace QLNet
                                     Schedule schedule,
                                     List<double> coupons,
                                     DayCounter accrualDayCounter,
+                                    SavedSettings settings,
                                     BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
                                     double redemption = 100.0,
                                     Date issueDate = null,
                                     CallabilitySchedule putCallSchedule = null)
-         :base(settlementDays, schedule, accrualDayCounter, issueDate, putCallSchedule)
+         :base(settlementDays, schedule, accrualDayCounter, settings, issueDate, putCallSchedule)
       {
          
          if ( putCallSchedule == null )
@@ -223,7 +220,7 @@ namespace QLNet
         // used for impliedVolatility() calculation
         SimpleQuote dummyVolQuote = new SimpleQuote(0.0);
         blackVolQuote_.linkTo(dummyVolQuote);
-        blackEngine_ = new BlackCallableFixedRateBondEngine(blackVolQuote_, blackDiscountCurve_);
+        blackEngine_ = new BlackCallableFixedRateBondEngine(blackVolQuote_, blackDiscountCurve_, settings);
       }
 
       public override void setupArguments(IPricingEngineArguments args)
@@ -322,15 +319,7 @@ namespace QLNet
    */
    public class CallableZeroCouponBond : CallableFixedRateBond
    {
-      public CallableZeroCouponBond(int settlementDays,
-                                    double faceAmount,
-                                    Calendar calendar,
-                                    Date maturityDate,
-                                    DayCounter dayCounter,
-                                    BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                                    double redemption = 100.0,
-                                    Date issueDate = null,
-                                    CallabilitySchedule putCallSchedule = null)
+      public CallableZeroCouponBond(int settlementDays, double faceAmount, Calendar calendar, Date maturityDate, DayCounter dayCounter, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, double redemption = 100.0, Date issueDate = null, CallabilitySchedule putCallSchedule = null)
          :base(settlementDays,faceAmount, new Schedule(issueDate, maturityDate,
                                                        new Period(Frequency.Once),
                                                        calendar,
@@ -338,7 +327,7 @@ namespace QLNet
                                                        paymentConvention,
                                                        DateGeneration.Rule.Backward,
                                                        false), 
-               new List<double>(){0.0}, dayCounter, paymentConvention, redemption, issueDate, putCallSchedule)
+               new List<double>(){0.0}, dayCounter, settings, paymentConvention, redemption, issueDate, putCallSchedule)
       {
          if (putCallSchedule == null)
             putCallSchedule = new CallabilitySchedule();

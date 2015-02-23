@@ -18,20 +18,8 @@ namespace QLNet
       //{
       //}
 
-      public MBSFixedRateBond(int settlementDays,
-                               Calendar calendar,
-                               double faceAmount,
-                               Date startDate,
-                               Period bondTenor,
-                               Period originalLength,
-                               Frequency sinkingFrequency,
-                               double WACRate,
-                               double PassThroughRate,
-                               DayCounter accrualDayCounter,
-                               PSACurve psaCurve,
-                               BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                               Date issueDate = null)
-         : base(settlementDays, calendar, faceAmount, startDate, bondTenor, sinkingFrequency, WACRate, accrualDayCounter, paymentConvention, issueDate)
+      public MBSFixedRateBond(int settlementDays, Calendar calendar, double faceAmount, Date startDate, Period bondTenor, Period originalLength, Frequency sinkingFrequency, double WACRate, double PassThroughRate, DayCounter accrualDayCounter, PSACurve psaCurve, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, Date issueDate = null)
+         : base(settlementDays, calendar, faceAmount, startDate, bondTenor, sinkingFrequency, WACRate, accrualDayCounter, settings, paymentConvention, issueDate)
       {
          psaCurve_ = psaCurve;
          originalLength_ = originalLength;

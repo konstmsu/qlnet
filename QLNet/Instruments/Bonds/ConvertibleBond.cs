@@ -205,16 +205,8 @@ namespace QLNet
       public CallabilitySchedule callability()  { return callability_; }
       public Handle<Quote> creditSpread()  { return creditSpread_; }
       
-      protected ConvertibleBond( Exercise exercise,
-                                 double conversionRatio,
-                                 DividendSchedule dividends,
-                                 CallabilitySchedule callability,
-                                 Handle<Quote> creditSpread,
-                                 Date issueDate,
-                                 int settlementDays,
-                                 Schedule schedule,
-                                 double redemption)
-         : base(settlementDays, schedule.calendar(), issueDate)
+      protected ConvertibleBond(Exercise exercise, double conversionRatio, DividendSchedule dividends, CallabilitySchedule callability, Handle<Quote> creditSpread, Date issueDate, int settlementDays, Schedule schedule, double redemption, SavedSettings settings)
+         : base(settlementDays, schedule.calendar(), settings, issueDate)
       {
          conversionRatio_ = conversionRatio;
          callability_ = callability;
@@ -256,17 +248,8 @@ namespace QLNet
    */
    public class ConvertibleZeroCouponBond : ConvertibleBond 
    {
-      public ConvertibleZeroCouponBond(Exercise exercise,
-                                        double conversionRatio,
-                                        DividendSchedule dividends,
-                                        CallabilitySchedule callability,
-                                        Handle<Quote> creditSpread,
-                                        Date issueDate,
-                                        int settlementDays,
-                                        DayCounter dayCounter,
-                                        Schedule schedule,
-                                        double redemption = 100)
-         : base(exercise, conversionRatio, dividends, callability, creditSpread, issueDate, settlementDays,schedule, redemption) 
+      public ConvertibleZeroCouponBond(Exercise exercise, double conversionRatio, DividendSchedule dividends, CallabilitySchedule callability, Handle<Quote> creditSpread, Date issueDate, int settlementDays, DayCounter dayCounter, Schedule schedule, SavedSettings settings, double redemption = 100)
+         : base(exercise, conversionRatio, dividends, callability, creditSpread, issueDate, settlementDays,schedule, redemption, settings) 
       {
 
          cashflows_ = new List<CashFlow>();
@@ -287,18 +270,8 @@ namespace QLNet
     */
    public class ConvertibleFixedCouponBond : ConvertibleBond 
    {
-      public ConvertibleFixedCouponBond( Exercise exercise,
-                                         double conversionRatio,
-                                         DividendSchedule dividends,
-                                         CallabilitySchedule callability,
-                                         Handle<Quote> creditSpread,
-                                         Date issueDate,
-                                         int settlementDays,
-                                         List<double> coupons,
-                                         DayCounter dayCounter,
-                                         Schedule schedule,
-                                         double redemption = 100)
-         : base(exercise, conversionRatio, dividends, callability, creditSpread, issueDate, settlementDays, schedule, redemption) 
+      public ConvertibleFixedCouponBond(Exercise exercise, double conversionRatio, DividendSchedule dividends, CallabilitySchedule callability, Handle<Quote> creditSpread, Date issueDate, int settlementDays, List<double> coupons, DayCounter dayCounter, Schedule schedule, SavedSettings settings, double redemption = 100)
+         : base(exercise, conversionRatio, dividends, callability, creditSpread, issueDate, settlementDays, schedule, redemption, settings) 
       {
 
         // !!! notional forcibly set to 100
@@ -324,20 +297,8 @@ namespace QLNet
     */
     public class ConvertibleFloatingRateBond : ConvertibleBond 
     {
-      public ConvertibleFloatingRateBond( Exercise exercise,
-                                          double conversionRatio,
-                                          DividendSchedule dividends,
-                                          CallabilitySchedule callability,
-                                          Handle<Quote> creditSpread,
-                                          Date issueDate,
-                                          int settlementDays,
-                                          IborIndex index,
-                                          int fixingDays,
-                                          List<double> spreads,
-                                          DayCounter dayCounter,
-                                          Schedule schedule,
-                                          double redemption = 100)
-         : base(exercise, conversionRatio, dividends, callability, creditSpread, issueDate, settlementDays, schedule, redemption) 
+      public ConvertibleFloatingRateBond(Exercise exercise, double conversionRatio, DividendSchedule dividends, CallabilitySchedule callability, Handle<Quote> creditSpread, Date issueDate, int settlementDays, IborIndex index, int fixingDays, List<double> spreads, DayCounter dayCounter, Schedule schedule, SavedSettings settings, double redemption = 100)
+         : base(exercise, conversionRatio, dividends, callability, creditSpread, issueDate, settlementDays, schedule, redemption, settings) 
 
       {
         // !!! notional forcibly set to 100

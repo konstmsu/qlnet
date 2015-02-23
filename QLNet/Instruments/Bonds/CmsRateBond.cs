@@ -23,21 +23,8 @@ namespace QLNet
 {
     public class CmsRateBond : Bond
     {
-         public CmsRateBond(int settlementDays,
-                            double faceAmount,
-                            Schedule schedule,
-                            SwapIndex index,
-                            DayCounter paymentDayCounter,
-                            BusinessDayConvention paymentConvention = BusinessDayConvention.Following,
-                            int fixingDays = 0,
-                            List<double> gearings = null,
-                            List<double> spreads = null,
-                            List<double> caps = null,
-                            List<double> floors = null,
-                            bool inArrears = false,
-                            double redemption = 100.0,
-                            Date issueDate = null)
-             : base(settlementDays, schedule.calendar(), issueDate) 
+         public CmsRateBond(int settlementDays, double faceAmount, Schedule schedule, SwapIndex index, DayCounter paymentDayCounter, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, int fixingDays = 0, List<double> gearings = null, List<double> spreads = null, List<double> caps = null, List<double> floors = null, bool inArrears = false, double redemption = 100.0, Date issueDate = null)
+             : base(settlementDays, schedule.calendar(), settings, issueDate) 
          {
              // Optional value check
              if ( gearings == null ) gearings = new List<double>(){1};

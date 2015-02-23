@@ -73,13 +73,13 @@ namespace QLNet
          return result;
         }
       public static double simpleDuration(Leg leg,InterestRate y, bool includeSettlementDateFlows,
-                                          Date settlementDate,Date npvDate) 
+                                          Date settlementDate,Date npvDate, SavedSettings settings) 
       {
          if (leg.empty())                
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -136,13 +136,13 @@ namespace QLNet
          return dPdy/P;
       }
       public static double modifiedDuration(Leg leg,InterestRate y, bool includeSettlementDateFlows,
-                                            Date settlementDate,Date npvDate) 
+                                            Date settlementDate,Date npvDate,SavedSettings settings) 
       {
          if (leg.empty())
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -221,13 +221,12 @@ namespace QLNet
          return -dPdy/P; // reverse derivative sign
       }
 
-      public static double macaulayDuration(Leg leg,InterestRate y, bool includeSettlementDateFlows,
-                                            Date settlementDate, Date npvDate) 
+      public static double macaulayDuration(Leg leg, InterestRate y, bool includeSettlementDateFlows, Date settlementDate, Date npvDate, SavedSettings settings) 
       {
          Utils.QL_REQUIRE( y.compounding() == Compounding.Compounded, () => "compounded rate required" );
 
          return (1.0+y.rate()/(int)y.frequency()) *
-               modifiedDuration(leg, y, includeSettlementDateFlows, settlementDate, npvDate);
+               modifiedDuration(leg, y, includeSettlementDateFlows, settlementDate, npvDate, settings);
       }
 
       #endregion
@@ -243,9 +242,10 @@ namespace QLNet
          private Frequency frequency_;
          private bool includeSettlementDateFlows_;
          private Date settlementDate_, npvDate_;
+          SavedSettings settings_;
 
-         public IrrFinder(Leg leg, double npv,DayCounter dayCounter,Compounding comp,Frequency freq,
-                          bool includeSettlementDateFlows,Date settlementDate,Date npvDate)
+          public IrrFinder(Leg leg, double npv,DayCounter dayCounter,Compounding comp,Frequency freq,
+                          bool includeSettlementDateFlows,Date settlementDate,Date npvDate, SavedSettings settings)
          {
             leg_ = leg; 
             npv_ = npv;
@@ -255,8 +255,9 @@ namespace QLNet
             includeSettlementDateFlows_ = includeSettlementDateFlows;
             settlementDate_=settlementDate;
             npvDate_=npvDate;
+              settings_ = settings;
 
-            if (settlementDate == null)
+              if (settlementDate == null)
                settlementDate = Settings.evaluationDate();
 
             if (npvDate == null)
@@ -275,7 +276,7 @@ namespace QLNet
          public override double derivative(double y) 
          {
             InterestRate yield = new InterestRate(y, dayCounter_, compounding_, frequency_);
-                return modifiedDuration(leg_, yield,includeSettlementDateFlows_,settlementDate_, npvDate_);
+                return modifiedDuration(leg_, yield,includeSettlementDateFlows_,settlementDate_, npvDate_, settings_);
          }
 
          private void checkSign() 
@@ -313,7 +314,7 @@ namespace QLNet
          private Date settlementDate_, npvDate_;
 
          public ZSpreadFinder(Leg leg,YieldTermStructure discountCurve,double npv,DayCounter dc,Compounding comp,Frequency freq,
-                              bool includeSettlementDateFlows, Date settlementDate, Date npvDate)
+                              bool includeSettlementDateFlows, Date settlementDate, Date npvDate, SavedSettings settings)
          {
             leg_ = leg;
             npv_ = npv;
@@ -325,7 +326,7 @@ namespace QLNet
             npvDate_ = npvDate;
 
             if (settlementDate == null)
-               settlementDate = Settings.evaluationDate();
+               settlementDate = settings.evaluationDate();
 
             if (npvDate == null)
                npvDate = settlementDate;
@@ -934,16 +935,14 @@ namespace QLNet
       // The function verifies
       // the theoretical existance of an IRR and numerically
       // establishes the IRR to the desired precision.
-      public static double yield(Leg leg, double npv, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                                 bool includeSettlementDateFlows, Date settlementDate = null, Date npvDate = null,
-                                 double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.05)
+      public static double yield(Leg leg, double npv, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.05)
       {
         NewtonSafe solver = new NewtonSafe();
         solver.setMaxEvaluations(maxIterations);
         IrrFinder objFunction = new IrrFinder(leg, npv,
                               dayCounter, compounding, frequency,
                               includeSettlementDateFlows,
-                              settlementDate, npvDate);
+                              settlementDate, npvDate, settings);
         return solver.solve(objFunction, accuracy, guess, guess/10.0);
       }
 
@@ -969,7 +968,7 @@ namespace QLNet
          where \f$ y \f$ is the IRR and \f$ N \f$ is the number of cash flows per year.
    
       */
-      public static double duration(Leg leg, InterestRate rate, Duration.Type type, bool includeSettlementDateFlows,
+      public static double duration(Leg leg, InterestRate rate, Duration.Type type, bool includeSettlementDateFlows, SavedSettings settings,
                                     Date settlementDate = null, Date npvDate = null)
       {
          if (leg.empty())
@@ -984,11 +983,11 @@ namespace QLNet
         switch (type) 
         {
             case Duration.Type.Simple:
-               return simpleDuration(leg, rate, includeSettlementDateFlows, settlementDate, npvDate);
+               return simpleDuration(leg, rate, includeSettlementDateFlows, settlementDate, npvDate, settings);
             case Duration.Type.Modified:
-               return modifiedDuration(leg, rate, includeSettlementDateFlows, settlementDate, npvDate);
+               return modifiedDuration(leg, rate, includeSettlementDateFlows, settlementDate, npvDate, settings);
             case Duration.Type.Macaulay:
-               return macaulayDuration(leg, rate, includeSettlementDateFlows, settlementDate, npvDate);
+               return macaulayDuration(leg, rate, includeSettlementDateFlows, settlementDate, npvDate, settings);
             default:
                Utils.QL_FAIL("unknown duration type");
                break;
@@ -996,12 +995,11 @@ namespace QLNet
          return 0.0;
       }
 
-      public static double duration(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                                    Duration.Type type, bool includeSettlementDateFlows, Date settlementDate = null,
-                                    Date npvDate = null)
+      public static double duration(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, Duration.Type type, bool includeSettlementDateFlows, 
+          SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          return duration(leg, new InterestRate(yield, dayCounter, compounding, frequency),
-                         type, includeSettlementDateFlows,   settlementDate, npvDate);
+                         type, includeSettlementDateFlows, settings,  settlementDate, npvDate);
       }
 
       //! Cash-flow convexity
@@ -1113,8 +1111,7 @@ namespace QLNet
       /*! Obtained by setting dy = 0.0001 in the 2nd-order Taylor
           series expansion.
       */
-      public static double basisPointValue(Leg leg,InterestRate yield,bool includeSettlementDateFlows,
-                                           Date settlementDate = null,Date npvDate = null)
+      public static double basisPointValue(Leg leg, InterestRate yield, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          if (leg.empty())
             return 0.0;
@@ -1127,7 +1124,7 @@ namespace QLNet
 
          double npv = CashFlows.npv(leg, yield,includeSettlementDateFlows,settlementDate, npvDate);
          double modifiedDuration = CashFlows.duration(leg, yield, Duration.Type.Modified,includeSettlementDateFlows,
-                                                      settlementDate, npvDate);
+                                                      settings, settlementDate, npvDate);
          double convexity = CashFlows.convexity(leg, yield, includeSettlementDateFlows, settlementDate, npvDate);
          double delta = -modifiedDuration*npv;
          double gamma = (convexity/100.0)*npv;
@@ -1138,11 +1135,10 @@ namespace QLNet
 
          return delta + 0.5*gamma;
       }
-      public static double basisPointValue(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                                           bool includeSettlementDateFlows, Date settlementDate = null, Date npvDate = null)
+      public static double basisPointValue(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          return basisPointValue(leg, new InterestRate(yield, dayCounter, compounding, frequency),
-                                includeSettlementDateFlows, settlementDate, npvDate);
+                                includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
       }
       
       //! Yield value of a basis point
@@ -1150,8 +1146,7 @@ namespace QLNet
           the derivative of the yield with respect to the price
           multiplied by 0.01
       */
-      public static double yieldValueBasisPoint(Leg leg, InterestRate yield, bool includeSettlementDateFlows,
-                                                Date settlementDate = null, Date npvDate = null)
+      public static double yieldValueBasisPoint(Leg leg, InterestRate yield, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          if (leg.empty())
             return 0.0;
@@ -1164,18 +1159,16 @@ namespace QLNet
 
          double npv = CashFlows.npv(leg, yield, includeSettlementDateFlows, settlementDate, npvDate);
          double modifiedDuration = CashFlows.duration(leg, yield, Duration.Type.Modified, includeSettlementDateFlows,
-                                                      settlementDate, npvDate);
+                                                      settings, settlementDate, npvDate);
 
          double shift = 0.01;
          return (1.0/(-npv*modifiedDuration))*shift;
       }
 
-      public static double yieldValueBasisPoint(Leg leg, double yield, DayCounter dayCounter, Compounding compounding,
-                                                Frequency frequency, bool includeSettlementDateFlows, Date settlementDate = null,
-                                                Date npvDate = null)
+      public static double yieldValueBasisPoint(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          return yieldValueBasisPoint(leg, new InterestRate(yield, dayCounter, compounding, frequency),
-                                     includeSettlementDateFlows, settlementDate, npvDate);
+                                     includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
       }
       #endregion
 
@@ -1210,9 +1203,7 @@ namespace QLNet
          return npv(leg, spreadedCurve, includeSettlementDateFlows, settlementDate, npvDate);
       }
       //! implied Z-spread.
-      public static double zSpread(Leg leg, double npv, YieldTermStructure discount, DayCounter dayCounter, Compounding compounding,
-                                   Frequency frequency, bool includeSettlementDateFlows, Date settlementDate = null,
-                                   Date npvDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.0)
+      public static double zSpread(Leg leg, double npv, YieldTermStructure discount, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.0)
       {
          if (settlementDate == null)
             settlementDate = Settings.evaluationDate();
@@ -1223,19 +1214,16 @@ namespace QLNet
          Brent solver = new Brent();
          solver.setMaxEvaluations(maxIterations);
          ZSpreadFinder objFunction = new ZSpreadFinder(leg,discount,npv,dayCounter, compounding, frequency, 
-            includeSettlementDateFlows, settlementDate, npvDate);
+            includeSettlementDateFlows, settlementDate, npvDate, settings);
          double step = 0.01;
          return solver.solve(objFunction, accuracy, guess, step);
       }
       //! deprecated implied Z-spread.
-      public static double zSpread(Leg leg, YieldTermStructure d, double npv, DayCounter dayCounter, Compounding compounding,
-                                   Frequency frequency, bool includeSettlementDateFlows, Date settlementDate = null,
-                                   Date npvDate = null, double accuracy = 1.0e-10, int maxIterations = 100,
-                                   double guess = 0.0)
+      public static double zSpread(Leg leg, YieldTermStructure d, double npv, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.0)
       {
          return zSpread(leg, npv, d, dayCounter, compounding, frequency,
-                        includeSettlementDateFlows, settlementDate, npvDate,
-                        accuracy, maxIterations, guess);
+                        includeSettlementDateFlows, settlementDate: settlementDate, npvDate: npvDate,
+                        accuracy: accuracy, maxIterations: maxIterations, guess: guess, settings: settings);
       }
       #endregion
    }

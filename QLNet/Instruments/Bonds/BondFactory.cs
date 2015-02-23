@@ -26,16 +26,7 @@ namespace QLNet
 {
    public class BondFactory
    {
-      public static AmortizingBond makeAmortizingBond(double FaceValue,
-                                                      double MarketValue,
-                                                      double CouponRate,
-                                                      Date IssueDate,
-                                                      Date MaturityDate,
-                                                      Date TradeDate,
-                                                      Frequency payFrequency,
-                                                      DayCounter dCounter,
-                                                      AmortizingMethod Method,
-                                                      double gYield=0)
+      public static AmortizingBond makeAmortizingBond(double FaceValue, double MarketValue, double CouponRate, Date IssueDate, Date MaturityDate, Date TradeDate, Frequency payFrequency, DayCounter dCounter, AmortizingMethod Method, SavedSettings settings, double gYield = 0)
       {
          return new AmortizingBond(FaceValue,
                                    MarketValue,
@@ -46,28 +37,17 @@ namespace QLNet
                                    payFrequency,
                                    dCounter,
                                    Method,
-                                   new NullCalendar(),gYield);
+                                   new NullCalendar(), settings, gYield);
       }
 
 
-       public static AmortizingFixedRateBond makeAmortizingFixedBond( Date startDate, 
-                                                                     Period bondLength, 
-                                                                     DayCounter dCounter, 
-                                                                     Frequency payFrequency, 
-                                                                     double amount, 
-                                                                     double rate)
+       public static AmortizingFixedRateBond makeAmortizingFixedBond(Date startDate, Period bondLength, DayCounter dCounter, Frequency payFrequency, double amount, double rate, SavedSettings settings)
        {
-          return makeAmortizingFixedBond(startDate, bondLength, dCounter, payFrequency, amount, rate, new TARGET());
+          return makeAmortizingFixedBond(startDate, bondLength, dCounter, payFrequency, amount, rate, new TARGET(), settings);
        }
           
 
-      public static AmortizingFixedRateBond makeAmortizingFixedBond( Date startDate, 
-                                                                     Period bondLength, 
-                                                                     DayCounter dCounter, 
-                                                                     Frequency payFrequency, 
-                                                                     double amount, 
-                                                                     double rate,
-                                                                     Calendar calendar)
+      public static AmortizingFixedRateBond makeAmortizingFixedBond(Date startDate, Period bondLength, DayCounter dCounter, Frequency payFrequency, double amount, double rate, Calendar calendar, SavedSettings settings)
       {
          AmortizingFixedRateBond bond;
          Date endDate = calendar.advance(startDate,bondLength);
@@ -75,36 +55,19 @@ namespace QLNet
          Schedule schedule = new Schedule(startDate,endDate,bondLength,calendar,BusinessDayConvention.Unadjusted,
                                           BusinessDayConvention.Unadjusted,DateGeneration.Rule.Backward,false);
 
-         bond = new AmortizingFixedRateBond(0, calendar, amount, startDate, bondLength, payFrequency, rate, dCounter);
+         bond = new AmortizingFixedRateBond(0, calendar, amount, startDate, bondLength, payFrequency, rate, dCounter, settings);
 
          return bond;
 
       }
 
-      public static MBSFixedRateBond makeMBSFixedBond(Date startDate,
-                                                             Period bondLength,
-                                                             Period originalLength,
-                                                             DayCounter dCounter,
-                                                             Frequency payFrequency,
-                                                             double amount,
-                                                             double WACRate,
-                                                             double PassThroughRate,
-                                                             PSACurve psaCurve)
+      public static MBSFixedRateBond makeMBSFixedBond(Date startDate, Period bondLength, Period originalLength, DayCounter dCounter, Frequency payFrequency, double amount, double WACRate, double PassThroughRate, PSACurve psaCurve, SavedSettings settings)
       {
-         return makeMBSFixedBond(startDate, bondLength, originalLength , dCounter, payFrequency, amount, WACRate, PassThroughRate, psaCurve, new TARGET());
+         return makeMBSFixedBond(startDate, bondLength, originalLength , dCounter, payFrequency, amount, WACRate, PassThroughRate, psaCurve, new TARGET(), settings);
       }
 
 
-      public static MBSFixedRateBond makeMBSFixedBond(Date startDate,
-                                                      Period bondLength,
-                                                      Period originalLength,
-                                                      DayCounter dCounter,
-                                                      Frequency payFrequency,
-                                                      double amount,
-                                                      double WACrate,
-                                                      double PassThroughRate,
-                                                      PSACurve psaCurve,
-                                                      Calendar calendar)
+      public static MBSFixedRateBond makeMBSFixedBond(Date startDate, Period bondLength, Period originalLength, DayCounter dCounter, Frequency payFrequency, double amount, double WACrate, double PassThroughRate, PSACurve psaCurve, Calendar calendar, SavedSettings settings)
       {
          MBSFixedRateBond bond;
          Date endDate = calendar.advance(startDate, bondLength);
@@ -112,7 +75,7 @@ namespace QLNet
          Schedule schedule = new Schedule(startDate, endDate, bondLength, calendar, BusinessDayConvention.Unadjusted,
                                           BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false);
 
-         bond = new MBSFixedRateBond(0, calendar, amount, startDate, bondLength, originalLength , payFrequency, WACrate, PassThroughRate, dCounter, psaCurve);
+         bond = new MBSFixedRateBond(0, calendar, amount, startDate, bondLength, originalLength , payFrequency, WACrate, PassThroughRate, dCounter, psaCurve, settings);
 
          return bond;
 

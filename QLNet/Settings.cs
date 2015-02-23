@@ -91,7 +91,13 @@ namespace QLNet {
         private bool includeReferenceDateEvents_;
         private bool? includeTodaysCashFlows_;
 
-        public SavedSettings() {
+        public Date evaluationDate()
+        {
+            return evaluationDate_;
+        }
+        
+        public SavedSettings()
+        {
             evaluationDate_ = Settings.evaluationDate();
             enforcesTodaysHistoricFixings_ = Settings.enforcesTodaysHistoricFixings;
             includeReferenceDateEvents_ = Settings.includeReferenceDateEvents;

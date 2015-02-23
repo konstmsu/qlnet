@@ -124,7 +124,7 @@ namespace TestSuite {
             // IndexHistoryCleaner cleaner;
 
             // setup
-            public CommonVars() {
+            public CommonVars(SavedSettings settings) {
 
                 //cleaner = new IndexHistoryCleaner();
                 ////GC.Collect();
@@ -217,7 +217,7 @@ namespace TestSuite {
                     schedules.Add(new Schedule(issue, maturity, new Period(bondData[i].frequency), calendar,
                                                bondConvention, bondConvention, DateGeneration.Rule.Backward, false));
                     bondHelpers.Add(new FixedRateBondHelper(p, bondSettlementDays, bondRedemption, schedules[i],
-                                                coupons, bondDayCounter, bondConvention, bondRedemption, issue));
+                                                coupons, bondDayCounter, bondConvention, bondRedemption, issue, settings));
                 }
             }
         }
@@ -226,7 +226,8 @@ namespace TestSuite {
         public void testLogCubicDiscountConsistency() {
             // "Testing consistency of piecewise-log-cubic discount curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings=new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
 				testCurveConsistency<Discount, LogCubic, IterativeBootstrapForYield>( vars,
                         new LogCubic(CubicInterpolation.DerivativeApprox.Spline, true,
@@ -242,7 +243,8 @@ namespace TestSuite {
         public void testLogLinearDiscountConsistency() {
             // "Testing consistency of piecewise-log-linear discount curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
 				testCurveConsistency<Discount, LogLinear, IterativeBootstrapForYield>( vars );
 				testBMACurveConsistency<Discount, LogLinear, IterativeBootstrapForYield>( vars );
@@ -252,7 +254,8 @@ namespace TestSuite {
         public void testLinearDiscountConsistency() {
             // "Testing consistency of piecewise-linear discount curve..."
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
 				testCurveConsistency<Discount, Linear, IterativeBootstrapForYield>( vars );
 				testBMACurveConsistency<Discount, Linear, IterativeBootstrapForYield>( vars );
@@ -267,7 +270,8 @@ namespace TestSuite {
 				return;
 			  else
 			  {
-            CommonVars vars = new CommonVars();
+                  SavedSettings settings = new SavedSettings();
+                  CommonVars vars = new CommonVars(settings);
 	
 				testCurveConsistency<ZeroYield, LogLinear, IterativeBootstrapForYield>( vars );
 				testBMACurveConsistency<ZeroYield, LogLinear, IterativeBootstrapForYield>( vars );
@@ -278,7 +282,8 @@ namespace TestSuite {
         public void testLinearZeroConsistency() {
             // "Testing consistency of piecewise-linear zero-yield curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
 				testCurveConsistency<ZeroYield, Linear, IterativeBootstrapForYield>( vars );
 				testBMACurveConsistency<ZeroYield, Linear, IterativeBootstrapForYield>( vars );
@@ -289,7 +294,8 @@ namespace TestSuite {
 
             //"Testing consistency of piecewise-cubic zero-yield curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
 				testCurveConsistency<ZeroYield, Cubic, IterativeBootstrapForYield>(
                            vars,
@@ -307,7 +313,8 @@ namespace TestSuite {
         public void testLinearForwardConsistency() {
             // "Testing consistency of piecewise-linear forward-rate curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
 				testCurveConsistency<ForwardRate, Linear, IterativeBootstrapForYield>( vars );
 				testBMACurveConsistency<ForwardRate, Linear, IterativeBootstrapForYield>( vars );
@@ -318,7 +325,8 @@ namespace TestSuite {
 
             //"Testing consistency of piecewise-flat forward-rate curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
 				testCurveConsistency<ForwardRate, BackwardFlat, IterativeBootstrapForYield>( vars );
 				testBMACurveConsistency<ForwardRate, BackwardFlat, IterativeBootstrapForYield>( vars );
@@ -329,7 +337,8 @@ namespace TestSuite {
 
             //"Testing consistency of piecewise-cubic forward-rate curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
 				testCurveConsistency<ForwardRate, Cubic, IterativeBootstrapForYield>(
                            vars,
@@ -347,7 +356,8 @@ namespace TestSuite {
         public void testConvexMonotoneForwardConsistency() {
             //"Testing consistency of convex monotone forward-rate curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
 				testCurveConsistency<ForwardRate, ConvexMonotone, IterativeBootstrapForYield>( vars );
             testBMACurveConsistency<ForwardRate,ConvexMonotone,IterativeBootstrapForYield>(vars);
@@ -357,8 +367,9 @@ namespace TestSuite {
         public void testLocalBootstrapConsistency() {
             //"Testing consistency of local-bootstrap algorithm...");
 
-            CommonVars vars = new CommonVars();
-				testCurveConsistency<ForwardRate, ConvexMonotone, LocalBootstrapForYield>( vars, new ConvexMonotone(), 1.0e-7 );
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
+            testCurveConsistency<ForwardRate, ConvexMonotone, LocalBootstrapForYield>(vars, new ConvexMonotone(), 1.0e-7);
 				testBMACurveConsistency<ForwardRate, ConvexMonotone, LocalBootstrapForYield>( vars, new ConvexMonotone(), 1.0e-9 );
         }
 
@@ -366,7 +377,8 @@ namespace TestSuite {
         public void testObservability() {
             // "Testing observability of piecewise yield curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
             vars.termStructure = new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlementDays,
                                                            vars.calendar, vars.instruments, new Actual360());
@@ -397,7 +409,8 @@ namespace TestSuite {
 
             // "Testing use of today's LIBOR fixings in swap curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
             var swapHelpers = new InitializedList<RateHelper>();
             IborIndex euribor6m = new Euribor6M();
@@ -476,7 +489,8 @@ namespace TestSuite {
         [TestMethod()]
         public void testForwardRateDayCounter() {
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
             DayCounter d = new ActualActual();
             DayCounter d1 = new Actual360();
 
@@ -497,7 +511,8 @@ namespace TestSuite {
         public void testJpyLibor() {
             //"Testing bootstrap over JPY LIBOR swaps...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
             vars.today = new Date(4, Month.October, 2007);
             Settings.setEvaluationDate(vars.today);
@@ -567,7 +582,8 @@ namespace TestSuite {
         public void testDiscountCopy() {
             //BOOST_MESSAGE("Testing copying of discount curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
             testCurveCopy<Discount, LogLinear>(vars);
         }
 
@@ -575,7 +591,8 @@ namespace TestSuite {
         public void testForwardCopy() {
             //BOOST_MESSAGE("Testing copying of forward-rate curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
             testCurveCopy<ForwardRate, BackwardFlat>(vars);
         }
 
@@ -583,7 +600,8 @@ namespace TestSuite {
         public void testZeroCopy() {
             //BOOST_MESSAGE("Testing copying of zero-rate curve...");
 
-            CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
             testCurveCopy<ZeroYield, Linear>(vars);
         }
 
@@ -651,15 +669,17 @@ namespace TestSuite {
                                      new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator);
             curveHandle.linkTo(vars.termStructure);
 
-            for (int i = 0; i < vars.bonds; i++) {
+            SavedSettings settings = new SavedSettings();
+            for (int i = 0; i < vars.bonds; i++)
+            {
                 Date maturity = vars.calendar.advance(vars.today, vars.bondData[i].n, vars.bondData[i].units);
                 Date issue = vars.calendar.advance(maturity, -vars.bondData[i].length, TimeUnit.Years);
                 List<double> coupons = new List<double>() { vars.bondData[i].coupon / 100.0 };
 
                 FixedRateBond bond = new FixedRateBond(vars.bondSettlementDays, 100.0,
                                    vars.schedules[i], coupons,
-                                   vars.bondDayCounter, vars.bondConvention,
-                                   vars.bondRedemption, issue);
+                                   vars.bondDayCounter, settings, paymentConvention: vars.bondConvention,
+                                   redemption: vars.bondRedemption, issueDate: issue);
 
                 IPricingEngine bondEngine = new DiscountingBondEngine(curveHandle);
                 bond.setPricingEngine(bondEngine);

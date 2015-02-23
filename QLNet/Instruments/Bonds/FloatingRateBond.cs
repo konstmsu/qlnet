@@ -23,20 +23,15 @@ namespace QLNet {
     //! floating-rate bond (possibly capped and/or floored)
     //! \test calculations are tested by checking results against cached values.
     public class FloatingRateBond : Bond {
-        public FloatingRateBond(int settlementDays, double faceAmount, Schedule schedule, IborIndex index, 
-                                DayCounter paymentDayCounter)
+        public FloatingRateBond(int settlementDays, double faceAmount, Schedule schedule, IborIndex index, DayCounter paymentDayCounter, SavedSettings settings)
             : this(settlementDays, faceAmount, schedule, index, paymentDayCounter, BusinessDayConvention.Following,
                    0, new List<double>() { 1 }, new List<double>() { 0 }, new List<double>(), new List<double>(),
-                   false, 100, null) { }
-        public FloatingRateBond(int settlementDays, double faceAmount, Schedule schedule, IborIndex index,
-                                DayCounter paymentDayCounter, BusinessDayConvention paymentConvention, int fixingDays, 
-                                List<double> gearings, List<double> spreads)
+                   false, 100, null, settings) { }
+        public FloatingRateBond(int settlementDays, double faceAmount, Schedule schedule, IborIndex index, DayCounter paymentDayCounter, BusinessDayConvention paymentConvention, int fixingDays, List<double> gearings, List<double> spreads, SavedSettings settings)
             : this(settlementDays, faceAmount, schedule, index, paymentDayCounter, BusinessDayConvention.Following,
-                   fixingDays, gearings, spreads, new List<double>(), new List<double>(), false, 100, null) { }
-        public FloatingRateBond(int settlementDays, double faceAmount, Schedule schedule, IborIndex index, DayCounter paymentDayCounter,
-                                BusinessDayConvention paymentConvention, int fixingDays, List<double> gearings, List<double> spreads,
-                                List<double> caps, List<double> floors, bool inArrears, double redemption, Date issueDate)
-            : base(settlementDays, schedule.calendar(), issueDate) {
+                   fixingDays, gearings, spreads, new List<double>(), new List<double>(), false, 100, null, settings) { }
+        public FloatingRateBond(int settlementDays, double faceAmount, Schedule schedule, IborIndex index, DayCounter paymentDayCounter, BusinessDayConvention paymentConvention, int fixingDays, List<double> gearings, List<double> spreads, List<double> caps, List<double> floors, bool inArrears, double redemption, Date issueDate, SavedSettings settings)
+            : base(settlementDays, schedule.calendar(), settings, issueDate) {
             maturityDate_ = schedule.endDate();
             cashflows_ = new IborLeg(schedule, index)
                             .withPaymentDayCounter(paymentDayCounter)
@@ -74,13 +69,8 @@ namespace QLNet {
         //                        Date stubDate = Date(),
         //                        DateGeneration.Rule rule = DateGeneration::Backward,
         //                        bool endOfMonth = false)
-        public FloatingRateBond(int settlementDays, double faceAmount, Date startDate, Date maturityDate, Frequency couponFrequency,
-                                Calendar calendar, IborIndex index, DayCounter accrualDayCounter,
-                                BusinessDayConvention accrualConvention, BusinessDayConvention paymentConvention,
-                                int fixingDays, List<double> gearings, List<double> spreads, List<double> caps,
-                                List<double> floors, bool inArrears, double redemption, Date issueDate,
-                                Date stubDate, DateGeneration.Rule rule, bool endOfMonth)
-            : base(settlementDays, calendar, issueDate) {
+        public FloatingRateBond(int settlementDays, double faceAmount, Date startDate, Date maturityDate, Frequency couponFrequency, Calendar calendar, IborIndex index, DayCounter accrualDayCounter, BusinessDayConvention accrualConvention, BusinessDayConvention paymentConvention, int fixingDays, List<double> gearings, List<double> spreads, List<double> caps, List<double> floors, bool inArrears, double redemption, Date issueDate, Date stubDate, DateGeneration.Rule rule, bool endOfMonth, SavedSettings settings)
+            : base(settlementDays, calendar, settings, issueDate) {
 
             maturityDate_ = maturityDate;
 

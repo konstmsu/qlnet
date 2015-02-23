@@ -130,9 +130,10 @@ namespace CallableBonds
 
          IPricingEngine engine0 = new TreeCallableFixedRateBondEngine(hw0, gridIntervals, termStructure);
 
-         CallableFixedRateBond callableBond = new CallableFixedRateBond( settlementDays, faceAmount, sch,
+          SavedSettings settings = new SavedSettings();
+          CallableFixedRateBond callableBond = new CallableFixedRateBond( settlementDays, faceAmount, sch,
                                                                          new InitializedList<double>(1, coupon),
-                                                                         bondDayCounter, paymentConvention,
+                                                                         bondDayCounter, settings, paymentConvention,
                                                                          redemption, issue, callSchedule);
          callableBond.setPricingEngine(engine0);
 

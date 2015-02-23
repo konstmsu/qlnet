@@ -311,8 +311,7 @@ namespace QLNet
       {
          return bps(bond, new InterestRate(yield, dayCounter, compounding, frequency), settlementDate);
       }
-      public static double yield(Bond bond, double cleanPrice, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                           Date settlementDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.05)
+      public static double yield(Bond bond, double cleanPrice, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.05)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -326,11 +325,10 @@ namespace QLNet
 
          return CashFlows.yield(bond.cashflows(), dirtyPrice,
                                 dayCounter, compounding, frequency,
-                                false, settlementDate, settlementDate,
-                                accuracy, maxIterations, guess);
+                                false, settings, settlementDate: settlementDate, npvDate: settlementDate,
+                                accuracy: accuracy, maxIterations: maxIterations, guess: guess);
       }
-      public static double duration(Bond bond, InterestRate yield, Duration.Type type = Duration.Type.Modified,
-                                     Date settlementDate = null)
+      public static double duration(Bond bond, InterestRate yield, SavedSettings settings, Duration.Type type = Duration.Type.Modified, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -339,12 +337,11 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.duration(bond.cashflows(), yield, type, false, settlementDate);
+         return CashFlows.duration(bond.cashflows(), yield, type, false, settings, settlementDate);
       }
-      public static double duration(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                              Duration.Type type = Duration.Type.Modified, Date settlementDate = null)
+      public static double duration(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Duration.Type type = Duration.Type.Modified, Date settlementDate = null)
       {
-         return duration(bond, new InterestRate(yield, dayCounter, compounding, frequency), type, settlementDate);
+         return duration(bond, new InterestRate(yield, dayCounter, compounding, frequency), settings, type, settlementDate);
       }
       public static double convexity(Bond bond, InterestRate yield, Date settlementDate = null)
       {
@@ -362,7 +359,7 @@ namespace QLNet
       {
          return convexity(bond, new InterestRate(yield, dayCounter, compounding, frequency), settlementDate);
       }
-      public static double basisPointValue(Bond bond, InterestRate yield, Date settlementDate = null)
+      public static double basisPointValue(Bond bond, InterestRate yield, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -372,14 +369,13 @@ namespace QLNet
                    " (maturity being " + bond.maturityDate() + ")");
 
          return CashFlows.basisPointValue(bond.cashflows(), yield,
-                                          false, settlementDate);
+                                          false, settings, settlementDate: settlementDate);
       }
-      public static double basisPointValue(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                                     Date settlementDate = null)
+      public static double basisPointValue(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null)
       {
-         return CashFlows.basisPointValue(bond.cashflows(), new InterestRate(yield, dayCounter, compounding, frequency), false, settlementDate);
+         return CashFlows.basisPointValue(bond.cashflows(), new InterestRate(yield, dayCounter, compounding, frequency), false, settings, settlementDate: settlementDate);
       }
-      public static double yieldValueBasisPoint(Bond bond, InterestRate yield, Date settlementDate = null)
+      public static double yieldValueBasisPoint(Bond bond, InterestRate yield, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -389,12 +385,11 @@ namespace QLNet
                    " (maturity being " + bond.maturityDate() + ")");
 
          return CashFlows.yieldValueBasisPoint(bond.cashflows(), yield,
-                                               false, settlementDate);
+                                               false, settings, settlementDate: settlementDate);
       }
-      public static double yieldValueBasisPoint(Bond bond, double yield, DayCounter dayCounter, Compounding compounding,
-                                          Frequency frequency, Date settlementDate = null)
+      public static double yieldValueBasisPoint(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null)
       {
-         return CashFlows.yieldValueBasisPoint(bond.cashflows(), new InterestRate(yield, dayCounter, compounding, frequency), false, settlementDate);
+         return CashFlows.yieldValueBasisPoint(bond.cashflows(), new InterestRate(yield, dayCounter, compounding, frequency), false, settings, settlementDate: settlementDate);
       }
       #endregion
 
@@ -414,9 +409,7 @@ namespace QLNet
                              100.0 / bond.notional(settlementDate);
          return dirtyPrice - bond.accruedAmount(settlementDate);
       }
-      public static double zSpread(Bond bond, double cleanPrice, YieldTermStructure discount, DayCounter dayCounter, Compounding compounding,
-                             Frequency frequency, Date settlementDate = null, double accuracy = 1.0e-10, int maxIterations = 100,
-                             double guess = 0.0)
+      public static double zSpread(Bond bond, double cleanPrice, YieldTermStructure discount, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.0)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -432,8 +425,8 @@ namespace QLNet
                                   discount,
                                   dirtyPrice,
                                   dayCounter, compounding, frequency,
-                                  false, settlementDate, settlementDate,
-                                  accuracy, maxIterations, guess);
+                                  false, settings, settlementDate: settlementDate, npvDate: settlementDate,
+                                  accuracy: accuracy, maxIterations: maxIterations, guess: guess);
       }
       #endregion
 
