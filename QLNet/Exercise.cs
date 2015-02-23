@@ -22,20 +22,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace QLNet {
+namespace QLNet
+{
     //! Base exercise class
-    public class Exercise {
+    public class Exercise
+    {
         public enum Type { American, Bermudan, European };
 
-        protected Type type_;
+        readonly Type type_;
         public Type type() { return type_; }
 
-        protected List<Date> dates_;
+        readonly List<Date> dates_;
         public List<Date> dates() { return dates_; }
 
         // constructor
-        public Exercise(Type type) {
+        public Exercise(Type type, IEnumerable<Date> dates)
+        {
             type_ = type;
+            dates_ = dates.ToList();
         }
 
         // inspectors
@@ -45,12 +49,15 @@ namespace QLNet {
 
     //! Early-exercise base class
     /*! The payoff can be at exercise (the default) or at expiry */
-    public class EarlyExercise : Exercise {
-        private bool payoffAtExpiry_;
+    public class EarlyExercise : Exercise
+    {
+        readonly bool payoffAtExpiry_;
         public bool payoffAtExpiry() { return payoffAtExpiry_; }
-        
+
         // public EarlyExercise(Type type, bool payoffAtExpiry = false) : base(type) {
-        public EarlyExercise(Type type, bool payoffAtExpiry) : base(type) {
+        public EarlyExercise(Type type, bool payoffAtExpiry, IEnumerable<Date> dates)
+            : base(type, dates)
+        {
             payoffAtExpiry_ = payoffAtExpiry;
         }
     }
@@ -63,44 +70,41 @@ namespace QLNet {
         \todo check that everywhere the American condition is applied
               from earliestDate and not earlier
     */
-    public class AmericanExercise : EarlyExercise {
+    public class AmericanExercise : EarlyExercise
+    {
         public AmericanExercise(Date earliestDate, Date latestDate, bool payoffAtExpiry = false)
-            : base(Type.American, payoffAtExpiry) {
-
+            : base(Type.American, payoffAtExpiry, new InitializedList<Date> { earliestDate, latestDate })
+        {
             if (!(earliestDate <= latestDate))
                 throw new ApplicationException("earliest > latest exercise date");
-            dates_ = new InitializedList<Date>(2);
-            dates_[0] = earliestDate;
-            dates_[1] = latestDate;
         }
 
-        public AmericanExercise(Date latest, bool payoffAtExpiry = false) : base(Type.American, payoffAtExpiry) {
-            dates_ = new InitializedList<Date>(2);
-            dates_[0] = Date.minDate();
-            dates_[1] = latest;
+        public AmericanExercise(Date latest, bool payoffAtExpiry = false)
+            : base(Type.American, payoffAtExpiry, new InitializedList<Date>(2) { Date.minDate(), latest })
+        {
         }
     }
 
     //! Bermudan exercise
     /*! A Bermudan option can only be exercised at a set of fixed dates. */
-    public class BermudanExercise : EarlyExercise {
+    public class BermudanExercise : EarlyExercise
+    {
         public BermudanExercise(List<Date> dates) : this(dates, false) { }
         public BermudanExercise(List<Date> dates, bool payoffAtExpiry)
-            : base(Type.Bermudan, payoffAtExpiry) {
-            
+            : base(Type.Bermudan, payoffAtExpiry, dates.OrderBy(d => d))
+        {
             if (dates.Count == 0)
                 throw new ApplicationException("no exercise date given");
-
-            dates_ = dates;
-            dates_.Sort();
         }
     }
 
     //! European exercise
     /*! A European option can only be exercised at one (expiry) date. */
-    public class EuropeanExercise : Exercise {
-        public EuropeanExercise(Date date) : base(Type.European) {
-            dates_ = new InitializedList<Date>(1, date);
+    public class EuropeanExercise : Exercise
+    {
+        public EuropeanExercise(Date date)
+            : base(Type.European, new InitializedList<Date>(1, date))
+        {
         }
     }
 }
