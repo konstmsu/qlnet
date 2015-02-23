@@ -31,10 +31,10 @@ namespace QLNet
         public DiscretizedSwaption(Swaption.Arguments args,
                                     Date referenceDate,
                                     DayCounter dayCounter)
-            : base(new DiscretizedSwap(args, referenceDate, dayCounter), args.exercise.type(), new List<double>())
+            : base(new DiscretizedSwap(args, referenceDate, dayCounter), args.exercise.Type, new List<double>())
         {
             arguments_=args;
-            exerciseTimes_ = new InitializedList<double>(arguments_.exercise.dates().Count);
+            exerciseTimes_ = new InitializedList<double>(arguments_.exercise.Dates.Count);
             for (int i = 0; i < exerciseTimes_.Count; ++i)
                 exerciseTimes_[i] =
                     dayCounter.yearFraction(referenceDate,
@@ -43,7 +43,7 @@ namespace QLNet
             // Date adjustments can get time vectors out of synch.
             // Here, we try and collapse similar dates which could cause
             // a mispricing.
-            for (int i=0; i<arguments_.exercise.dates().Count; i++) {
+            for (int i=0; i<arguments_.exercise.Dates.Count; i++) {
                 Date exerciseDate = arguments_.exercise.date(i);
             for (int j = 0; j < arguments_.fixedPayDates.Count; j++) {
                 if (withinNextWeek(exerciseDate,

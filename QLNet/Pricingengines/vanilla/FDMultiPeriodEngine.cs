@@ -71,7 +71,7 @@ namespace QLNet {
             if (args == null) throw new ApplicationException("incorrect argument type");
             events_.Clear();
 
-            int n = args.exercise.dates().Count;
+            int n = args.exercise.Dates.Count;
             stoppingTimes_ = new InitializedList<double>(n);
             for (int i = 0; i < n; ++i)
                 stoppingTimes_[i] = process_.time(args.exercise.date(i));

@@ -133,13 +133,13 @@ namespace QLNet {
 
         public override void calculate() {
 
-            if (!(arguments_.exercise.type() == Exercise.Type.American))
+            if (!(arguments_.exercise.Type == ExcerciseType.American))
                 throw new ApplicationException("not an American Option");
 
             AmericanExercise ex = arguments_.exercise as AmericanExercise;
             if (ex == null) throw new ApplicationException("non-American exercise given");
 
-            if(ex.payoffAtExpiry()) throw new ApplicationException("payoff at expiry not handled");
+            if(ex.PayoffAtExpiry) throw new ApplicationException("payoff at expiry not handled");
 
             StrikedTypePayoff payoff = arguments_.payoff as StrikedTypePayoff;
             if (payoff == null) throw new ApplicationException("non-striked payoff given");

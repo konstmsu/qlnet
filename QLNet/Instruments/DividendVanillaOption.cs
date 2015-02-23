@@ -50,15 +50,15 @@ namespace QLNet {
 
 					 // engines are built-in for the time being
 					 IPricingEngine engine;
-					 switch (exercise_.type())
+					 switch (exercise_.Type)
 					 {
-						 case Exercise.Type.European:
+						 case ExcerciseType.European:
 							engine = new AnalyticDividendEuropeanEngine(newProcess);
 							break;
-						 case Exercise.Type.American:
+						 case ExcerciseType.American:
 							engine = new FDDividendAmericanEngine(newProcess);
 							break;
-						 case Exercise.Type.Bermudan:
+						 case ExcerciseType.Bermudan:
 							 throw new ApplicationException("engine not available for Bermudan option with dividends");
 						 default:
 							 throw new ArgumentException("unknown exercise type");

@@ -266,7 +266,7 @@ namespace TestSuite
                                                 .withPricingEngine(engine)
                                                 .value(); ;
                         
-                        Date exerciseDate = swaption.exercise().dates().First();
+                        Date exerciseDate = swaption.exercise().Dates.First();
                         if (exerciseDate!=vol.optionDates()[i])
                             Assert.Fail(
                                  "optionDateFromTenor mismatch for " +

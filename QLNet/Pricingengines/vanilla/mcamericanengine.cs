@@ -66,7 +66,7 @@ namespace QLNet {
             EarlyExercise exercise = arguments_.exercise as EarlyExercise;
             if (exercise == null)
                 throw new ApplicationException("wrong exercise given");
-            if(exercise.payoffAtExpiry())
+            if(exercise.PayoffAtExpiry)
                 throw new ApplicationException("payoff at expiry not handled");
 
             AmericanPathPricer earlyExercisePathPricer = new AmericanPathPricer(arguments_.payoff, polynomOrder_, polynomType_);

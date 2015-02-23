@@ -322,7 +322,7 @@ namespace TestSuite
 		// Exercise 12.8
 		// Doesn't quite work.  Need to deal with date conventions
 		[TestMethod()]
-		void testEuropeanKnownValue() 
+		public void testEuropeanKnownValue() 
 		{
 
 			// Testing dividend European option values with known value...

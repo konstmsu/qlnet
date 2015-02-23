@@ -55,7 +55,7 @@ namespace QLNet
             if (arguments_.averageType != Average.Type.Geometric)
                 throw new ApplicationException("not a geometric average option");
 
-            if (arguments_.exercise.type() != Exercise.Type.European)
+            if (arguments_.exercise.Type != ExcerciseType.European)
                 throw new ApplicationException("not an European Option");
 
             Date exercise = arguments_.exercise.lastDate();

@@ -58,7 +58,7 @@ namespace QLNet
                            "not a geometric average option");
             */
 
-            if(!(arguments_.exercise.type() == Exercise.Type.European))
+            if(!(arguments_.exercise.Type == ExcerciseType.European))
                 throw new ApplicationException("not an European Option");
 
             double runningLog;

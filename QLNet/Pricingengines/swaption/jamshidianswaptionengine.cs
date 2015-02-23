@@ -94,7 +94,7 @@ namespace QLNet
             if (!(arguments_.settlementType == Settlement.Type.Physical))
                 throw new ArgumentException("cash-settled swaptions not priced by Jamshidian engine");
 
-            if (!(arguments_.exercise.type() == Exercise.Type.European))
+            if (!(arguments_.exercise.Type == ExcerciseType.European))
                 throw new ArgumentException("cannot use the Jamshidian decomposition "
                        + "on exotic swaptions");
 

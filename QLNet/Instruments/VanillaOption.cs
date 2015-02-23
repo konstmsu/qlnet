@@ -57,14 +57,14 @@ namespace QLNet {
 
             // engines are built-in for the time being
             IPricingEngine engine;
-            switch (exercise_.type()) {
-                case Exercise.Type.European:
+            switch (exercise_.Type) {
+                case ExcerciseType.European:
                     engine = new AnalyticEuropeanEngine(newProcess);
                     break;
-                case Exercise.Type.American:
+                case ExcerciseType.American:
                     engine = new FDAmericanEngine(newProcess);
 						  break;
-                case Exercise.Type.Bermudan:
+                case ExcerciseType.Bermudan:
                     engine = new FDBermudanEngine(newProcess);
 						  break;
                 default:

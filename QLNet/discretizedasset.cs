@@ -165,10 +165,10 @@ namespace QLNet {
     */
     public class DiscretizedOption : DiscretizedAsset {
         protected DiscretizedAsset underlying_;
-        protected Exercise.Type exerciseType_;
+        protected ExcerciseType exerciseType_;
         protected List<double> exerciseTimes_;
 
-        public DiscretizedOption(DiscretizedAsset underlying, Exercise.Type exerciseType, List<double> exerciseTimes) {
+        public DiscretizedOption(DiscretizedAsset underlying, ExcerciseType exerciseType, List<double> exerciseTimes) {
             underlying_ = underlying;
             exerciseType_ = exerciseType;
             exerciseTimes_ =exerciseTimes;
@@ -198,12 +198,12 @@ namespace QLNet {
             underlying_.partialRollback(time());
             underlying_.preAdjustValues();
             switch (exerciseType_) {
-                case Exercise.Type.American:
+                case ExcerciseType.American:
                     if (time_ >= exerciseTimes_[0] && time_ <= exerciseTimes_[1])
                         applyExerciseCondition();
                     break;
-                case Exercise.Type.Bermudan:
-                case Exercise.Type.European:
+                case ExcerciseType.Bermudan:
+                case ExcerciseType.European:
                     for (int i=0; i<exerciseTimes_.Count; i++) {
                         double t = exerciseTimes_[i];
                         if (t >= 0.0 && isOnTime(t))

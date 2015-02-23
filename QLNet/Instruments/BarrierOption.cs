@@ -132,13 +132,13 @@ namespace QLNet {
 	
 			// engines are built-in for the time being
 			IPricingEngine engine = null;
-			switch (exercise_.type())
+			switch (exercise_.Type)
 			{
-			  case Exercise.Type.European:
+			  case ExcerciseType.European:
 				engine = new AnalyticBarrierEngine(newProcess);
 				break;
-              case Exercise.Type.American:
-              case Exercise.Type.Bermudan:
+              case ExcerciseType.American:
+              case ExcerciseType.Bermudan:
                 throw new ApplicationException("Engine not available for non-European barrier option");
 			  default:
                 throw new ApplicationException("unknown exercise type");

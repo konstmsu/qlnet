@@ -107,7 +107,7 @@ namespace QLNet
             lattice = model_.tree(timeGrid);
         }
 
-        List<double> stoppingTimes = new InitializedList<double>(arguments_.exercise.dates().Count);
+        List<double> stoppingTimes = new InitializedList<double>(arguments_.exercise.Dates.Count);
         for (int i=0; i<stoppingTimes.Count; ++i)
             stoppingTimes[i] =
                 dayCounter.yearFraction(referenceDate,

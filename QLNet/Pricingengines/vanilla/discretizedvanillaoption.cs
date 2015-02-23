@@ -29,7 +29,7 @@ namespace QLNet {
         public DiscretizedVanillaOption(VanillaOption.Arguments args, StochasticProcess process, TimeGrid grid) {
             arguments_ = args;
 
-            stoppingTimes_ = new InitializedList<double>(args.exercise.dates().Count);
+            stoppingTimes_ = new InitializedList<double>(args.exercise.Dates.Count);
             for (int i=0; i<stoppingTimes_.Count; ++i) {
                 stoppingTimes_[i] = process.time(args.exercise.date(i));
                 if (!grid.empty()) {
@@ -50,16 +50,16 @@ namespace QLNet {
 
         protected override void postAdjustValuesImpl() {
             double now = time();
-            switch (arguments_.exercise.type()) {
-                case Exercise.Type.American:
+            switch (arguments_.exercise.Type) {
+                case ExcerciseType.American:
                     if (now <= stoppingTimes_[1] && now >= stoppingTimes_[0])
                         applySpecificCondition();
                     break;
-                case Exercise.Type.European:
+                case ExcerciseType.European:
                     if (isOnTime(stoppingTimes_[0]))
                         applySpecificCondition();
                     break;
-                case Exercise.Type.Bermudan:
+                case ExcerciseType.Bermudan:
                     for (int i=0; i<stoppingTimes_.Count; i++) {
                         if (isOnTime(stoppingTimes_[i]))
                             applySpecificCondition();

@@ -27,38 +27,33 @@ namespace QLNet
     //! Base exercise class
     public class Exercise
     {
-        public enum Type { American, Bermudan, European };
-
-        readonly Type type_;
-        public Type type() { return type_; }
-
-        readonly List<Date> dates_;
-        public List<Date> dates() { return dates_; }
+        public readonly ExcerciseType Type;
+        public readonly IReadOnlyList<Date> Dates;
 
         // constructor
-        public Exercise(Type type, IEnumerable<Date> dates)
+        public Exercise(ExcerciseType type, IEnumerable<Date> dates)
         {
-            type_ = type;
-            dates_ = dates.ToList();
+            Type = type;
+            Dates = dates.ToList();
         }
 
         // inspectors
-        public Date date(int index) { return dates_[index]; }
-        public Date lastDate() { return dates_.Last(); }
+        public Date date(int index) { return Dates[index]; }
+        public Date lastDate() { return Dates.Last(); }
     }
+
+    public enum ExcerciseType { American, Bermudan, European };
 
     //! Early-exercise base class
     /*! The payoff can be at exercise (the default) or at expiry */
     public class EarlyExercise : Exercise
     {
-        readonly bool payoffAtExpiry_;
-        public bool payoffAtExpiry() { return payoffAtExpiry_; }
+        public readonly bool PayoffAtExpiry;
 
-        // public EarlyExercise(Type type, bool payoffAtExpiry = false) : base(type) {
-        public EarlyExercise(Type type, bool payoffAtExpiry, IEnumerable<Date> dates)
+        public EarlyExercise(ExcerciseType type, bool payoffAtExpiry, IEnumerable<Date> dates)
             : base(type, dates)
         {
-            payoffAtExpiry_ = payoffAtExpiry;
+            PayoffAtExpiry = payoffAtExpiry;
         }
     }
 
@@ -73,14 +68,14 @@ namespace QLNet
     public class AmericanExercise : EarlyExercise
     {
         public AmericanExercise(Date earliestDate, Date latestDate, bool payoffAtExpiry = false)
-            : base(Type.American, payoffAtExpiry, new InitializedList<Date> { earliestDate, latestDate })
+            : base(ExcerciseType.American, payoffAtExpiry, new InitializedList<Date> { earliestDate, latestDate })
         {
             if (!(earliestDate <= latestDate))
                 throw new ApplicationException("earliest > latest exercise date");
         }
 
         public AmericanExercise(Date latest, bool payoffAtExpiry = false)
-            : base(Type.American, payoffAtExpiry, new InitializedList<Date>(2) { Date.minDate(), latest })
+            : base(ExcerciseType.American, payoffAtExpiry, new InitializedList<Date>(2) { Date.minDate(), latest })
         {
         }
     }
@@ -90,8 +85,9 @@ namespace QLNet
     public class BermudanExercise : EarlyExercise
     {
         public BermudanExercise(List<Date> dates) : this(dates, false) { }
+
         public BermudanExercise(List<Date> dates, bool payoffAtExpiry)
-            : base(Type.Bermudan, payoffAtExpiry, dates.OrderBy(d => d))
+            : base(ExcerciseType.Bermudan, payoffAtExpiry, dates.OrderBy(d => d))
         {
             if (dates.Count == 0)
                 throw new ApplicationException("no exercise date given");
@@ -103,7 +99,7 @@ namespace QLNet
     public class EuropeanExercise : Exercise
     {
         public EuropeanExercise(Date date)
-            : base(Type.European, new InitializedList<Date>(1, date))
+            : base(ExcerciseType.European, new InitializedList<Date>(1, date))
         {
         }
     }

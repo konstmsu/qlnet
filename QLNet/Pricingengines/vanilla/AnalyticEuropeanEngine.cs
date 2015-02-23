@@ -60,7 +60,7 @@ namespace QLNet {
 
         public override void calculate() {
 
-            if(arguments_.exercise.type() != Exercise.Type.European)
+            if(arguments_.exercise.Type != ExcerciseType.European)
                 throw new ApplicationException("not an European option");
 
             StrikedTypePayoff payoff = arguments_.payoff as StrikedTypePayoff;
