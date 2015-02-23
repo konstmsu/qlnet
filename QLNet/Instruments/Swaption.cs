@@ -63,20 +63,23 @@ namespace QLNet
       private VanillaSwap swap_;
       //Handle<YieldTermStructure> termStructure_;
       private Settlement.Type settlementType_;
+       readonly SavedSettings settings_;
 
-      public Swaption(VanillaSwap swap,Exercise exercise)
+       public Swaption(VanillaSwap swap,Exercise exercise, SavedSettings settings)
          : base(new Payoff(), exercise)
       {
          settlementType_ = Settlement.Type.Physical;
          swap_ = swap;
-         swap_.registerWith(update);
+           settings_ = settings;
+           swap_.registerWith(update);
       }
 
-      public Swaption(VanillaSwap swap,Exercise exercise,Settlement.Type delivery)
+      public Swaption(VanillaSwap swap,Exercise exercise,Settlement.Type delivery, SavedSettings settings)
          : base(new Payoff(), exercise)
       {
          settlementType_ = delivery;
-         swap_ = swap;
+          settings_ = settings;
+          swap_ = swap;
          swap_.registerWith(update);
       }
 
@@ -137,7 +140,7 @@ namespace QLNet
          calculate();
          if (isExpired())
             throw new ArgumentException("instrument expired");
-         ImpliedVolHelper_ f = new ImpliedVolHelper_(this, discountCurve, targetValue);
+         ImpliedVolHelper_ f = new ImpliedVolHelper_(this, discountCurve, targetValue,settings_);
          //Brent solver;
          NewtonSafe solver = new NewtonSafe();
          solver.setMaxEvaluations(maxEvaluations);
@@ -176,7 +179,7 @@ namespace QLNet
 
       public ImpliedVolHelper_(Swaption swaption,
                                Handle<YieldTermStructure> discountCurve,
-                               double targetValue)
+                               double targetValue, SavedSettings settings)
       {
          discountCurve_ = discountCurve;
          targetValue_ = targetValue;
@@ -184,7 +187,7 @@ namespace QLNet
          // at first ImpliedVolHelper::operator()(Volatility x) call
          vol_ = new SimpleQuote(-1.0);
          Handle<Quote> h = new Handle<Quote>(vol_);
-         engine_ = (IPricingEngine)new BlackSwaptionEngine(discountCurve_, h);
+         engine_ = (IPricingEngine)new BlackSwaptionEngine(discountCurve_, h,settings);
          swaption.setupArguments(engine_.getArguments());
          results_ = engine_.getResults() as Instrument.Results; ;
       }

@@ -28,24 +28,27 @@ namespace QLNet
 
         private Handle<YieldTermStructure> termStructure_;
         private Handle<SwaptionVolatilityStructure> volatility_;
+        SavedSettings settings_;
 
-        public BlackSwaptionEngine(Handle<YieldTermStructure> termStructure, double vol)
-            : this(termStructure, vol, new Actual365Fixed()) { }
+        public BlackSwaptionEngine(Handle<YieldTermStructure> termStructure, double vol, SavedSettings settings)
+            : this(termStructure, vol, new Actual365Fixed(), settings) { }
         public BlackSwaptionEngine(Handle<YieldTermStructure> termStructure,
-                                 double vol, DayCounter dc )
+                                 double vol, DayCounter dc, SavedSettings settings)
         {
             termStructure_ = termStructure;
+            settings_ = settings;
             volatility_ = new Handle<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(0, new NullCalendar(), BusinessDayConvention.Following, vol, dc));
             termStructure_.registerWith(update);
         }
 
-        public BlackSwaptionEngine(Handle<YieldTermStructure> termStructure, Handle<Quote> vol)
-            : this(termStructure, vol, new Actual365Fixed()) { }
+        public BlackSwaptionEngine(Handle<YieldTermStructure> termStructure, Handle<Quote> vol, SavedSettings settings)
+            : this(termStructure, vol, new Actual365Fixed(), settings) { }
 
         public BlackSwaptionEngine( Handle<YieldTermStructure> termStructure,
-                                    Handle<Quote> vol, DayCounter dc)
+                                    Handle<Quote> vol, DayCounter dc, SavedSettings settings)
         {
             termStructure_ = termStructure;
+            settings_ = settings;
             volatility_ = new Handle<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
                              0, new NullCalendar(), BusinessDayConvention.Following, vol, dc));
             termStructure_.registerWith(update);
@@ -53,10 +56,11 @@ namespace QLNet
         }
 
         public BlackSwaptionEngine(  Handle<YieldTermStructure> discountCurve,
-                                     Handle<SwaptionVolatilityStructure> vol)
+                                     Handle<SwaptionVolatilityStructure> vol, SavedSettings settings)
         {
             termStructure_ = discountCurve;
             volatility_=vol;
+            settings_ = settings;
             termStructure_.registerWith(update);
             volatility_.registerWith(update);
         }
@@ -106,7 +110,7 @@ namespace QLNet
                   double fixedLegCashBPS =
                       CashFlows.bps(fixedLeg,
                                      new InterestRate(atmForward, dayCount,QLNet.Compounding.Compounded,Frequency.Annual),false,
-                                     termStructure_.link.referenceDate()) ;
+                                     settings_, termStructure_.link.referenceDate()) ;
                   annuity = Math.Abs(fixedLegCashBPS/basisPoint);
                   break;
               }

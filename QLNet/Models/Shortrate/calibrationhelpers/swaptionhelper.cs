@@ -33,8 +33,7 @@ namespace QLNet
 							  Period fixedLegTenor,
 							  DayCounter fixedLegDayCounter,
 							  DayCounter floatingLegDayCounter,
-							  Handle<YieldTermStructure> termStructure,
-							  CalibrationErrorType errorType = CalibrationErrorType.RelativePriceError,
+							  Handle<YieldTermStructure> termStructure, SavedSettings settings, CalibrationErrorType errorType = CalibrationErrorType.RelativePriceError,
 							  double? strike = null,
 							  double nominal = 1.0 )
 			: base( volatility, termStructure, errorType )
@@ -47,7 +46,8 @@ namespace QLNet
 			index_ = index;
 			fixedLegDayCounter_ = fixedLegDayCounter;
 			floatingLegDayCounter_ = floatingLegDayCounter;
-			strike_ = strike;
+		    settings_ = settings;
+		    strike_ = strike;
 			nominal_ = nominal;
 
 		    index_.notifyObserversEvent += (Callback)update;
@@ -60,8 +60,7 @@ namespace QLNet
 							 Period fixedLegTenor,
 							 DayCounter fixedLegDayCounter,
 							 DayCounter floatingLegDayCounter,
-							 Handle<YieldTermStructure> termStructure,
-							 CalibrationErrorType errorType = CalibrationErrorType.RelativePriceError,
+							 Handle<YieldTermStructure> termStructure, SavedSettings settings, CalibrationErrorType errorType = CalibrationErrorType.RelativePriceError,
 							 double? strike = null,
 							 double nominal = 1.0 )
 			: base( volatility, termStructure, errorType )
@@ -74,7 +73,8 @@ namespace QLNet
 			index_ = index;
 			fixedLegDayCounter_ = fixedLegDayCounter;
 			floatingLegDayCounter_ = floatingLegDayCounter;
-			strike_ = strike;
+		    settings_ = settings;
+		    strike_ = strike;
 			nominal_ = nominal;
 
 		    index_.notifyObserversEvent += (Callback)update;
@@ -87,8 +87,7 @@ namespace QLNet
                        Period fixedLegTenor,
                        DayCounter fixedLegDayCounter,
                        DayCounter floatingLegDayCounter,
-                       Handle<YieldTermStructure> termStructure,
-                       CalibrationErrorType errorType = CalibrationErrorType.RelativePriceError,
+                       Handle<YieldTermStructure> termStructure, SavedSettings settings, CalibrationErrorType errorType = CalibrationErrorType.RelativePriceError,
 							  double? strike =null,
                        double nominal = 1.0)
 			: base( volatility, termStructure, errorType )
@@ -101,7 +100,8 @@ namespace QLNet
 			index_ = index;
 			fixedLegDayCounter_ = fixedLegDayCounter;
 			floatingLegDayCounter_ = floatingLegDayCounter;
-			strike_ = strike;
+		    settings_ = settings;
+		    strike_ = strike;
 			nominal_ = nominal;
 
 		    index_.notifyObserversEvent += (Callback)update;
@@ -135,7 +135,7 @@ namespace QLNet
 			calculate();
 			SimpleQuote sq = new SimpleQuote( sigma );
 			Handle<Quote> vol = new Handle<Quote>( sq );
-			IPricingEngine black = new BlackSwaptionEngine( termStructure_, vol );
+			IPricingEngine black = new BlackSwaptionEngine( termStructure_, vol , settings_);
 			swaption_.setPricingEngine( black );
 			double value = swaption_.NPV();
 			swaption_.setPricingEngine( engine_ );
@@ -200,7 +200,7 @@ namespace QLNet
 
         Exercise exercise = new EuropeanExercise(exerciseDate);
 
-        swaption_ = new Swaption(swap_, exercise);
+        swaption_ = new Swaption(swap_, exercise,settings_);
 
         base.performCalculations();
 		}
@@ -214,5 +214,6 @@ namespace QLNet
 		private double exerciseRate_;
 		private VanillaSwap swap_;
 		private Swaption swaption_;
+	    readonly SavedSettings settings_;
 	}
 }

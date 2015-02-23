@@ -244,7 +244,7 @@ namespace QLNet
       /*! The default bond settlement is used if no date is given. */
       public double cleanPrice(double yield, DayCounter dc, Compounding comp, Frequency freq, Date settlement = null)
       {
-         return BondFunctions.cleanPrice(this, yield, dc, comp, freq, settlement);
+         return BondFunctions.cleanPrice(this, yield, dc, comp, freq, _settings, settlement);
       }
 
       //! dirty price given a yield and settlement date
@@ -255,7 +255,7 @@ namespace QLNet
          if (currentNotional == 0.0)
             return 0.0;
 
-         return BondFunctions.cleanPrice(this, yield, dc, comp, freq, settlement) + accruedAmount(settlement);
+         return BondFunctions.cleanPrice(this, yield, dc, comp, freq, _settings, settlement) + accruedAmount(settlement);
       }
 
       //! yield given a (clean) price and settlement date

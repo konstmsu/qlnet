@@ -236,7 +236,7 @@ namespace QLNet
                              100.0 / bond.notional(settlementDate);
          return dirtyPrice - bond.accruedAmount(settlementDate);
       }
-      public static double bps(Bond bond, YieldTermStructure discountCurve, Date settlementDate = null)
+      public static double bps(Bond bond, YieldTermStructure discountCurve, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -245,7 +245,7 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.bps(bond.cashflows(), discountCurve, false, settlementDate) * 100.0 / bond.notional(settlementDate);
+         return CashFlows.bps(bond.cashflows(), discountCurve, false,settings, settlementDate: settlementDate) * 100.0 / bond.notional(settlementDate);
       }
       public static double atmRate(Bond bond, YieldTermStructure discountCurve, Date settlementDate = null, double? cleanPrice = null)
       {
@@ -267,16 +267,15 @@ namespace QLNet
 
       #region Yield (a.k.a. Internal Rate of Return, i.e. IRR) functions
 
-      public static double cleanPrice(Bond bond, InterestRate yield, Date settlementDate = null)
+      public static double cleanPrice(Bond bond, InterestRate yield, SavedSettings settings, Date settlementDate = null)
       {
-        return dirtyPrice(bond, yield, settlementDate) - bond.accruedAmount(settlementDate);
+        return dirtyPrice(bond, yield, settings, settlementDate) - bond.accruedAmount(settlementDate);
       }
-      public static double cleanPrice(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                                Date settlementDate = null)
+      public static double cleanPrice(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null)
       {
-         return cleanPrice(bond, new InterestRate(yield, dayCounter, compounding, frequency), settlementDate);
+         return cleanPrice(bond, new InterestRate(yield, dayCounter, compounding, frequency), settings, settlementDate);
       }
-      public static double dirtyPrice(Bond bond, InterestRate yield, Date settlementDate = null)
+      public static double dirtyPrice(Bond bond, InterestRate yield, SavedSettings settings, Date settlementDate = null)
       {
           if (settlementDate == null)
               settlementDate = bond.settlementDate();
@@ -285,16 +284,15 @@ namespace QLNet
                     "non tradable at " + settlementDate +
                     " (maturity being " + bond.maturityDate() + ")");
 
-          double dirtyPrice = CashFlows.npv(bond.cashflows(), yield, false, settlementDate) *
+          double dirtyPrice = CashFlows.npv(bond.cashflows(), yield, false, settings, settlementDate: settlementDate) *
                               100.0 / bond.notional(settlementDate);
           return dirtyPrice;
       }
-      public static double dirtyPrice(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                                Date settlementDate = null)
+      public static double dirtyPrice(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null)
       {
-          return dirtyPrice(bond, new InterestRate(yield, dayCounter, compounding, frequency), settlementDate);
+          return dirtyPrice(bond, new InterestRate(yield, dayCounter, compounding, frequency), settings, settlementDate);
       }
-      public static double bps(Bond bond, InterestRate yield, Date settlementDate = null)
+      public static double bps(Bond bond, InterestRate yield, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -303,13 +301,12 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.bps(bond.cashflows(), yield, false, settlementDate) *
+         return CashFlows.bps(bond.cashflows(), yield, false, settings, settlementDate) *
                               100.0 / bond.notional(settlementDate);
       }
-      public static double bps(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                         Date settlementDate = null)
+      public static double bps(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null)
       {
-         return bps(bond, new InterestRate(yield, dayCounter, compounding, frequency), settlementDate);
+         return bps(bond, new InterestRate(yield, dayCounter, compounding, frequency), settings, settlementDate);
       }
       public static double yield(Bond bond, double cleanPrice, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null, double accuracy = 1.0e-10, int maxIterations = 100, double guess = 0.05)
       {

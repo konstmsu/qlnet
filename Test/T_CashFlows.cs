@@ -20,11 +20,11 @@ namespace TestSuite
 			}
 		}
 
-		private void CHECK_NPV(bool includeRef, double expected, InterestRate no_discount, List<CashFlow> leg,Date today)                             
+		private void CHECK_NPV(bool includeRef, double expected, InterestRate no_discount, List<CashFlow> leg, Date today, SavedSettings settings)                             
 		{
 			do 
 			{                                                            
-				double NPV = CashFlows.npv(leg, no_discount, includeRef, today); 
+				double NPV = CashFlows.npv(leg, no_discount, includeRef, settings, settlementDate: today); 
 				if (Math.Abs(NPV - expected) > 1e-6) 
 				{                         
 					Assert.Fail("NPV mismatch:\n"                               
@@ -141,14 +141,15 @@ namespace TestSuite
 			// no override
 			Settings.includeTodaysCashFlows = null;
 
-			CHECK_NPV(false, 2.0,no_discount,leg,today);
-			CHECK_NPV(true, 3.0,no_discount,leg,today);
+		    SavedSettings settings=new SavedSettings();
+		    CHECK_NPV(false, 2.0,no_discount,leg,today,settings);
+			CHECK_NPV(true, 3.0,no_discount,leg,today,settings);
     
 			// override
 			Settings.includeTodaysCashFlows = false;
-    
-			CHECK_NPV(false, 2.0,no_discount,leg,today);
-			CHECK_NPV(true, 2.0,no_discount,leg,today);
+
+            CHECK_NPV(false, 2.0, no_discount, leg, today, settings);
+            CHECK_NPV(true, 2.0, no_discount, leg, today, settings);
 		}
 
 		[TestMethod()]

@@ -66,29 +66,29 @@ namespace TestSuite
             // SavedSettings backup;
 
             // utilities
-            public Swaption makeSwaption(VanillaSwap swap,Date exercise,double volatility,Settlement.Type settlementType)
+            public Swaption makeSwaption(VanillaSwap swap,Date exercise,double volatility,Settlement.Type settlementType, SavedSettings settings)
             {
                 Handle<Quote> vol=new Handle <Quote>(new SimpleQuote(volatility));
-                IPricingEngine engine=new BlackSwaptionEngine(termStructure, vol);
-                Swaption result=new Swaption(swap,new EuropeanExercise(exercise),settlementType);
+                IPricingEngine engine=new BlackSwaptionEngine(termStructure, vol,settings);
+                Swaption result=new Swaption(swap,new EuropeanExercise(exercise),settlementType,settings);
                 result.setPricingEngine(engine);
                 return result;
             }
 
-            public Swaption makeSwaption(VanillaSwap swap,Date exercise,double volatility)
+            public Swaption makeSwaption(VanillaSwap swap,Date exercise,double volatility, SavedSettings settings)
             {
                 Settlement.Type settlementType= Settlement.Type.Physical;
                 Handle<Quote> vol=new Handle <Quote>(new SimpleQuote(volatility));
-                IPricingEngine engine=new BlackSwaptionEngine(termStructure, vol);
-                Swaption result=new Swaption(swap,new EuropeanExercise(exercise),settlementType);
+                IPricingEngine engine=new BlackSwaptionEngine(termStructure, vol,settings);
+                Swaption result=new Swaption(swap,new EuropeanExercise(exercise),settlementType,settings);
                 result.setPricingEngine(engine);
                 return result;
             }
 
-            public IPricingEngine makeEngine(double volatility) 
+            public IPricingEngine makeEngine(double volatility, SavedSettings settings) 
             {
                 Handle<Quote> h = new Handle < Quote >( new SimpleQuote(volatility));
-                return (IPricingEngine)(new BlackSwaptionEngine(termStructure, h));
+                return (IPricingEngine)(new BlackSwaptionEngine(termStructure, h,settings));
             }
 
             public CommonVars()
@@ -117,6 +117,7 @@ namespace TestSuite
         {
             //("Testing swaption dependency on strike......");
 
+            SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars();
             double[] strikes = new double[] { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
@@ -137,11 +138,11 @@ namespace TestSuite
                                                     .withEffectiveDate(startDate)
                                                     .withFloatingLegSpread(0.0)
                                                     .withType(type[k]);
-                            Swaption swaption   = vars.makeSwaption(swap,exerciseDate,vol);
+                            Swaption swaption   = vars.makeSwaption(swap,exerciseDate,vol,settings);
                             // FLOATING_POINT_EXCEPTION
                             values[l]=swaption.NPV();
                             Swaption swaption_cash = vars.makeSwaption( swap,exerciseDate,vol,
-                                                                        Settlement.Type.Cash);
+                                                                        Settlement.Type.Cash,settings);
                             values_cash[l]=swaption_cash.NPV();
                         }
                         
@@ -213,6 +214,7 @@ namespace TestSuite
         {
             //"Testing swaption dependency on spread...";
 
+            SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars();
 
             double[] spreads = { -0.002, -0.001, 0.0, 0.001, 0.002 };
@@ -235,12 +237,12 @@ namespace TestSuite
                                         .withFloatingLegSpread(spreads[l])
                                         .withType(type[k]);
                              Swaption swaption =
-                                vars.makeSwaption(swap,exerciseDate,0.20);
+                                vars.makeSwaption(swap,exerciseDate,0.20,settings);
                             // FLOATING_POINT_EXCEPTION
                             values[l]=swaption.NPV();
                             Swaption swaption_cash =
                                 vars.makeSwaption(swap,exerciseDate,0.20,
-                                                  Settlement.Type.Cash);
+                                                  Settlement.Type.Cash,settings);
                             values_cash[l]=swaption_cash.NPV();
                         }
                         // and check that they go the right way
@@ -295,6 +297,7 @@ namespace TestSuite
         {
             //"Testing swaption treatment of spread...";
 
+            SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars();
 
             double[] spreads = { -0.002, -0.001, 0.0, 0.001, 0.002 };
@@ -323,15 +326,15 @@ namespace TestSuite
                                         .withFloatingLegSpread(0.0)
                                         .withType(type[k]);
                             Swaption swaption1 =
-                                vars.makeSwaption(swap,exerciseDate,0.20);
+                                vars.makeSwaption(swap,exerciseDate,0.20,settings);
                             Swaption swaption2 =
-                                vars.makeSwaption(equivalentSwap,exerciseDate,0.20);
+                                vars.makeSwaption(equivalentSwap,exerciseDate,0.20,settings);
                             Swaption swaption1_cash =
                                 vars.makeSwaption(swap,exerciseDate,0.20,
-                                                  Settlement.Type.Cash);
+                                                  Settlement.Type.Cash,settings);
                             Swaption swaption2_cash =
                                 vars.makeSwaption(equivalentSwap,exerciseDate,0.20,
-                                                  Settlement.Type.Cash);
+                                                  Settlement.Type.Cash,settings);
                             if (Math.Abs(swaption1.NPV()-swaption2.NPV()) > 1.0e-6)
                                 Assert.Fail("wrong spread treatment:" +
                                     "\nexercise: " + exerciseDate +
@@ -360,6 +363,7 @@ namespace TestSuite
         {
             //"Testing swaption value against cached value...");
 
+            SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars();
 
             vars.today = new Date(13, 3, 2002);
@@ -374,7 +378,7 @@ namespace TestSuite
                 .withEffectiveDate(startDate);
 
             Swaption swaption =
-                vars.makeSwaption(swap, exerciseDate, 0.20);
+                vars.makeSwaption(swap, exerciseDate, 0.20,settings);
             //#if QL_USE_INDEXED_COUPON
                 double cachedNPV = 0.036418158579;
             //#else
@@ -394,6 +398,7 @@ namespace TestSuite
         {
             //"Testing swaption vega...";
 
+            SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars();
 
             Settlement.Type[] types = { Settlement.Type.Physical, Settlement.Type.Cash };
@@ -416,14 +421,14 @@ namespace TestSuite
                             for (int u=0; u<vols.Length ; u++) {
                                 Swaption swaption =
                                     vars.makeSwaption(swap, exerciseDate,
-                                                      vols[u], types[h]);
+                                                      vols[u], types[h],settings);
                                 // FLOATING_POINT_EXCEPTION
                                 Swaption swaption1 =
                                     vars.makeSwaption(swap, exerciseDate,
-                                                      vols[u]-shift, types[h]);
+                                                      vols[u]-shift, types[h],settings);
                                 Swaption swaption2 =
                                     vars.makeSwaption(swap, exerciseDate,
-                                                      vols[u]+shift, types[h]);
+                                                      vols[u]+shift, types[h],settings);
 
                                 double swaptionNPV = swaption.NPV();
                                 double numericalVegaPerPoint =
@@ -463,7 +468,8 @@ namespace TestSuite
         {
             //"Testing implied volatility for swaptions...";
 
-            CommonVars vars=new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars();
 
             int maxEvaluations = 100;
             double tolerance = 1.0e-08;
@@ -495,7 +501,7 @@ namespace TestSuite
                                 for (int u = 0; u < vols.Length; u++)
                                 {
                                     Swaption swaption = vars.makeSwaption(swap, exerciseDate,
-                                                                            vols[u], types[h]);
+                                                                            vols[u], types[h],settings);
                                     // Black price
                                     double value = swaption.NPV();
                                     double implVol = 0.0;
@@ -511,7 +517,7 @@ namespace TestSuite
                                     catch (System.Exception e)
                                     {
                                         // couldn't bracket?
-                                        swaption.setPricingEngine(vars.makeEngine(0.0));
+                                        swaption.setPricingEngine(vars.makeEngine(0.0,settings));
                                         double value2 = swaption.NPV();
                                         if (Math.Abs(value - value2) < tolerance)
                                         {
@@ -531,7 +537,7 @@ namespace TestSuite
                                     if (Math.Abs(implVol - vols[u]) > tolerance)
                                     {
                                         // the difference might not matter
-                                        swaption.setPricingEngine(vars.makeEngine(implVol));
+                                        swaption.setPricingEngine(vars.makeEngine(implVol,settings));
                                         double value2 = swaption.NPV();
                                         if (Math.Abs(value - value2) > tolerance)
                                         {

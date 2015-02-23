@@ -63,6 +63,7 @@ namespace BermudanSwaption
 
         static void Main(string[] args)
         {
+            SavedSettings settings = new SavedSettings();
 
             DateTime timer = DateTime.Now;
 
@@ -149,7 +150,7 @@ namespace BermudanSwaption
                                    indexSixMonths.tenor(),
                                    indexSixMonths.dayCounter(),
                                    indexSixMonths.dayCounter(),
-                                   rhTermStructure));
+                                   rhTermStructure,settings));
                 swaptions.Last().addTimesTo(times);
             }
 
@@ -228,7 +229,7 @@ namespace BermudanSwaption
 
             Exercise bermudanExercise = new BermudanExercise(bermudanDates);
 
-            Swaption bermudanSwaption = new Swaption(atmSwap, bermudanExercise);
+            Swaption bermudanSwaption = new Swaption(atmSwap, bermudanExercise,settings);
 
             // Do the pricing for each model
 
@@ -251,7 +252,7 @@ namespace BermudanSwaption
                               + "struck at {0:0.00000 %} (OTM)",
                               fixedOtmRate);
 
-            Swaption otmBermudanSwaption = new Swaption(otmSwap, bermudanExercise);
+            Swaption otmBermudanSwaption = new Swaption(otmSwap, bermudanExercise,settings);
 
             // Do the pricing for each model
             otmBermudanSwaption.setPricingEngine(new TreeSwaptionEngine(modelG2, 50));
@@ -271,7 +272,7 @@ namespace BermudanSwaption
                               + "struck at {0:0.00000 %} (ITM)",
                               fixedItmRate);
 
-            Swaption itmBermudanSwaption = new Swaption(itmSwap, bermudanExercise);
+            Swaption itmBermudanSwaption = new Swaption(itmSwap, bermudanExercise,settings);
 
             // Do the pricing for each model
             itmBermudanSwaption.setPricingEngine(new TreeSwaptionEngine(modelG2, 50));

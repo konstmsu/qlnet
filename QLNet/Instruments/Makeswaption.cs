@@ -41,22 +41,23 @@ namespace QLNet
         private double?  strike_;
 
         IPricingEngine engine_;
+        SavedSettings settings_;
 
 
         public MakeSwaption(SwapIndex swapIndex,
-                            Period optionTenor,
-                            double? strike = null)
+                            Period optionTenor, SavedSettings settings, double? strike = null)
         {
             swapIndex_ = swapIndex;
             delivery_ = Settlement.Type.Physical;
             optionTenor_ = optionTenor;
+            settings_ = settings;
             optionConvention_ = BusinessDayConvention.ModifiedFollowing;
             strike_ = strike;
         }
         
         public MakeSwaption(SwapIndex swapIndex,
-                            Period optionTenor)
-            : this(swapIndex, optionTenor,1) {}
+                            Period optionTenor, SavedSettings settings)
+            : this(swapIndex, optionTenor, settings, 1) {}
 
         public MakeSwaption withSettlementType(Settlement.Type delivery){
             delivery_ = delivery;
@@ -121,7 +122,7 @@ namespace QLNet
                 .withFixedLegConvention(bdc)
                 .withFixedLegTerminationDateConvention(bdc);
 
-           Swaption swaption=new Swaption(underlyingSwap_, exercise_, delivery_);
+           Swaption swaption=new Swaption(underlyingSwap_, exercise_, delivery_,settings_);
            swaption.setPricingEngine(engine_);
            return swaption;
         }

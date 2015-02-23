@@ -144,21 +144,22 @@ namespace TestSuite
 
             double tolerance = 1.0e-4;
 
-            Swaption swaption = new Swaption(itmSwap, exercise);
+            SavedSettings settings=new SavedSettings();
+            Swaption swaption = new Swaption(itmSwap, exercise,settings);
             swaption.setPricingEngine(engine);
             if (Math.Abs(swaption.NPV()-itmValue) > tolerance)
                 Assert.Fail("failed to reproduce cached in-the-money swaption value:\n"
                             + "calculated: " + swaption.NPV() + "\n"
                             + "expected:   " + itmValue);
             
-            swaption = new Swaption(atmSwap, exercise);
+            swaption = new Swaption(atmSwap, exercise,settings);
             swaption.setPricingEngine(engine);
             if (Math.Abs(swaption.NPV()-atmValue) > tolerance)
                 Assert.Fail("failed to reproduce cached at-the-money swaption value:\n"
                             + "calculated: " + swaption.NPV() + "\n"
                             + "expected:   " + atmValue);
             
-            swaption = new Swaption(otmSwap, exercise);
+            swaption = new Swaption(otmSwap, exercise,settings);
             swaption.setPricingEngine(engine);
             if (Math.Abs(swaption.NPV()-otmValue) > tolerance)
                 Assert.Fail("failed to reproduce cached out-of-the-money "
@@ -176,21 +177,21 @@ namespace TestSuite
             itmValue = 42.1974; atmValue = 12.7825; otmValue = 2.4399;
             #endif
 
-            swaption = new Swaption(itmSwap, exercise);
+            swaption = new Swaption(itmSwap, exercise,settings);
             swaption.setPricingEngine(engine);
             if (Math.Abs(swaption.NPV()-itmValue) > tolerance)
                 Assert.Fail("failed to reproduce cached in-the-money swaption value:\n"
                             + "calculated: " + swaption.NPV() + "\n"
                             + "expected:   " + itmValue);
             
-            swaption = new Swaption(atmSwap, exercise);
+            swaption = new Swaption(atmSwap, exercise,settings);
             swaption.setPricingEngine(engine);
             if (Math.Abs(swaption.NPV()-atmValue) > tolerance)
                 Assert.Fail("failed to reproduce cached at-the-money swaption value:\n"
                             + "calculated: " + swaption.NPV() + "\n"
                             + "expected:   " + atmValue);
             
-            swaption = new Swaption(otmSwap, exercise);
+            swaption = new Swaption(otmSwap, exercise,settings);
             swaption.setPricingEngine(engine);
             if (Math.Abs(swaption.NPV()-otmValue) > tolerance)
                 Assert.Fail("failed to reproduce cached out-of-the-money "

@@ -68,7 +68,8 @@ namespace TestSuite
          List<CalibrationHelper> swaptions = new List<CalibrationHelper>();
          for (int i=0; i<data.Length; i++) {
                Quote vol = new SimpleQuote(data[i].volatility);
-               CalibrationHelper helper =
+             SavedSettings settings=new SavedSettings();
+             CalibrationHelper helper =
                                     new SwaptionHelper(new Period(data[i].start,TimeUnit.Years),
                                                       new Period(data[i].length, TimeUnit.Years),
                                                       new Handle<Quote>(vol),
@@ -76,7 +77,7 @@ namespace TestSuite
                                                       new Period(1, TimeUnit.Years), 
                                                       new Thirty360(),
                                                       new Actual360(), 
-                                                      termStructure);
+                                                      termStructure,settings);
                helper.setPricingEngine(engine);
                swaptions.Add(helper);
          }

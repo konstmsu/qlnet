@@ -167,8 +167,7 @@ namespace TestSuite
             }
         }
 
-            public void makeCoherenceTest(  string description,
-                                            SwaptionVolatilityDiscrete vol) 
+            public void makeCoherenceTest(string description, SwaptionVolatilityDiscrete vol, SavedSettings settings) 
             {
 
                 for (int i=0; i<atm.tenors.options.Count; ++i) {
@@ -194,7 +193,7 @@ namespace TestSuite
 
                 BlackSwaptionEngine engine=new  BlackSwaptionEngine(
                                                 termStructure,
-                                                new Handle<SwaptionVolatilityStructure>(vol));
+                                                new Handle<SwaptionVolatilityStructure>(vol), settings);
 
                 for (int j=0; j<atm.tenors.swaps.Count; j++) {
                     double swapLength = vol.swapLength(atm.tenors.swaps[j]);
@@ -262,7 +261,7 @@ namespace TestSuite
 
                         // ATM swaption
                         Swaption swaption = new MakeSwaption(
-                                                swapIndex, atm.tenors.options[i])
+                                                swapIndex, atm.tenors.options[i],settings)
                                                 .withPricingEngine(engine)
                                                 .value(); ;
                         
@@ -315,6 +314,7 @@ namespace TestSuite
             //"Testing swaption volatility matrix...");
 
             CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
 
             SwaptionVolatilityMatrix vol;
             string description;
@@ -328,7 +328,7 @@ namespace TestSuite
                                                 vars.atm.volsHandle,
                                                 vars.conventions.dayCounter);
 
-            vars.makeCoherenceTest(description, vol);
+            vars.makeCoherenceTest(description, vol, settings);
 
             //fixed reference date, floating market data
             description = "fixed reference date, floating market data";
@@ -340,7 +340,7 @@ namespace TestSuite
                                                 vars.atm.volsHandle,
                                                 vars.conventions.dayCounter);
 
-            vars.makeCoherenceTest(description, vol);
+            vars.makeCoherenceTest(description, vol, settings);
 
             // floating reference date, fixed market data
             description = "floating reference date, fixed market data";
@@ -351,7 +351,7 @@ namespace TestSuite
                                                 vars.atm.volsHandle,
                                                 vars.conventions.dayCounter);
 
-            vars.makeCoherenceTest(description, vol);
+            vars.makeCoherenceTest(description, vol, settings);
 
             // fixed reference date, fixed market data
             description = "fixed reference date, fixed market data";
@@ -363,7 +363,7 @@ namespace TestSuite
                                                 vars.atm.volsHandle,
                                                 vars.conventions.dayCounter);
 
-            vars.makeCoherenceTest(description, vol);
+            vars.makeCoherenceTest(description, vol, settings);
         }
 
         [TestMethod()]

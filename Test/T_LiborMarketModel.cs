@@ -207,6 +207,7 @@ namespace TestSuite
             //("Testing calibration of a Libor forward model...");
 
             //SavedSettings backup;
+                SavedSettings settings=new SavedSettings();
 
             const int size = 14;
             const double tolerance = 8e-3;
@@ -270,7 +271,7 @@ namespace TestSuite
                             new SwaptionHelper(maturity, len, swaptionVol, index,
                                                index.tenor(), dayCounter,
                                                index.dayCounter(),
-															  termStructure, CalibrationHelper.CalibrationErrorType.ImpliedVolError );
+															  termStructure,  settings, CalibrationHelper.CalibrationErrorType.ImpliedVolError);
 
                         swaptionHelper.setPricingEngine(new LfmSwaptionEngine(model,termStructure));
 
@@ -308,6 +309,7 @@ namespace TestSuite
             //"Testing forward swap and swaption pricing...");
 
             //SavedSettings backup;
+            SavedSettings settings = new SavedSettings();
 
             const int size  = 10;
             const int steps = 8*size;
@@ -408,7 +410,7 @@ namespace TestSuite
                             new EuropeanExercise(process.fixingDates()[i]);
 
                         Swaption swaption =
-                            new Swaption(forwardSwap, exercise);
+                            new Swaption(forwardSwap, exercise,settings);
                         swaption.setPricingEngine(engine);
 
                         GeneralStatistics stat = new GeneralStatistics();

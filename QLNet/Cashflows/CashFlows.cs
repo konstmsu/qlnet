@@ -269,7 +269,7 @@ namespace QLNet
          public override double value(double y) 
          {
             InterestRate yield = new InterestRate(y, dayCounter_, compounding_, frequency_);
-            double NPV = CashFlows.npv(leg_, yield, includeSettlementDateFlows_, settlementDate_, npvDate_);
+            double NPV = CashFlows.npv(leg_, yield, includeSettlementDateFlows_, settings_, settlementDate: settlementDate_, npvDate: npvDate_);
             return npv_ - NPV;
          }
 
@@ -640,7 +640,7 @@ namespace QLNet
       public static double accruedAmount(Leg leg, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null)
       {
 			if ( settlementDate == null )
-				settlementDate = Settings.evaluationDate();
+                settlementDate = settings.evaluationDate();
 
          CashFlow cf = nextCashFlow(leg, includeSettlementDateFlows, settings, settlementDate);
          if (cf == null) return 0;
@@ -700,14 +700,13 @@ namespace QLNet
 
       // Basis-point sensitivity of the cash flows.
       // The result is the change in NPV due to a uniform 1-basis-point change in the rate paid by the cash flows. The change for each coupon is discounted according to the given term structure.
-      public static double bps(Leg leg, YieldTermStructure discountCurve, bool includeSettlementDateFlows,
-                               Date settlementDate = null, Date npvDate = null)
+      public static double bps(Leg leg, YieldTermStructure discountCurve, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          if (leg.empty())
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -797,14 +796,13 @@ namespace QLNet
       // according to the given constant interest rate.  The result
       // is affected by the choice of the interest-rate compounding
       // and the relative frequency and day counter.
-      public static double npv(Leg leg, InterestRate yield, bool includeSettlementDateFlows,
-                               Date settlementDate = null, Date npvDate = null)
+      public static double npv(Leg leg, InterestRate yield, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          if (leg.empty())
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+             settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -854,11 +852,10 @@ namespace QLNet
         }
         return npv;
       }
-      public static double npv(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                               bool includeSettlementDateFlows, Date settlementDate = null, Date npvDate = null)
+      public static double npv(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          return npv(leg, new InterestRate(yield, dayCounter, compounding, frequency),
-                    includeSettlementDateFlows, settlementDate, npvDate);
+                    includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
       }
 
       //! Basis-point sensitivity of the cash flows.
@@ -869,28 +866,27 @@ namespace QLNet
       // affected by the choice of the interest-rate compounding
       // and the relative frequency and day counter.
 
-      public static double bps(Leg leg, InterestRate yield, bool includeSettlementDateFlows,
-                               Date settlementDate = null, Date npvDate = null)
+      public static double bps(Leg leg, InterestRate yield, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          if (leg.empty())
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+            settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
 
          FlatForward flatRate = new FlatForward(settlementDate, yield.rate(), yield.dayCounter(),
                                                yield.compounding(), yield.frequency());
-         return bps(leg, flatRate, includeSettlementDateFlows, settlementDate, npvDate);
+         return bps(leg, flatRate, includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
       }
 
-      public static double bps(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                               bool includeSettlementDateFlows, Date settlementDate = null, Date npvDate = null)
+      public static double bps(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, 
+          Date settlementDate = null, Date npvDate = null)
       {
          return bps(leg, new InterestRate(yield, dayCounter, compounding, frequency),
-                    includeSettlementDateFlows,settlementDate, npvDate);
+                    includeSettlementDateFlows,settings,settlementDate, npvDate);
       }
 
       //! NPV of a single cash flows 
@@ -1122,7 +1118,7 @@ namespace QLNet
          if (npvDate == null)
             npvDate = settlementDate;
 
-         double npv = CashFlows.npv(leg, yield,includeSettlementDateFlows,settlementDate, npvDate);
+         double npv = CashFlows.npv(leg, yield,includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
          double modifiedDuration = CashFlows.duration(leg, yield, Duration.Type.Modified,includeSettlementDateFlows,
                                                       settings, settlementDate, npvDate);
          double convexity = CashFlows.convexity(leg, yield, includeSettlementDateFlows, settlementDate, npvDate);
@@ -1157,7 +1153,7 @@ namespace QLNet
          if (npvDate == null)
             npvDate = settlementDate;
 
-         double npv = CashFlows.npv(leg, yield, includeSettlementDateFlows, settlementDate, npvDate);
+         double npv = CashFlows.npv(leg, yield, includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
          double modifiedDuration = CashFlows.duration(leg, yield, Duration.Type.Modified, includeSettlementDateFlows,
                                                       settings, settlementDate, npvDate);
 
