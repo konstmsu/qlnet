@@ -38,22 +38,26 @@ namespace QLNet
       {
           get
           {
+              // TODO: This is used by Money class for conversion is cases such as == comparison and Equals implementation so going to be challenging to inject...
               if (instance_ == null)
               {
                   instance_ =
-                     new ExchangeRateManager();
+                     new ExchangeRateManager(new SavedSettings());
               }
               return instance_;
           }
       }
 
-      private ExchangeRateManager() {
+      private ExchangeRateManager(SavedSettings settings)
+      {
+          _settings = settings;
           addKnownRates();
       }
 
-      private System.Collections.Generic.Dictionary<int,List<Entry>> data_ = new Dictionary<int,List<Entry>>();
+       private System.Collections.Generic.Dictionary<int,List<Entry>> data_ = new Dictionary<int,List<Entry>>();
+       SavedSettings _settings;
 
-      public struct Entry
+       public struct Entry
       {
          public Entry(ExchangeRate r, Date s, Date e)
          {
@@ -172,7 +176,7 @@ namespace QLNet
             return new ExchangeRate(source, target, 1.0);
 
          if (date == new Date())
-            date = Settings.evaluationDate();
+            date = _settings.evaluationDate();
 
          if (type == ExchangeRate.Type.Direct)
          {
