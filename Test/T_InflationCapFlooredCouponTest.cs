@@ -51,6 +51,8 @@ namespace TestSuite
          public YoYInflationTermStructure yoyTS;
          public RelinkableHandle<YoYInflationTermStructure> hy = new RelinkableHandle<YoYInflationTermStructure>();
 
+		    public readonly SavedSettings settings_;
+
          // setup
          public CommonVars() 
          {
@@ -65,6 +67,7 @@ namespace TestSuite
             Date today = new Date(13, Month.August, 2007);
             evaluationDate = calendar.adjust(today);
             Settings.setEvaluationDate(evaluationDate);
+             settings_ = new SavedSettings();
             settlementDays = 0;
             fixingDays = 0;
             settlement = calendar.advance(today,settlementDays,TimeUnit.Days);
@@ -87,7 +90,7 @@ namespace TestSuite
                 207.3, -999.0, -999 };
             // link from yoy index to yoy TS
             bool interp = false;
-            iir = new YYUKRPIr(interp, hy);
+            iir = new YYUKRPIr(interp, hy, settings_);
             for (int i=0; i<rpiSchedule.Count;i++) 
             {
                iir.addFixing(rpiSchedule[i], fixData[i]);
@@ -318,8 +321,8 @@ namespace TestSuite
       {
          // Testing collared coupon against its decomposition...
 
-          var settings = new SavedSettings();
           CommonVars vars = new CommonVars();
+          var settings = vars.settings_;
 
          double tolerance = 1e-10;
          double npvVanilla,npvCappedLeg,npvFlooredLeg,npvCollaredLeg,npvCap,npvFloor,npvCollar;
@@ -631,8 +634,8 @@ namespace TestSuite
 
          // Testing inflation capped/floored coupon against inflation capfloor instrument...
 
-          SavedSettings settings = new SavedSettings();
           CommonVars vars = new CommonVars();
+          SavedSettings settings = vars.settings_;
 
          int[] lengths = { 1, 2, 3, 5, 7, 10, 15, 20 };
          // vol is low ...

@@ -43,11 +43,10 @@ namespace QLNet
 	//! Genuine year-on-year South African CPI (i.e. not a ratio of South African CPI)
 	public class YYZACPI : YoYInflationIndex
 	{
-		public YYZACPI( bool interpolated )
-			: this( interpolated, new Handle<YoYInflationTermStructure>() ) { }
+		public YYZACPI(bool interpolated, SavedSettings settings)
+			: this( interpolated, new Handle<YoYInflationTermStructure>(), settings) { }
 
-		public YYZACPI( bool interpolated,
-							Handle<YoYInflationTermStructure> ts )
+		public YYZACPI(bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
 			: base( "YY_CPI",
 					 new ZARegion(),
 					 false,
@@ -56,17 +55,16 @@ namespace QLNet
 					 Frequency.Monthly,
 					 new Period( 1, TimeUnit.Months ),
 					 new ZARCurrency(),
-					 ts ) { }
+					 ts, settings) { }
 	}
 
 	//! Fake year-on-year South African CPI (i.e. a ratio of South African CPI)
 	public class YYZACPIr : YoYInflationIndex
 	{
-		public YYZACPIr( bool interpolated )
-			: this( interpolated, new Handle<YoYInflationTermStructure>() ) { }
+		public YYZACPIr(bool interpolated, SavedSettings settings)
+			: this( interpolated, new Handle<YoYInflationTermStructure>(), settings) { }
 
-		public YYZACPIr( bool interpolated,
-							 Handle<YoYInflationTermStructure> ts )
+		public YYZACPIr(bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
 			: base( "YYR_CPI",
 					 new ZARegion(),
 					 false,
@@ -75,6 +73,6 @@ namespace QLNet
 					 Frequency.Monthly,
 					 new Period( 1, TimeUnit.Months ),
 					 new ZARCurrency(),
-					 ts ) { }
+					 ts, settings) { }
 	}
 }

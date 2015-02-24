@@ -629,7 +629,7 @@ namespace TestSuite
 			SavedSettings backup = new SavedSettings();
 			//IndexHistoryCleaner cleaner = new IndexHistoryCleaner();
 
-			YYEUHICP yyeuhicp = new YYEUHICP( true );
+			YYEUHICP yyeuhicp = new YYEUHICP( true, backup);
 			if ( yyeuhicp.name() != "EU YY_HICP"
 				|| yyeuhicp.frequency() != Frequency.Monthly
 				|| yyeuhicp.revised()
@@ -646,7 +646,7 @@ namespace TestSuite
 							+ yyeuhicp.availabilityLag() + ")" );
 			}
 
-			YYEUHICPr yyeuhicpr = new YYEUHICPr( true );
+			YYEUHICPr yyeuhicpr = new YYEUHICPr( true, backup);
 			if ( yyeuhicpr.name() != "EU YYR_HICP"
 				|| yyeuhicpr.frequency() != Frequency.Monthly
 				|| yyeuhicpr.revised()
@@ -663,7 +663,7 @@ namespace TestSuite
 								+ yyeuhicpr.availabilityLag() + ")" );
 			}
 
-			YYUKRPI yyukrpi = new YYUKRPI( false );
+			YYUKRPI yyukrpi = new YYUKRPI( false, backup);
 			if ( yyukrpi.name() != "UK YY_RPI"
 				|| yyukrpi.frequency() != Frequency.Monthly
 				|| yyukrpi.revised()
@@ -680,7 +680,7 @@ namespace TestSuite
 								+ yyukrpi.availabilityLag() + ")" );
 			}
 
-			YYUKRPIr yyukrpir = new YYUKRPIr( false );
+			YYUKRPIr yyukrpir = new YYUKRPIr( false, backup);
 			if ( yyukrpir.name() != "UK YYR_RPI"
 				|| yyukrpir.frequency() != Frequency.Monthly
 				|| yyukrpir.revised()
@@ -721,8 +721,8 @@ namespace TestSuite
             207.3 };
 
 			bool interp = false;
-			YYUKRPIr iir = new YYUKRPIr( interp );
-			YYUKRPIr iirYES = new YYUKRPIr( true );
+			YYUKRPIr iir = new YYUKRPIr( interp, backup);
+			YYUKRPIr iirYES = new YYUKRPIr( true, backup);
 			for ( int i = 0; i < fixData.Length; i++ )
 			{
 				iir.addFixing( rpiSchedule[i], fixData[i] );
@@ -812,7 +812,7 @@ namespace TestSuite
 
 			RelinkableHandle<YoYInflationTermStructure> hy = new RelinkableHandle<YoYInflationTermStructure>();
 			bool interp = false;
-			YYUKRPIr iir = new YYUKRPIr(interp, hy);
+			YYUKRPIr iir = new YYUKRPIr(interp, hy, backup);
 			for (int i=0; i<fixData.Length; i++) 
 			{
 				iir.addFixing(rpiSchedule[i], fixData[i]);

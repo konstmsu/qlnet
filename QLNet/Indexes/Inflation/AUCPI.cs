@@ -45,15 +45,10 @@ namespace QLNet
    //! Genuine year-on-year AU CPI (i.e. not a ratio)
    public class YYAUCPI : YoYInflationIndex 
    {
-      public YYAUCPI(Frequency frequency,
-                     bool revised,
-                     bool interpolated)
-         :this(frequency,revised,interpolated,new Handle<YoYInflationTermStructure>()){}
+      public YYAUCPI(Frequency frequency, bool revised, bool interpolated, SavedSettings settings)
+         :this(frequency,revised,interpolated,new Handle<YoYInflationTermStructure>(), settings){}
 
-      public YYAUCPI(Frequency frequency,
-                     bool revised,
-                     bool interpolated,
-                     Handle<YoYInflationTermStructure> ts)
+      public YYAUCPI(Frequency frequency, bool revised, bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
         : base("YY_CPI",
                new AustraliaRegion(),
                revised,
@@ -62,22 +57,17 @@ namespace QLNet
                frequency,
                new Period(2, TimeUnit.Months),
                new AUDCurrency(),
-               ts) {}
+               ts, settings) {}
    }
 
  
    //! Fake year-on-year AUCPI (i.e. a ratio)
    public class YYAUCPIr : YoYInflationIndex 
    {
-      public YYAUCPIr(Frequency frequency,
-                      bool revised,
-                      bool interpolated)
-         : this(frequency, revised, interpolated, new Handle<YoYInflationTermStructure>()) { }
+      public YYAUCPIr(Frequency frequency, bool revised, bool interpolated, SavedSettings settings)
+         : this(frequency, revised, interpolated, new Handle<YoYInflationTermStructure>(), settings) { }
 
-      public YYAUCPIr(Frequency frequency,
-                      bool revised,
-                      bool interpolated,
-                      Handle<YoYInflationTermStructure> ts )
+      public YYAUCPIr(Frequency frequency, bool revised, bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
         : base("YYR_CPI",
                new AustraliaRegion(),
                revised,
@@ -86,6 +76,6 @@ namespace QLNet
                frequency,
                new Period(2, TimeUnit.Months),
                new AUDCurrency(),
-               ts) {}
+               ts, settings) {}
    }
 }

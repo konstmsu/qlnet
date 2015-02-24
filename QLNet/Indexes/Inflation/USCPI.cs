@@ -43,11 +43,10 @@ namespace QLNet
    //! Genuine year-on-year US CPI (i.e. not a ratio of US CPI)
    public class YYUSCPI : YoYInflationIndex 
    {
-      public YYUSCPI(bool interpolated)
-         :this(interpolated,new Handle<YoYInflationTermStructure>()) {}
+      public YYUSCPI(bool interpolated, SavedSettings settings)
+         :this(interpolated,new Handle<YoYInflationTermStructure>(), settings) {}
 
-      public YYUSCPI(bool interpolated,
-                     Handle<YoYInflationTermStructure> ts)
+      public YYUSCPI(bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
         : base("YY_CPI",
                new USRegion(),
                false,
@@ -56,17 +55,16 @@ namespace QLNet
                Frequency.Monthly,
                new Period(1, TimeUnit.Months),
                new USDCurrency(),
-               ts) {}
+               ts, settings) {}
    }
 
    //! Fake year-on-year US CPI (i.e. a ratio of US CPI)
    public class YYUSCPIr : YoYInflationIndex 
    {
-      public YYUSCPIr(bool interpolated)
-         : this(interpolated, new Handle<YoYInflationTermStructure>()) { }
+      public YYUSCPIr(bool interpolated, SavedSettings settings)
+         : this(interpolated, new Handle<YoYInflationTermStructure>(), settings) { }
 
-      public YYUSCPIr(bool interpolated,
-                      Handle<YoYInflationTermStructure> ts)
+      public YYUSCPIr(bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
         : base("YYR_CPI",
                new USRegion(),
                false,
@@ -75,6 +73,6 @@ namespace QLNet
                Frequency.Monthly,
                new Period(1, TimeUnit.Months),
                new USDCurrency(),
-               ts) {}
+               ts, settings) {}
     }
 }

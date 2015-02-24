@@ -39,24 +39,24 @@ namespace QLNet
     //! Genuine year-on-year EU HICP (i.e. not a ratio of EU HICP)
     public class YYEUHICP : YoYInflationIndex 
     {
-       public YYEUHICP(bool interpolated)
-          : this(interpolated, new Handle<YoYInflationTermStructure>()) { }
+       public YYEUHICP(bool interpolated, SavedSettings settings)
+          : this(interpolated, new Handle<YoYInflationTermStructure>(), settings) { }
 
-       public YYEUHICP(bool interpolated,Handle<YoYInflationTermStructure> ts )
+       public YYEUHICP(bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
           : base("YY_HICP",new EURegion(),false,interpolated, false,Frequency.Monthly,
-                 new Period(1, TimeUnit.Months),new EURCurrency(), ts) {}
+                 new Period(1, TimeUnit.Months),new EURCurrency(), ts, settings) {}
     }
 
 
     //! Fake year-on-year EU HICP (i.e. a ratio of EU HICP)
     public class YYEUHICPr : YoYInflationIndex 
     {
-       public YYEUHICPr(bool interpolated)
-          : this(interpolated, new Handle<YoYInflationTermStructure>()) { }
+       public YYEUHICPr(bool interpolated, SavedSettings settings)
+          : this(interpolated, new Handle<YoYInflationTermStructure>(), settings) { }
 
-       public YYEUHICPr(bool interpolated,Handle<YoYInflationTermStructure> ts)
+       public YYEUHICPr(bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
           : base("YYR_HICP", new EURegion(), false, interpolated, true, Frequency.Monthly,
-                 new Period(1, TimeUnit.Months),new EURCurrency(),ts) {}
+                 new Period(1, TimeUnit.Months),new EURCurrency(),ts, settings) {}
     }
 
 }

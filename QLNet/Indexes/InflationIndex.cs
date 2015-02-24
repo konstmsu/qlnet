@@ -308,24 +308,19 @@ namespace QLNet
                                bool ratio, // is this one a genuine index or a ratio?
                                Frequency frequency,
                                Period availabilityLag,
-                               Currency currency)
+                               Currency currency, SavedSettings settings)
          :this(familyName,region,revised,interpolated,ratio,frequency,availabilityLag,currency,
-               new Handle<YoYInflationTermStructure>()) {}
+               new Handle<YoYInflationTermStructure>(), settings) {}
 
-      public YoYInflationIndex(string familyName,
-                               Region region,
-                               bool revised,
-                               bool interpolated,
-                               bool ratio, // is this one a genuine index or a ratio?
-                               Frequency frequency,
-                               Period availabilityLag,
-                               Currency currency,
-                               Handle<YoYInflationTermStructure> yoyInflation)
+      public YoYInflationIndex(string familyName, Region region, bool revised, bool interpolated, bool ratio, Frequency frequency, Period availabilityLag, Currency currency, Handle<YoYInflationTermStructure> yoyInflation, SavedSettings settings
+// is this one a genuine index or a ratio?
+          )
          : base(familyName, region, revised, interpolated,frequency, availabilityLag, currency)
       {
          ratio_ = ratio;
          yoyInflation_ = yoyInflation;
-         yoyInflation_.registerWith(update);
+          settings_ = settings;
+          yoyInflation_.registerWith(update);
       }
 
       /*! \warning the forecastTodaysFixing parameter (required by
@@ -334,7 +329,7 @@ namespace QLNet
       public override double fixing(Date fixingDate) { return fixing(fixingDate,false); }
       public override double fixing(Date fixingDate, bool forecastTodaysFixing)
       {
-         Date today = Settings.evaluationDate();
+         Date today = settings_.evaluationDate();
          Date todayMinusLag = today - availabilityLag_;
          KeyValuePair<Date,Date> limm = Utils.inflationPeriod(todayMinusLag, frequency_);
          Date lastFix = limm.Key-1;
@@ -463,7 +458,7 @@ namespace QLNet
         {
             return new YoYInflationIndex(familyName_, region_, revised_,
                                          interpolated_, ratio_, frequency_,
-                                         availabilityLag_, currency_, h);
+                                         availabilityLag_, currency_, h, settings_);
         }
       
       
@@ -486,5 +481,6 @@ namespace QLNet
         
       private bool ratio_;
       private Handle<YoYInflationTermStructure> yoyInflation_;
+       readonly SavedSettings settings_;
    }
 }

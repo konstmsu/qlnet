@@ -45,11 +45,10 @@ namespace QLNet
    //! Genuine year-on-year FR HICP (i.e. not a ratio)
    public class YYFRHICP : YoYInflationIndex 
    {
-      public YYFRHICP(bool interpolated)
-         :this(interpolated,new Handle<YoYInflationTermStructure>()){}
+      public YYFRHICP(bool interpolated, SavedSettings settings)
+         :this(interpolated,new Handle<YoYInflationTermStructure>(), settings){}
 
-      public YYFRHICP(bool interpolated,
-                      Handle<YoYInflationTermStructure> ts)
+      public YYFRHICP(bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
         : base("YY_HICP",
                new FranceRegion(),
                false,
@@ -58,17 +57,16 @@ namespace QLNet
                Frequency.Monthly,
                new Period(1, TimeUnit.Months),
                new EURCurrency(),
-               ts) {}
+               ts, settings) {}
    }
 
    //! Fake year-on-year FR HICP (i.e. a ratio)
    public class YYFRHICPr : YoYInflationIndex 
    {
-      public YYFRHICPr(bool interpolated)
-         : this(interpolated, new Handle<YoYInflationTermStructure>()) { }
+      public YYFRHICPr(bool interpolated, SavedSettings settings)
+         : this(interpolated, new Handle<YoYInflationTermStructure>(), settings) { }
 
-      public YYFRHICPr(bool interpolated,
-                       Handle<YoYInflationTermStructure> ts)
+      public YYFRHICPr(bool interpolated, Handle<YoYInflationTermStructure> ts, SavedSettings settings)
         : base("YYR_HICP",
                new FranceRegion(),
                false,
@@ -77,6 +75,6 @@ namespace QLNet
                Frequency.Monthly,
                new Period(1, TimeUnit.Months),
                new EURCurrency(),
-               ts) {}
+               ts, settings) {}
     }
 }
