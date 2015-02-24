@@ -751,12 +751,11 @@ namespace QLNet
       // At-the-money rate of the cash flows.
       // The result is the fixed rate for which a fixed rate cash flow  vector, equivalent to the input vector, has the required NPV according to the given term structure. If the required NPV is
       //  not given, the input cash flow vector's NPV is used instead.
-      public static double atmRate(Leg leg,YieldTermStructure discountCurve, bool includeSettlementDateFlows,
-                                   Date settlementDate = null, Date npvDate = null,double? targetNpv = null) 
+      public static double atmRate(Leg leg, YieldTermStructure discountCurve, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null, double? targetNpv = null) 
       {
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+            settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;

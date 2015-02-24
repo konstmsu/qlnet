@@ -29,6 +29,7 @@ namespace TestSuite {
     public class T_CapFloor {
         class CommonVars {
             // common data
+            public SavedSettings settings = new SavedSettings();
             public Date settlement;
             public List<double> nominals;
             public BusinessDayConvention convention;
@@ -82,10 +83,10 @@ namespace TestSuite {
                 CapFloor result;
                 switch (type) {
                     case CapFloorType.Cap:
-                        result = (CapFloor)new Cap(leg, new List<double>() { strike });
+                        result = (CapFloor)new Cap(leg, new List<double>() { strike },settings);
                         break;
                     case CapFloorType.Floor:
-                        result = (CapFloor)new Floor(leg, new List<double>() { strike });
+                        result = (CapFloor)new Floor(leg, new List<double>() { strike }, settings);
                         break;
                     default:
                         throw new ArgumentException("unknown cap/floor type");
@@ -221,6 +222,7 @@ namespace TestSuite {
         [TestMethod()]
         public void testConsistency() {
             CommonVars vars = new CommonVars();
+            var settings = new SavedSettings();
 
             int[] lengths = { 1, 2, 3, 5, 7, 10, 15, 20 };
             double[] cap_rates = { 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -240,7 +242,7 @@ namespace TestSuite {
                             Instrument floor = vars.makeCapFloor(CapFloorType.Floor, leg,
                                                   floor_rates[k], vols[l]);
                             Collar collar = new Collar(leg, new InitializedList<double>(1, cap_rates[j]),
-                                          new InitializedList<double>(1, floor_rates[k]));
+                                          new InitializedList<double>(1, floor_rates[k]), settings);
                             collar.setPricingEngine(vars.makeEngine(vols[l]));
 
                             if (Math.Abs((cap.NPV() - floor.NPV()) - collar.NPV()) > 1e-10) {

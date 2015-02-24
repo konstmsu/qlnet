@@ -26,15 +26,9 @@ namespace QLNet
 {
 	public class CapHelper : CalibrationHelper
 	{
-		public CapHelper( Period length,
-						  Handle<Quote> volatility,
-						  IborIndex index,
-						  // data for ATM swap-rate calculation
-						  Frequency fixedLegFrequency,
-						  DayCounter fixedLegDayCounter,
-						  bool includeFirstSwaplet,
-						  Handle<YieldTermStructure> termStructure,
-						  CalibrationErrorType errorType = CalibrationErrorType.RelativePriceError)
+		public CapHelper(Period length, Handle<Quote> volatility, IborIndex index, Frequency fixedLegFrequency, DayCounter fixedLegDayCounter, bool includeFirstSwaplet, Handle<YieldTermStructure> termStructure, SavedSettings settings, CalibrationErrorType errorType = CalibrationErrorType.RelativePriceError
+// data for ATM swap-rate calculation
+		    )
 			: base( volatility, termStructure, errorType )
 		{
 			length_ = length;
@@ -44,6 +38,7 @@ namespace QLNet
 			includeFirstSwaplet_ = includeFirstSwaplet;
 
 		    index_.notifyObserversEvent += (Callback)update;
+		    _settings = settings;
 		}
 
 		public override void addTimesTo( List<double> times )
@@ -128,7 +123,7 @@ namespace QLNet
 			Swap swap = new Swap( floatingLeg, fixedLeg );
 			swap.setPricingEngine( new DiscountingSwapEngine( termStructure_, false ) );
 			double fairRate = fixedRate - (double)(swap.NPV() / ( swap.legBPS( 1 ) / 1.0e-4 ));
-			cap_ = new Cap( floatingLeg, new InitializedList<double>( 1, fairRate ) );
+			cap_ = new Cap( floatingLeg, new InitializedList<double>( 1, fairRate ), _settings);
 
 			base.performCalculations();
 
@@ -140,5 +135,6 @@ namespace QLNet
 		private Frequency fixedLegFrequency_;
 		private DayCounter fixedLegDayCounter_;
 		private bool includeFirstSwaplet_;
+	    SavedSettings _settings;
 	}
 }

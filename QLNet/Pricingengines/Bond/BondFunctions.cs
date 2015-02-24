@@ -247,7 +247,7 @@ namespace QLNet
 
          return CashFlows.bps(bond.cashflows(), discountCurve, false,settings, settlementDate: settlementDate) * 100.0 / bond.notional(settlementDate);
       }
-      public static double atmRate(Bond bond, YieldTermStructure discountCurve, Date settlementDate = null, double? cleanPrice = null)
+      public static double atmRate(Bond bond, YieldTermStructure discountCurve, SavedSettings settings, Date settlementDate = null, double? cleanPrice = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -260,7 +260,7 @@ namespace QLNet
          double currentNotional = bond.notional(settlementDate);
          double? npv = dirtyPrice / 100.0 * currentNotional;
 
-         return CashFlows.atmRate(bond.cashflows(), discountCurve, false, settlementDate, settlementDate, npv);
+         return CashFlows.atmRate(bond.cashflows(), discountCurve, false, settings, settlementDate: settlementDate, npvDate: settlementDate, targetNpv: npv);
       }
 
       #endregion

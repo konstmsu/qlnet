@@ -161,6 +161,7 @@ namespace TestSuite
             //"Testing caplet pricing...";
 
             //SavedSettings backup;
+            var settings = new SavedSettings();
 
             const int size = 10;
             #if QL_USE_INDEXED_COUPON
@@ -188,7 +189,7 @@ namespace TestSuite
             AnalyticCapFloorEngine engine1 = new AnalyticCapFloorEngine(model, termStructure);
 
             Cap cap1 = new Cap( process.cashFlows(),
-                                new InitializedList<double>(size, 0.04));
+                                new InitializedList<double>(size, 0.04), settings);
             cap1.setPricingEngine(engine1);
 
             const double expected = 0.015853935178;
@@ -254,7 +255,7 @@ namespace TestSuite
                 Handle<Quote> capVol = new Handle<Quote>(new SimpleQuote(capVols[i-2]));
 
                 CalibrationHelper caphelper = new CapHelper(maturity, capVol, index,Frequency.Annual,
-                                  index.dayCounter(), true, termStructure, CalibrationHelper.CalibrationErrorType.ImpliedVolError);
+                                  index.dayCounter(), true, termStructure, settings, CalibrationHelper.CalibrationErrorType.ImpliedVolError);
 
                 caphelper.setPricingEngine(new AnalyticCapFloorEngine(model, termStructure));
 

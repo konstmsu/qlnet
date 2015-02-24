@@ -51,10 +51,6 @@ namespace TestSuite
          public YoYInflationTermStructure yoyTS;
          public RelinkableHandle<YoYInflationTermStructure> hy = new RelinkableHandle<YoYInflationTermStructure>();
 
-		   // cleanup
-
-		   SavedSettings backup = new SavedSettings();
-
          // setup
          public CommonVars() 
          {
@@ -275,20 +271,16 @@ namespace TestSuite
             return null;
         }
 
-         public YoYInflationCapFloor makeYoYCapFloor(CapFloorType type,
-                                                     List<CashFlow> leg,
-                                                     double strike,
-                                                     double volatility,
-                                                     int which) 
+         public YoYInflationCapFloor makeYoYCapFloor(CapFloorType type, List<CashFlow> leg, double strike, double volatility, int which, SavedSettings settings) 
          {
             YoYInflationCapFloor result = null;
             switch (type) 
             {
                 case CapFloorType.Cap:
-                    result = new YoYInflationCap(leg, new List<double>(){strike});
+                    result = new YoYInflationCap(leg, new List<double>(){strike},settings);
                     break;
                 case CapFloorType.Floor:
-                    result = new YoYInflationFloor(leg, new List<double>(){ strike});
+                    result = new YoYInflationFloor(leg, new List<double>(){ strike}, settings);
                     break;
                 default:
                     Utils.QL_FAIL("unknown YoYInflation cap/floor type");
@@ -326,7 +318,8 @@ namespace TestSuite
       {
          // Testing collared coupon against its decomposition...
 
-         CommonVars vars= new CommonVars();
+          var settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          double tolerance = 1e-10;
          double npvVanilla,npvCappedLeg,npvFlooredLeg,npvCollaredLeg,npvCap,npvFloor,npvCollar;
@@ -376,7 +369,7 @@ namespace TestSuite
                               caps,floors0,vars.volatility);
          Swap capLeg = new Swap(fixedLeg,cappedLeg);
          capLeg.setPricingEngine(engine);
-         YoYInflationCap cap = new YoYInflationCap(floatLeg, new List<double>(){capstrike});
+         YoYInflationCap cap = new YoYInflationCap(floatLeg, new List<double>(){capstrike},settings);
          cap.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
          npvVanilla = vanillaLeg.NPV();
          npvCappedLeg = capLeg.NPV();
@@ -403,7 +396,7 @@ namespace TestSuite
                               caps0,floors,vars.volatility);
          Swap floorLeg = new Swap(fixedLeg,flooredLeg);
          floorLeg.setPricingEngine(engine);
-         YoYInflationFloor floor= new YoYInflationFloor(floatLeg, new List<double>(){floorstrike});
+         YoYInflationFloor floor= new YoYInflationFloor(floatLeg, new List<double>(){floorstrike},settings);
          floor.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
          npvFlooredLeg = floorLeg.NPV();
          npvFloor = floor.NPV();
@@ -429,7 +422,7 @@ namespace TestSuite
          collarLeg.setPricingEngine(engine);
          YoYInflationCollar collar = new YoYInflationCollar(floatLeg,
                      new List<double>(){capstrike},
-                     new List<double>(){floorstrike});
+                     new List<double>(){floorstrike}, settings);
          collar.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
          npvCollaredLeg = collarLeg.NPV();
          npvCollar = collar.NPV();
@@ -461,7 +454,7 @@ namespace TestSuite
                               vars.volatility,gearing_p,spread_p);
          Swap capLeg_p = new Swap(fixedLeg,cappedLeg_p);
          capLeg_p.setPricingEngine(engine);
-         YoYInflationCap cap_p = new YoYInflationCap(floatLeg_p,new List<double>(){capstrike});
+         YoYInflationCap cap_p = new YoYInflationCap(floatLeg_p,new List<double>(){capstrike},settings);
          cap_p.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
          npvVanilla = vanillaLeg_p.NPV();
          npvCappedLeg = capLeg_p.NPV();
@@ -486,7 +479,7 @@ namespace TestSuite
                               vars.volatility,gearing_n,spread_n);
          Swap capLeg_n = new Swap(fixedLeg,cappedLeg_n);
          capLeg_n.setPricingEngine(engine);
-         YoYInflationFloor floor_n = new YoYInflationFloor(floatLeg,new List<double>(){(capstrike-spread_n)/gearing_n});
+         YoYInflationFloor floor_n = new YoYInflationFloor(floatLeg,new List<double>(){(capstrike-spread_n)/gearing_n},settings);
          floor_n.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
          npvVanilla = vanillaLeg_n.NPV();
          npvCappedLeg = capLeg_n.NPV();
@@ -524,7 +517,7 @@ namespace TestSuite
                               vars.volatility,gearing_p,spread_p);
          Swap floorLeg_p1 = new Swap(fixedLeg,flooredLeg_p1);
          floorLeg_p1.setPricingEngine(engine);
-         YoYInflationFloor floor_p1 = new YoYInflationFloor(floatLeg_p,new List<double>(){floorstrike});
+         YoYInflationFloor floor_p1 = new YoYInflationFloor(floatLeg_p,new List<double>(){floorstrike},settings);
          floor_p1.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
          npvVanilla = vanillaLeg_p.NPV();
          npvFlooredLeg = floorLeg_p1.NPV();
@@ -547,7 +540,7 @@ namespace TestSuite
                               vars.volatility,gearing_n,spread_n);
          Swap floorLeg_n = new Swap(fixedLeg,flooredLeg_n);
          floorLeg_n.setPricingEngine(engine);
-         YoYInflationCap cap_n = new YoYInflationCap(floatLeg,new List<double>(){(floorstrike-spread_n)/gearing_n});
+         YoYInflationCap cap_n = new YoYInflationCap(floatLeg,new List<double>(){(floorstrike-spread_n)/gearing_n},settings);
          cap_n.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
          npvVanilla = vanillaLeg_n.NPV();
          npvFlooredLeg = floorLeg_n.NPV();
@@ -579,7 +572,7 @@ namespace TestSuite
          collarLeg_p1.setPricingEngine(engine);
          YoYInflationCollar collar_p = new YoYInflationCollar(floatLeg_p,
                         new List<double>(){capstrike},
-                        new List<double>(){floorstrike});
+                        new List<double>(){floorstrike}, settings);
          collar_p.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
          npvVanilla = vanillaLeg_p.NPV();
          npvCollaredLeg = collarLeg_p1.NPV();
@@ -607,7 +600,7 @@ namespace TestSuite
          collarLeg_n1.setPricingEngine(engine);
          YoYInflationCollar collar_n = new YoYInflationCollar(floatLeg,
                         new List<double>(){(floorstrike-spread_n)/gearing_n},
-                        new List<double>(){(capstrike-spread_n)/gearing_n});
+                        new List<double>(){(capstrike-spread_n)/gearing_n}, settings);
          collar_n.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
          npvVanilla = vanillaLeg_n.NPV();
          npvCollaredLeg = collarLeg_n1.NPV();
@@ -658,10 +651,10 @@ namespace TestSuite
                         List<CashFlow> leg = vars.makeYoYLeg(vars.evaluationDate,lengths[i]);
 
                         Instrument cap = vars.makeYoYCapFloor(CapFloorType.Cap,
-                                                leg, strikes[j], vols[k], whichPricer);
+                                                leg, strikes[j], vols[k], whichPricer, settings);
 
                         Instrument floor = vars.makeYoYCapFloor(CapFloorType.Floor,
-                                                leg, strikes[j], vols[k], whichPricer);
+                                                leg, strikes[j], vols[k], whichPricer, settings);
 
                         Date from = vars.nominalTS.link.referenceDate();
                         Date to = from+new Period(lengths[i],TimeUnit.Years);

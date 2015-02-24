@@ -50,7 +50,7 @@ namespace QLNet
       //public class arguments;
       //public class engine;
 
-      public YoYInflationCapFloor(CapFloorType type, List<CashFlow> yoyLeg,  List<double> capRates,List<double> floorRates)
+      public YoYInflationCapFloor(CapFloorType type, List<CashFlow> yoyLeg, List<double> capRates, List<double> floorRates, SavedSettings settings)
 		{
 			type_ = type;
 			yoyLeg_ = yoyLeg;
@@ -77,9 +77,10 @@ namespace QLNet
 			
 			Settings.registerWith(update);
 
+          _settings = settings;
 		}
 
-      public YoYInflationCapFloor(CapFloorType type, List<CashFlow> yoyLeg,  List<double> strikes)
+      public YoYInflationCapFloor(CapFloorType type, List<CashFlow> yoyLeg, List<double> strikes, SavedSettings settings)
 		{
 			type_ = type;
 			yoyLeg_ = yoyLeg;
@@ -106,6 +107,7 @@ namespace QLNet
             cf.registerWith(update);
 
 			Settings.registerWith(update);
+          _settings = settings;
 		}
 		
 		//! \name Instrument interface
@@ -193,13 +195,13 @@ namespace QLNet
         if (type() == CapFloorType.Floor || type() == CapFloorType.Collar)
             floor.Add(floorRates()[i]);
 
-        return new YoYInflationCapFloor(type(), cf, cap, floor);
+        return new YoYInflationCapFloor(type(), cf, cap, floor, _settings);
 		}
 		//@}
 		public virtual double atmRate( YieldTermStructure discountCurve )
 		{
 			return CashFlows.atmRate(yoyLeg_, discountCurve,
-                                  false, discountCurve.referenceDate());
+                                  false, _settings, settlementDate: discountCurve.referenceDate());
 		}
 
 		//! implied term volatility
@@ -220,8 +222,9 @@ namespace QLNet
       private List<CashFlow> yoyLeg_;
 		private List<double> capRates_;
 		private List<double> floorRates_;
+	    SavedSettings _settings;
 
-		//! %Arguments for YoY Inflation cap/floor calculation
+	    //! %Arguments for YoY Inflation cap/floor calculation
 		public class Arguments : IPricingEngineArguments 
 		{
 			public Arguments()  
@@ -285,8 +288,8 @@ namespace QLNet
     /*! \ingroup instruments */
 	public class YoYInflationCap : YoYInflationCapFloor 
 	{
-      public YoYInflationCap(List<CashFlow> yoyLeg,List<double> exerciseRates)
-        : base(CapFloorType.Cap, yoyLeg, exerciseRates,new List<double>()) 
+      public YoYInflationCap(List<CashFlow> yoyLeg, List<double> exerciseRates, SavedSettings settings)
+        : base(CapFloorType.Cap, yoyLeg, exerciseRates,new List<double>(), settings) 
 		{}
     }
 
@@ -294,8 +297,8 @@ namespace QLNet
     /*! \ingroup instruments */
    public class YoYInflationFloor : YoYInflationCapFloor 
 	{
-      public YoYInflationFloor(List<CashFlow> yoyLeg,List<double> exerciseRates)
-        : base(CapFloorType.Floor, yoyLeg,new List<double>(), exerciseRates) 
+      public YoYInflationFloor(List<CashFlow> yoyLeg, List<double> exerciseRates, SavedSettings settings)
+        : base(CapFloorType.Floor, yoyLeg,new List<double>(), exerciseRates, settings) 
 		{}
     }
 
@@ -303,8 +306,8 @@ namespace QLNet
     /*! \ingroup instruments */
    public class YoYInflationCollar : YoYInflationCapFloor 
 	{
-      public YoYInflationCollar(List<CashFlow> yoyLeg, List<double> capRates,  List<double> floorRates)
-        : base(CapFloorType.Collar, yoyLeg, capRates, floorRates) {}
+      public YoYInflationCollar(List<CashFlow> yoyLeg, List<double> capRates, List<double> floorRates, SavedSettings settings)
+        : base(CapFloorType.Collar, yoyLeg, capRates, floorRates, settings) {}
     }
 
 	

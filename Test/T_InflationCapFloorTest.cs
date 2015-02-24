@@ -189,20 +189,16 @@ namespace TestSuite
 			}
 
 
-			public YoYInflationCapFloor makeYoYCapFloor(CapFloorType type,
-																	List<CashFlow> leg,
-																	double strike,
-																	double volatility,
-																	int which) 
+			public YoYInflationCapFloor makeYoYCapFloor(CapFloorType type, List<CashFlow> leg, double strike, double volatility, int which, SavedSettings settings) 
 			{
 				YoYInflationCapFloor result = null;
 				switch (type) 
 				{
 					case CapFloorType.Cap:
-						result = new YoYInflationCap(leg, new List<double>(){strike});
+						result = new YoYInflationCap(leg, new List<double>(){strike},settings);
 						break;
 					case CapFloorType.Floor:
-						result = new YoYInflationFloor( leg, new List<double>() { strike } );
+						result = new YoYInflationFloor( leg, new List<double>() { strike } ,settings);
 						break;
 					default:
 						Utils.QL_FAIL("unknown YoYInflation cap/floor type");
@@ -237,6 +233,7 @@ namespace TestSuite
 		public void testConsistency()
 		{
 			// Testing consistency between yoy inflation cap,floor and collar...
+            var settings = new SavedSettings();
 			CommonVars vars = new CommonVars();
 
 			int[] lengths = { 1, 2, 3, 5, 7, 10, 15, 20 };
@@ -258,13 +255,13 @@ namespace TestSuite
 								List<CashFlow> leg = vars.makeYoYLeg(vars.evaluationDate,lengths[i]);
 
 								YoYInflationCapFloor cap = vars.makeYoYCapFloor(CapFloorType.Cap,
-                                           leg, cap_rates[j], vols[l], whichPricer);
+                                           leg, cap_rates[j], vols[l], whichPricer, settings);
 
 								YoYInflationCapFloor floor = vars.makeYoYCapFloor(CapFloorType.Floor,
-                                           leg, floor_rates[k], vols[l], whichPricer);
+                                           leg, floor_rates[k], vols[l], whichPricer, settings);
 
 								YoYInflationCollar collar = new YoYInflationCollar(leg,new List<double>(){cap_rates[j]},
-                                  new List<double>(){floor_rates[k]});
+                                  new List<double>(){floor_rates[k]}, settings);
 								
 								collar.setPricingEngine(vars.makeEngine(vols[l], whichPricer));
 
@@ -371,7 +368,8 @@ namespace TestSuite
 
 			// Testing yoy inflation cap/floor parity...
 
-			 CommonVars vars = new CommonVars();
+            var settings = new SavedSettings();
+            CommonVars vars = new CommonVars();
 
 			 int[] lengths = { 1, 2, 3, 5, 7, 10, 15, 20 };
 			 // vol is low ...
@@ -388,10 +386,10 @@ namespace TestSuite
 								  List<CashFlow> leg = vars.makeYoYLeg(vars.evaluationDate,lengths[i]);
 
 								  Instrument cap = vars.makeYoYCapFloor(CapFloorType.Cap,
-															leg, strikes[j], vols[k], whichPricer);
+															leg, strikes[j], vols[k], whichPricer, settings);
 
 								  Instrument floor = vars.makeYoYCapFloor(CapFloorType.Floor,
-															leg, strikes[j], vols[k], whichPricer);
+															leg, strikes[j], vols[k], whichPricer, settings);
 
 								  Date from = vars.nominalTS.link.referenceDate();
 								  Date to = from+new Period(lengths[i],TimeUnit.Years);
@@ -441,16 +439,17 @@ namespace TestSuite
 		public void testCachedValue() 
 		{
 			// Testing Black yoy inflation cap/floor price  against cached values...
-			CommonVars vars = new CommonVars();
+            var settings = new SavedSettings();
+            CommonVars vars = new CommonVars();
 
 			int whichPricer = 0; // black
 
 			double K = 0.0295; // one centi-point is fair rate error i.e. < 1 cp
 			int j = 2;
 			List<CashFlow> leg = vars.makeYoYLeg(vars.evaluationDate,j);
-			Instrument cap = vars.makeYoYCapFloor(CapFloorType.Cap,leg, K, 0.01, whichPricer);
+			Instrument cap = vars.makeYoYCapFloor(CapFloorType.Cap,leg, K, 0.01, whichPricer, settings);
 
-			Instrument floor = vars.makeYoYCapFloor(CapFloorType.Floor,leg, K, 0.01, whichPricer);
+			Instrument floor = vars.makeYoYCapFloor(CapFloorType.Floor,leg, K, 0.01, whichPricer, settings);
 
 
 			// close to atm prices
@@ -466,8 +465,8 @@ namespace TestSuite
 
 			whichPricer = 1; // dd
 
-			cap = vars.makeYoYCapFloor(CapFloorType.Cap,leg, K, 0.01, whichPricer);
-			floor = vars.makeYoYCapFloor(CapFloorType.Floor,leg, K, 0.01, whichPricer);
+			cap = vars.makeYoYCapFloor(CapFloorType.Cap,leg, K, 0.01, whichPricer, settings);
+			floor = vars.makeYoYCapFloor(CapFloorType.Floor,leg, K, 0.01, whichPricer, settings);
 
 			// close to atm prices
 			double cachedCapNPVdd   = 9114.61;
@@ -482,8 +481,8 @@ namespace TestSuite
 
 			whichPricer = 2; // bachelier
 
-			cap = vars.makeYoYCapFloor(CapFloorType.Cap,leg, K, 0.01, whichPricer);
-			floor = vars.makeYoYCapFloor(CapFloorType.Floor,leg, K, 0.01, whichPricer);
+			cap = vars.makeYoYCapFloor(CapFloorType.Cap,leg, K, 0.01, whichPricer, settings);
+			floor = vars.makeYoYCapFloor(CapFloorType.Floor,leg, K, 0.01, whichPricer, settings);
 
 			// close to atm prices
 			double cachedCapNPVbac   = 8852.4;

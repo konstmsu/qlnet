@@ -48,16 +48,18 @@ namespace QLNet
       private List<CashFlow> floatingLeg_;
       private List<double> capRates_;
       private List<double> floorRates_;
+       readonly SavedSettings settings_;
 
-      #endregion
+       #endregion
 
       #region Constructors
 
-      public CapFloor(CapFloorType type, List<CashFlow> floatingLeg, List<double> capRates, List<double> floorRates)
+      public CapFloor(CapFloorType type, List<CashFlow> floatingLeg, List<double> capRates, List<double> floorRates, SavedSettings settings)
       {
 
          type_ = type;
-         floatingLeg_ = new List<CashFlow>(floatingLeg);
+          settings_ = settings;
+          floatingLeg_ = new List<CashFlow>(floatingLeg);
          capRates_ = new List<double>(capRates);
          floorRates_ = new List<double>(floorRates); 
 
@@ -84,11 +86,12 @@ namespace QLNet
          Settings.registerWith(update);
 
       }
-      public CapFloor(CapFloorType type,List<CashFlow> floatingLeg,List<double> strikes)
+      public CapFloor(CapFloorType type,List<CashFlow> floatingLeg,List<double> strikes, SavedSettings settings)
       {
 
          type_ = type;
-         floatingLeg_ = new List<CashFlow>(floatingLeg);
+          settings_ = settings;
+          floatingLeg_ = new List<CashFlow>(floatingLeg);
  
          if ( strikes.Count == 0 )
             throw new ArgumentException("no strikes given");
@@ -233,14 +236,14 @@ namespace QLNet
         if (getType() == CapFloorType.Floor || getType() == CapFloorType.Collar)
             floor.Add(floorRates()[i]);
 
-        return new CapFloor(getType(), cf, cap, floor);
+        return new CapFloor(getType(), cf, cap, floor,settings_);
       }
 
       public double atmRate(YieldTermStructure discountCurve) 
       {
          bool includeSettlementDateFlows = false;
          Date settlementDate = discountCurve.referenceDate();
-         return CashFlows.atmRate(floatingLeg_, discountCurve, includeSettlementDateFlows, settlementDate);
+         return CashFlows.atmRate(floatingLeg_, discountCurve, includeSettlementDateFlows, settlementDate: settlementDate, settings: settings_);
       }
 
       public double impliedVolatility(
@@ -351,8 +354,8 @@ namespace QLNet
    /// </summary>
    public class Cap : CapFloor 
    {
-      public Cap(List<CashFlow> floatingLeg,List<double> exerciseRates)
-         : base(CapFloorType.Cap, floatingLeg, exerciseRates, new List<double>()) {}
+      public Cap(List<CashFlow> floatingLeg, List<double> exerciseRates, SavedSettings settings)
+         : base(CapFloorType.Cap, floatingLeg, exerciseRates, new List<double>(),settings) {}
    };
 
    /// <summary>
@@ -361,8 +364,8 @@ namespace QLNet
    /// </summary>
    public class Floor : CapFloor 
     {
-      public Floor(List<CashFlow> floatingLeg,List<double> exerciseRates)
-        : base(CapFloorType.Floor, floatingLeg,new List<double>(), exerciseRates) {}
+      public Floor(List<CashFlow> floatingLeg, List<double> exerciseRates, SavedSettings settings)
+        : base(CapFloorType.Floor, floatingLeg,new List<double>(), exerciseRates,settings) {}
     };
 
    /// <summary>
@@ -371,8 +374,8 @@ namespace QLNet
    /// </summary>
    public class Collar : CapFloor 
     {
-      public Collar(List<CashFlow> floatingLeg,List<double> capRates, List<double> floorRates)
-          : base(CapFloorType.Collar, floatingLeg, capRates, floorRates) { }
+      public Collar(List<CashFlow> floatingLeg, List<double> capRates, List<double> floorRates, SavedSettings settings)
+          : base(CapFloorType.Collar, floatingLeg, capRates, floorRates,settings) { }
     };
 
    //! base class for cap/floor engines
