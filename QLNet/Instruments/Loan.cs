@@ -192,9 +192,7 @@ namespace QLNet
       private BusinessDayConvention paymentConvention_;
       private IborIndex iborIndex_;
 
-      public FloatingLoan(Type type, double nominal,
-                       Schedule floatingSchedule, double floatingSpread, DayCounter floatingDayCount,
-                       Schedule principalSchedule, BusinessDayConvention? paymentConvention,IborIndex index) :
+      public FloatingLoan(Type type, double nominal, Schedule floatingSchedule, double floatingSpread, DayCounter floatingDayCount, Schedule principalSchedule, BusinessDayConvention? paymentConvention, IborIndex index, SavedSettings settings) :
          base(2)
       {
 
@@ -223,7 +221,7 @@ namespace QLNet
             notionals_.Add(p.nominal());
          }
 
-         List<CashFlow> floatingLeg = new IborLeg(floatingSchedule, iborIndex_)
+         List<CashFlow> floatingLeg = new IborLeg(floatingSchedule, iborIndex_, settings)
                                      .withPaymentDayCounter(floatingDayCount_)
                                      .withSpreads(floatingSpread_)
                                      .withPaymentAdjustment(paymentConvention_)

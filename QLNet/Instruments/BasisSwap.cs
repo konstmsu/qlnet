@@ -50,15 +50,10 @@ namespace QLNet
 
 
       // constructor
-      public BasisSwap(Type type, double nominal,
-                         Schedule float1Schedule, IborIndex iborIndex1, double spread1, DayCounter float1DayCount,
-                         Schedule float2Schedule, IborIndex iborIndex2, double spread2, DayCounter float2DayCount)
+      public BasisSwap(Type type, double nominal, Schedule float1Schedule, IborIndex iborIndex1, double spread1, DayCounter float1DayCount, Schedule float2Schedule, IborIndex iborIndex2, double spread2, DayCounter float2DayCount, SavedSettings settings)
          : this(type, nominal, float1Schedule, iborIndex1, spread1, float1DayCount,
-                               float2Schedule, iborIndex2, spread2, float2DayCount, null) { }
-      public BasisSwap(Type type, double nominal,
-                         Schedule float1Schedule, IborIndex iborIndex1, double spread1, DayCounter float1DayCount,
-                         Schedule float2Schedule, IborIndex iborIndex2, double spread2, DayCounter float2DayCount,
-                         BusinessDayConvention? paymentConvention) :
+                               float2Schedule, iborIndex2, spread2, float2DayCount, null, settings) { }
+      public BasisSwap(Type type, double nominal, Schedule float1Schedule, IborIndex iborIndex1, double spread1, DayCounter float1DayCount, Schedule float2Schedule, IborIndex iborIndex2, double spread2, DayCounter float2DayCount, BusinessDayConvention? paymentConvention, SavedSettings settings) :
          base(2)
       {
          type_ = type;
@@ -77,13 +72,13 @@ namespace QLNet
          else
             paymentConvention_ = floating1Schedule_.businessDayConvention();
 
-         List<CashFlow> floating1Leg = new IborLeg(float1Schedule, iborIndex1)
+         List<CashFlow> floating1Leg = new IborLeg(float1Schedule, iborIndex1, settings)
                                      .withPaymentDayCounter(float1DayCount)
                                      .withSpreads(spread1)
                                      .withNotionals(nominal)
                                      .withPaymentAdjustment(paymentConvention_);
 
-         List<CashFlow> floating2Leg = new IborLeg(float2Schedule, iborIndex2)
+         List<CashFlow> floating2Leg = new IborLeg(float2Schedule, iborIndex2, settings)
                                      .withPaymentDayCounter(float2DayCount)
                                      .withSpreads(spread2)
                                      .withNotionals(nominal)

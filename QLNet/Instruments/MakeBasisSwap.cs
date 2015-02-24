@@ -46,11 +46,16 @@ namespace QLNet
       private DayCounter float1DayCount_, float2DayCount_;
 
       IPricingEngine engine_;
+       SavedSettings _settings;
 
 
-      public MakeBasisSwap(Period swapTenor, IborIndex index1, IborIndex index2) :
-         this(swapTenor, index1, index2, new Period(0, TimeUnit.Days)) { }
-      public MakeBasisSwap(Period swapTenor, IborIndex index1, IborIndex index2, Period forwardStart)
+       public MakeBasisSwap(Period swapTenor, IborIndex index1, IborIndex index2, SavedSettings settings) :
+         this(swapTenor, index1, index2, new Period(0, TimeUnit.Days), settings)
+       {
+           _settings = settings;
+       }
+
+       public MakeBasisSwap(Period swapTenor, IborIndex index1, IborIndex index2, Period forwardStart, SavedSettings settings)
       {
          swapTenor_ = swapTenor;
          iborIndex1_ = index1;
@@ -72,7 +77,8 @@ namespace QLNet
          float1DayCount_ = index1.dayCounter();
          float2DayCount_ = index2.dayCounter();
 
-         engine_ = new DiscountingBasisSwapEngine(index1.forwardingTermStructure(), index2.forwardingTermStructure());
+         engine_ = new DiscountingBasisSwapEngine(index1.forwardingTermStructure(), index2.forwardingTermStructure(), settings);
+           _settings = settings;
       }
 
       public MakeBasisSwap receiveFixed() { return receiveFixed(true); }
@@ -113,7 +119,7 @@ namespace QLNet
       public MakeBasisSwap withDiscountingTermStructure(Handle<YieldTermStructure> discountingTermStructure1,
                                                         Handle<YieldTermStructure> discountingTermStructure2)  
       {
-         engine_ = new DiscountingBasisSwapEngine(discountingTermStructure1, discountingTermStructure2);
+         engine_ = new DiscountingBasisSwapEngine(discountingTermStructure1, discountingTermStructure2, _settings);
          return this;
       }
 
@@ -258,7 +264,7 @@ namespace QLNet
 
          BasisSwap swap = new BasisSwap(type_, nominal_, 
                                         float1Schedule, iborIndex1_, float1Spread_,float1DayCount_,
-                                        float2Schedule, iborIndex2_, float2Spread_, float2DayCount_);
+                                        float2Schedule, iborIndex2_, float2Spread_, float2DayCount_, _settings);
          swap.setPricingEngine(engine_);
          return swap;
       }

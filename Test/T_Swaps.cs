@@ -47,7 +47,7 @@ namespace TestSuite
          // SavedSettings backup;
 
          // utilities
-         public VanillaSwap makeSwap(int length, double fixedRate, double floatingSpread)
+         public VanillaSwap makeSwap(int length, double fixedRate, double floatingSpread, SavedSettings settings)
          {
             Date maturity = calendar.advance(settlement, length, TimeUnit.Years, floatingConvention);
             Schedule fixedSchedule = new Schedule(settlement, maturity, new Period(fixedFrequency),
@@ -55,7 +55,7 @@ namespace TestSuite
             Schedule floatSchedule = new Schedule(settlement, maturity, new Period(floatingFrequency),
                                      calendar, floatingConvention, floatingConvention, DateGeneration.Rule.Forward, false);
             VanillaSwap swap = new VanillaSwap(type, nominal, fixedSchedule, fixedRate, fixedDayCount,
-                                               floatSchedule, index, floatingSpread, index.dayCounter());
+                                               floatSchedule, index, floatingSpread, index.dayCounter(), settings);
             swap.setPricingEngine(new DiscountingSwapEngine(termStructure));
             return swap;
          }
@@ -87,7 +87,8 @@ namespace TestSuite
       {
          //("Testing vanilla-swap calculation of fair fixed rate...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          int[] lengths = new int[] { 1, 2, 5, 10, 20 };
          double[] spreads = new double[] { -0.001, -0.01, 0.0, 0.01, 0.001 };
@@ -97,8 +98,8 @@ namespace TestSuite
             for (int j = 0; j < spreads.Length; j++)
             {
 
-               VanillaSwap swap = vars.makeSwap(lengths[i], 0.0, spreads[j]);
-               swap = vars.makeSwap(lengths[i], swap.fairRate(), spreads[j]);
+               VanillaSwap swap = vars.makeSwap(lengths[i], 0.0, spreads[j], settings);
+               swap = vars.makeSwap(lengths[i], swap.fairRate(), spreads[j], settings);
                if (Math.Abs(swap.NPV()) > 1.0e-10)
                {
                   Assert.Fail("recalculating with implied rate:\n"
@@ -115,7 +116,8 @@ namespace TestSuite
       {
          //("Testing vanilla-swap calculation of fair floating spread...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          int[] lengths = new int[] { 1, 2, 5, 10, 20 };
          double[] rates = new double[] { 0.04, 0.05, 0.06, 0.07 };
@@ -125,8 +127,8 @@ namespace TestSuite
             for (int j = 0; j < rates.Length; j++)
             {
 
-               VanillaSwap swap = vars.makeSwap(lengths[i], rates[j], 0.0);
-               swap = vars.makeSwap(lengths[i], rates[j], swap.fairSpread());
+               VanillaSwap swap = vars.makeSwap(lengths[i], rates[j], 0.0, settings);
+               swap = vars.makeSwap(lengths[i], rates[j], swap.fairSpread(), settings);
                if (Math.Abs(swap.NPV()) > 1.0e-10)
                {
                   Assert.Fail("recalculating with implied spread:\n"
@@ -144,6 +146,7 @@ namespace TestSuite
          //("Testing vanilla-swap dependency on fixed rate...");
 
          CommonVars vars = new CommonVars();
+         SavedSettings settings = new SavedSettings();
 
          int[] lengths = new int[] { 1, 2, 5, 10, 20 };
          double[] spreads = new double[] { -0.001, -0.01, 0.0, 0.01, 0.001 };
@@ -158,7 +161,7 @@ namespace TestSuite
                List<double> swap_values = new List<double>();
                for (int k = 0; k < rates.Length; k++)
                {
-                  VanillaSwap swap = vars.makeSwap(lengths[i], rates[k], spreads[j]);
+                  VanillaSwap swap = vars.makeSwap(lengths[i], rates[k], spreads[j], settings);
                   swap_values.Add(swap.NPV());
                }
 
@@ -182,7 +185,8 @@ namespace TestSuite
       {
          //("Testing vanilla-swap dependency on floating spread...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          int[] lengths = new int[] { 1, 2, 5, 10, 20 };
          double[] spreads = new double[] { -0.01, -0.002, -0.001, 0.0, 0.001, 0.002, 0.01 };
@@ -197,7 +201,7 @@ namespace TestSuite
                List<double> swap_values = new List<double>();
                for (int k = 0; k < spreads.Length; k++)
                {
-                  VanillaSwap swap = vars.makeSwap(lengths[i], rates[j], spreads[k]);
+                  VanillaSwap swap = vars.makeSwap(lengths[i], rates[j], spreads[k], settings);
                   swap_values.Add(swap.NPV());
                }
 
@@ -221,7 +225,8 @@ namespace TestSuite
       {
          //("Testing in-arrears swap calculation...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          /* See Hull, 4th ed., page 550
             Note: the calculation in the book is wrong (work out the adjustment and you'll get 0.05 + 0.000115 T1) */
@@ -253,9 +258,9 @@ namespace TestSuite
          var vol = new Handle<OptionletVolatilityStructure>(
                         new ConstantOptionletVolatility(vars.today, new NullCalendar(),
                                                         BusinessDayConvention.Following, capletVolatility, dayCounter));
-         IborCouponPricer pricer = new BlackIborCouponPricer(vol);
+         IborCouponPricer pricer = new BlackIborCouponPricer(vol, settings);
 
-         List<CashFlow> floatingLeg = new IborLeg(schedule, index)
+         List<CashFlow> floatingLeg = new IborLeg(schedule, index, settings)
                                      .withPaymentDayCounter(dayCounter)
                                      .withFixingDays(fixingDays)
                                      .withGearings(gearings)
@@ -280,14 +285,15 @@ namespace TestSuite
       {
          //("Testing vanilla-swap calculation against cached value...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          vars.today = new Date(17, Month.June, 2002);
          Settings.setEvaluationDate(vars.today);
          vars.settlement = vars.calendar.advance(vars.today, vars.settlementDays, TimeUnit.Days);
          vars.termStructure.linkTo(Utilities.flatRate(vars.settlement, 0.05, new Actual365Fixed()));
 
-         VanillaSwap swap = vars.makeSwap(10, 0.06, 0.001);
+         VanillaSwap swap = vars.makeSwap(10, 0.06, 0.001, settings);
 #if QL_USE_INDEXED_COUPON
             double cachedNPV   = -5.872342992212;
 #else

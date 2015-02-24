@@ -46,7 +46,7 @@ namespace QLNet
 
             // a CPIleg know about zero legs and inclusion of base inflation notional
             cashflows_ = new CPILeg(schedule, cpiIndex_,
-                                    baseCPI_, observationLag_)
+                                    baseCPI_, observationLag_, settings)
              .withSubtractInflationNominal(growthOnly_)
              .withObservationInterpolation(observationInterpolation_)
              .withPaymentDayCounter(accrualDayCounter)

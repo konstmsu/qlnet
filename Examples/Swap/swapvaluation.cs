@@ -28,6 +28,7 @@ namespace Swap {
     class SwapValuation {
         static void Main(string[] args) {
 
+            SavedSettings settings = new SavedSettings();
             DateTime timer = DateTime.Now;
 
             /*********************
@@ -194,15 +195,15 @@ namespace Swap {
             IborIndex swFloatingLegIndex = new Euribor6M();
 
             RateHelper s2y = new SwapRateHelper(new Handle<Quote>(s2yRate), new Period(2, TimeUnit.Years),
-                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex);
-            RateHelper s3y = new SwapRateHelper(new Handle<Quote>(s3yRate), new Period(3, TimeUnit.Years), 
-                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex);
-            RateHelper s5y = new SwapRateHelper(new Handle<Quote>(s5yRate), new Period(5, TimeUnit.Years), 
-                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex);
-            RateHelper s10y = new SwapRateHelper(new Handle<Quote>(s10yRate), new Period(10, TimeUnit.Years), 
-                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex);
-            RateHelper s15y = new SwapRateHelper(new Handle<Quote>(s15yRate), new Period(15, TimeUnit.Years), 
-                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex);
+                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex, settings);
+            RateHelper s3y = new SwapRateHelper(new Handle<Quote>(s3yRate), new Period(3, TimeUnit.Years),
+                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex, settings);
+            RateHelper s5y = new SwapRateHelper(new Handle<Quote>(s5yRate), new Period(5, TimeUnit.Years),
+                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex, settings);
+            RateHelper s10y = new SwapRateHelper(new Handle<Quote>(s10yRate), new Period(10, TimeUnit.Years),
+                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex, settings);
+            RateHelper s15y = new SwapRateHelper(new Handle<Quote>(s15yRate), new Period(15, TimeUnit.Years),
+                calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex, settings);
 
 
 
@@ -304,7 +305,7 @@ namespace Swap {
             Schedule floatSchedule = new Schedule(settlementDate, maturity, new Period(floatingLegFrequency),
                                      calendar, floatingLegConvention, floatingLegConvention, DateGeneration.Rule.Forward, false);
             VanillaSwap spot5YearSwap = new VanillaSwap(swapType, nominal, fixedSchedule, fixedRate, fixedLegDayCounter,
-                                        floatSchedule, euriborIndex, spread, floatingLegDayCounter);
+                                        floatSchedule, euriborIndex, spread, floatingLegDayCounter, settings);
 
             Date fwdStart = calendar.advance(settlementDate, 1, TimeUnit.Years);
             Date fwdMaturity = fwdStart + new Period(lenghtInYears, TimeUnit.Years);
@@ -313,7 +314,7 @@ namespace Swap {
             Schedule fwdFloatSchedule = new Schedule(fwdStart, fwdMaturity, new Period(floatingLegFrequency),
                                         calendar, floatingLegConvention, floatingLegConvention, DateGeneration.Rule.Forward, false);
             VanillaSwap oneYearForward5YearSwap = new VanillaSwap(swapType, nominal, fwdFixedSchedule, fixedRate, fixedLegDayCounter,
-                                        fwdFloatSchedule, euriborIndex, spread, floatingLegDayCounter);
+                                        fwdFloatSchedule, euriborIndex, spread, floatingLegDayCounter, settings);
 
 
             /***************

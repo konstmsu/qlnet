@@ -180,7 +180,7 @@ namespace QLNet
 
         VanillaSwap temp = new VanillaSwap(VanillaSwap.Type.Receiver, nominal_,
                             fixedSchedule, 0.0, fixedLegDayCounter_,
-                            floatSchedule, index_, 0.0, floatingLegDayCounter_);
+                            floatSchedule, index_, 0.0, floatingLegDayCounter_, settings_);
         temp.setPricingEngine(swapEngine);
         double forward = temp.fairRate();
         if(! strike_.HasValue) 
@@ -195,7 +195,7 @@ namespace QLNet
         }
         swap_ = new VanillaSwap(type, nominal_,
                             fixedSchedule, exerciseRate_, fixedLegDayCounter_,
-                            floatSchedule, index_, 0.0, floatingLegDayCounter_);
+                            floatSchedule, index_, 0.0, floatingLegDayCounter_, settings_);
         swap_.setPricingEngine(swapEngine);
 
         Exercise exercise = new EuropeanExercise(exerciseDate);

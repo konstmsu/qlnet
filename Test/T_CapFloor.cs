@@ -29,7 +29,7 @@ namespace TestSuite {
     public class T_CapFloor {
         class CommonVars {
             // common data
-            public SavedSettings settings = new SavedSettings();
+            public readonly SavedSettings settings_ = new SavedSettings();
             public Date settlement;
             public List<double> nominals;
             public BusinessDayConvention convention;
@@ -62,7 +62,7 @@ namespace TestSuite {
                 Schedule schedule = new Schedule(startDate, endDate, new Period(frequency), calendar,
                                                  convention, convention, DateGeneration.Rule.Forward,
                                                  false);
-                return new IborLeg(schedule, index)
+                return new IborLeg(schedule, index, settings_)
                     .withPaymentDayCounter(index.dayCounter())
                     .withFixingDays(fixingDays)
                     .withNotionals(nominals)
@@ -83,10 +83,10 @@ namespace TestSuite {
                 CapFloor result;
                 switch (type) {
                     case CapFloorType.Cap:
-                        result = (CapFloor)new Cap(leg, new List<double>() { strike },settings);
+                        result = (CapFloor)new Cap(leg, new List<double>() { strike },settings_);
                         break;
                     case CapFloorType.Floor:
-                        result = (CapFloor)new Floor(leg, new List<double>() { strike }, settings);
+                        result = (CapFloor)new Floor(leg, new List<double>() { strike }, settings_);
                         break;
                     default:
                         throw new ArgumentException("unknown cap/floor type");
@@ -264,6 +264,7 @@ namespace TestSuite {
 
         [TestMethod()]
         public void testParity() {
+            SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars();
 
             int[] lengths = { 1, 2, 3, 5, 7, 10, 15, 20 };
@@ -287,7 +288,7 @@ namespace TestSuite {
                         VanillaSwap swap = new VanillaSwap(VanillaSwap.Type.Payer, vars.nominals[0],
                                                            schedule, strikes[j], vars.index.dayCounter(),
                                                            schedule, vars.index, 0.0,
-                                                           vars.index.dayCounter());
+                                                           vars.index.dayCounter(), settings);
                         swap.setPricingEngine((IPricingEngine)new DiscountingSwapEngine(vars.termStructure));
                         // FLOATING_POINT_EXCEPTION
                         if (Math.Abs((cap.NPV() - floor.NPV()) - swap.NPV()) > 1.0e-10) {
@@ -307,6 +308,7 @@ namespace TestSuite {
 
         [TestMethod()]
         public void testATMRate() {
+            SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars();
 
             int[] lengths = { 1, 2, 3, 5, 7, 10, 15, 20 };
@@ -345,7 +347,7 @@ namespace TestSuite {
                                                            schedule, floorATMRate,
                                                            vars.index.dayCounter(),
                                                            schedule, vars.index, 0.0,
-                                                           vars.index.dayCounter());
+                                                           vars.index.dayCounter(), settings);
                         swap.setPricingEngine((IPricingEngine)(
                                                new DiscountingSwapEngine(vars.termStructure)));
                         double swapNPV = swap.NPV();

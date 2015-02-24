@@ -28,12 +28,13 @@ namespace QLNet
    public class SwapIndex : InterestRateIndex 
    {
       // need by CashFlowVectors
-      public SwapIndex() { }
+      public SwapIndex(SavedSettings settings)
+      {
+          settings_ = settings;
+      }
 
 
-      public SwapIndex(string familyName, Period tenor, int settlementDays, Currency currency,
-                        Calendar calendar, Period fixedLegTenor, BusinessDayConvention fixedLegConvention,
-                        DayCounter fixedLegDayCounter, IborIndex iborIndex) :
+       public SwapIndex(string familyName, Period tenor, int settlementDays, Currency currency, Calendar calendar, Period fixedLegTenor, BusinessDayConvention fixedLegConvention, DayCounter fixedLegDayCounter, IborIndex iborIndex, SavedSettings settings) :
          base(familyName, tenor, settlementDays, currency, calendar, fixedLegDayCounter)
       {
          tenor_ = tenor;
@@ -44,18 +45,10 @@ namespace QLNet
          discount_ = new Handle<YieldTermStructure>();
 
           iborIndex_.notifyObserversEvent += (Callback)update;
+           settings_ = settings;
       }
 
-      public SwapIndex(string familyName,
-                       Period tenor,
-                       int settlementDays,
-                       Currency currency,
-                       Calendar calendar,
-                       Period fixedLegTenor,
-                       BusinessDayConvention fixedLegConvention,
-                       DayCounter fixedLegDayCounter,
-                       IborIndex iborIndex,
-                       Handle<YieldTermStructure> discountingTermStructure)
+      public SwapIndex(string familyName, Period tenor, int settlementDays, Currency currency, Calendar calendar, Period fixedLegTenor, BusinessDayConvention fixedLegConvention, DayCounter fixedLegDayCounter, IborIndex iborIndex, Handle<YieldTermStructure> discountingTermStructure, SavedSettings settings)
       {
          tenor_ = tenor;
          iborIndex_ = iborIndex;
@@ -65,6 +58,7 @@ namespace QLNet
          discount_ = discountingTermStructure;
 
           iborIndex_.notifyObserversEvent += (Callback)update;
+          settings_ = settings;
       }
 
       //! \name InterestRateIndex interface
@@ -89,7 +83,7 @@ namespace QLNet
       {
          double fixedRate = 0.0;
          if (exogenousDiscount_)
-            return new MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
+            return new MakeVanillaSwap(tenor_, iborIndex_, fixedRate, settings_)
                  .withEffectiveDate(valueDate(fixingDate))
                  .withFixedLegCalendar(fixingCalendar())
                  .withFixedLegDayCount(dayCounter_)
@@ -99,7 +93,7 @@ namespace QLNet
                  .withDiscountingTermStructure(discount_)
                  .value();
          else
-            return new MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
+            return new MakeVanillaSwap(tenor_, iborIndex_, fixedRate, settings_)
                  .withEffectiveDate(valueDate(fixingDate))
                  .withFixedLegCalendar(fixingCalendar())
                  .withFixedLegDayCount(dayCounter_)
@@ -125,7 +119,7 @@ namespace QLNet
                        fixedLegConvention(),
                        dayCounter(),
                        iborIndex_.clone(forwarding),
-                       discount_);
+                       discount_, settings_);
          else
             return new SwapIndex(familyName(),
                        tenor(),
@@ -135,7 +129,7 @@ namespace QLNet
                        fixedLegTenor(),
                        fixedLegConvention(),
                        dayCounter(),
-                       iborIndex_.clone(forwarding));
+                       iborIndex_.clone(forwarding), settings_);
       }
 		//! returns a copy of itself linked to a different curves
 		public virtual SwapIndex clone( Handle<YieldTermStructure> forwarding, Handle<YieldTermStructure> discounting )
@@ -149,7 +143,7 @@ namespace QLNet
 							  fixedLegConvention(),
 							  dayCounter(),
 							  iborIndex_.clone( forwarding ),
-							  discounting );
+                              discounting, settings_);
 		}
 		//! returns a copy of itself linked to a different tenor
 		public virtual SwapIndex clone( Period tenor )
@@ -164,7 +158,7 @@ namespace QLNet
 							  fixedLegConvention(),
 							  dayCounter(),
 							  iborIndex(),
-							  discountingTermStructure() );
+                              discountingTermStructure(), settings_);
 			else
 				return new SwapIndex( familyName(),
 							  tenor,
@@ -174,7 +168,7 @@ namespace QLNet
 							  fixedLegTenor(),
 							  fixedLegConvention(),
 							  dayCounter(),
-							  iborIndex() );
+							  iborIndex(), settings_);
 		}
       // @}
       protected override double forecastFixing(Date fixingDate)
@@ -187,21 +181,17 @@ namespace QLNet
       BusinessDayConvention fixedLegConvention_;
       bool exogenousDiscount_;
       Handle<YieldTermStructure> discount_;
+       SavedSettings settings_;
    }
 
    //! base class for overnight indexed swap indexes
    public class OvernightIndexedSwapIndex : SwapIndex 
    {
-      public OvernightIndexedSwapIndex(
-                  string familyName,
-                  Period tenor,
-                  int settlementDays,
-                  Currency currency,
-                  OvernightIndex overnightIndex)
+      public OvernightIndexedSwapIndex(string familyName, Period tenor, int settlementDays, Currency currency, OvernightIndex overnightIndex, SavedSettings settings)
          :base(familyName, tenor, settlementDays,
                 currency, overnightIndex.fixingCalendar(),
                 new Period(1,TimeUnit.Years),BusinessDayConvention.ModifiedFollowing, 
-                overnightIndex.dayCounter(),overnightIndex)
+                overnightIndex.dayCounter(),overnightIndex, settings)
       {
          overnightIndex_ = overnightIndex;
       }

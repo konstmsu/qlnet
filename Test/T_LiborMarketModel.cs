@@ -63,7 +63,7 @@ namespace TestSuite
             return makeIndex(dates, rates);
         }
 
-        OptionletVolatilityStructure makeCapVolCurve(Date todaysDate) 
+        OptionletVolatilityStructure makeCapVolCurve(Date todaysDate, SavedSettings settings) 
         {
             double[] vols = {14.40, 17.15, 16.81, 16.64, 16.17,
                                  15.78, 15.40, 15.21, 14.86};
@@ -71,7 +71,7 @@ namespace TestSuite
             List<Date> dates=new List<Date>() ;
             List<double> capletVols=new List<double>();
             LiborForwardModelProcess process=
-                                   new LiborForwardModelProcess(10, makeIndex());
+                                   new LiborForwardModelProcess(10, makeIndex(), settings);
 
             for (int i=0; i < 9; ++i) {
                 capletVols.Add(vols[i]/100);
@@ -87,6 +87,7 @@ namespace TestSuite
         {
             //"Testing simple covariance models...";
 
+            SavedSettings settings = new SavedSettings();
             //SavedSettings backup;
 
             const int size = 10;
@@ -121,7 +122,7 @@ namespace TestSuite
 
             LfmCovarianceProxy covarProxy=new LfmCovarianceProxy(volaModel, corrModel);
 
-            LiborForwardModelProcess process=new LiborForwardModelProcess(size, makeIndex());
+            LiborForwardModelProcess process=new LiborForwardModelProcess(size, makeIndex(), settings);
 
             LiborForwardModel liborModel=new LiborForwardModel(process, volaModel, corrModel);
 
@@ -171,10 +172,10 @@ namespace TestSuite
             #endif
 
             IborIndex index = makeIndex();
-            LiborForwardModelProcess process=new LiborForwardModelProcess(size, index);
+            LiborForwardModelProcess process=new LiborForwardModelProcess(size, index,settings);
 
             // set-up pricing engine
-            OptionletVolatilityStructure capVolCurve = makeCapVolCurve(Settings.evaluationDate());
+            OptionletVolatilityStructure capVolCurve = makeCapVolCurve(Settings.evaluationDate(),settings);
 
             Vector variances = new LfmHullWhiteParameterization(process, capVolCurve).covariance(0.0,null).diagonal();
 
@@ -232,7 +233,7 @@ namespace TestSuite
                                          0.106996, 0.100064};
 
             IborIndex index = makeIndex();
-            LiborForwardModelProcess process = new LiborForwardModelProcess(size, index);
+            LiborForwardModelProcess process = new LiborForwardModelProcess(size, index,settings);
             Handle<YieldTermStructure> termStructure = index.forwardingTermStructure();
 
             // set-up the model
@@ -329,7 +330,7 @@ namespace TestSuite
 
             IborIndex index = makeIndex(dates, rates);
 
-            LiborForwardModelProcess process = new LiborForwardModelProcess(size, index);
+            LiborForwardModelProcess process = new LiborForwardModelProcess(size, index,settings);
 
             LmCorrelationModel corrModel = new LmExponentialCorrelationModel(size, 0.5);
 
@@ -385,7 +386,7 @@ namespace TestSuite
                     double swapRate  = 0.0404;
                     VanillaSwap forwardSwap = new VanillaSwap(VanillaSwap.Type.Receiver, 1.0,
                                                                 schedule, swapRate, dayCounter,
-                                                                schedule, index, 0.0, index.dayCounter());
+                                                                schedule, index, 0.0, index.dayCounter(), settings);
                     forwardSwap.setPricingEngine(new DiscountingSwapEngine(index.forwardingTermStructure()));
 
                     // check forward pricing first
@@ -401,7 +402,7 @@ namespace TestSuite
                     forwardSwap = 
                         new VanillaSwap(VanillaSwap.Type.Receiver, 1.0,
                                         schedule, swapRate, dayCounter,
-                                        schedule, index, 0.0, index.dayCounter());
+                                        schedule, index, 0.0, index.dayCounter(), settings);
                     forwardSwap.setPricingEngine(new DiscountingSwapEngine(index.forwardingTermStructure()));
 
                     if (i == j && i<=size/2) {

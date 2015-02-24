@@ -195,7 +195,7 @@ namespace TestSuite {
                 for (int i = 0; i < swaps; i++) {
                     Handle<Quote> r = new Handle<Quote>(rates[i + deposits]);
                     instruments.Add(new SwapRateHelper(r, new Period(swapData[i].n, swapData[i].units), calendar,
-                                    fixedLegFrequency, fixedLegConvention, fixedLegDayCounter, euribor6m));
+                                    fixedLegFrequency, fixedLegConvention, fixedLegDayCounter, euribor6m, settings));
                 }
 
                 Euribor3M euribor3m = new Euribor3M();
@@ -232,11 +232,11 @@ namespace TestSuite {
 				testCurveConsistency<Discount, LogCubic, IterativeBootstrapForYield>( vars,
                         new LogCubic(CubicInterpolation.DerivativeApprox.Spline, true,
                             CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
-                            CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0));
+                            CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0), settings);
 				testBMACurveConsistency<Discount, LogCubic, IterativeBootstrapForYield>( vars,
                         new LogCubic(CubicInterpolation.DerivativeApprox.Spline, true,
                             CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
-                            CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0));
+                            CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0), settings);
         }
 
         [TestMethod()]
@@ -246,8 +246,8 @@ namespace TestSuite {
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
 
-				testCurveConsistency<Discount, LogLinear, IterativeBootstrapForYield>( vars );
-				testBMACurveConsistency<Discount, LogLinear, IterativeBootstrapForYield>( vars );
+				testCurveConsistency<Discount, LogLinear, IterativeBootstrapForYield>( vars, settings);
+				testBMACurveConsistency<Discount, LogLinear, IterativeBootstrapForYield>( vars, settings);
         }
 
         [TestMethod()]
@@ -257,8 +257,8 @@ namespace TestSuite {
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
 
-				testCurveConsistency<Discount, Linear, IterativeBootstrapForYield>( vars );
-				testBMACurveConsistency<Discount, Linear, IterativeBootstrapForYield>( vars );
+				testCurveConsistency<Discount, Linear, IterativeBootstrapForYield>( vars, settings);
+				testBMACurveConsistency<Discount, Linear, IterativeBootstrapForYield>( vars, settings);
         }
 
         [TestMethod()]
@@ -273,8 +273,8 @@ namespace TestSuite {
                   SavedSettings settings = new SavedSettings();
                   CommonVars vars = new CommonVars(settings);
 	
-				testCurveConsistency<ZeroYield, LogLinear, IterativeBootstrapForYield>( vars );
-				testBMACurveConsistency<ZeroYield, LogLinear, IterativeBootstrapForYield>( vars );
+				testCurveConsistency<ZeroYield, LogLinear, IterativeBootstrapForYield>( vars, settings);
+				testBMACurveConsistency<ZeroYield, LogLinear, IterativeBootstrapForYield>( vars, settings);
 			  }
         }
 
@@ -285,8 +285,8 @@ namespace TestSuite {
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
 
-				testCurveConsistency<ZeroYield, Linear, IterativeBootstrapForYield>( vars );
-				testBMACurveConsistency<ZeroYield, Linear, IterativeBootstrapForYield>( vars );
+				testCurveConsistency<ZeroYield, Linear, IterativeBootstrapForYield>( vars, settings);
+				testBMACurveConsistency<ZeroYield, Linear, IterativeBootstrapForYield>( vars, settings);
         }
 
         [TestMethod()]
@@ -300,13 +300,13 @@ namespace TestSuite {
 				testCurveConsistency<ZeroYield, Cubic, IterativeBootstrapForYield>(
                            vars,
                            new Cubic(CubicInterpolation.DerivativeApprox.Spline, true,
-                                 CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
-                                 CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0));
+                               CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
+                               CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0), settings);
 				testBMACurveConsistency<ZeroYield, Cubic, IterativeBootstrapForYield>(
                            vars,
                            new Cubic(CubicInterpolation.DerivativeApprox.Spline, true,
-                                 CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
-                                 CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0));
+                               CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
+                               CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0), settings);
         }
 
         [TestMethod()]
@@ -316,8 +316,8 @@ namespace TestSuite {
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
 
-				testCurveConsistency<ForwardRate, Linear, IterativeBootstrapForYield>( vars );
-				testBMACurveConsistency<ForwardRate, Linear, IterativeBootstrapForYield>( vars );
+				testCurveConsistency<ForwardRate, Linear, IterativeBootstrapForYield>( vars, settings);
+				testBMACurveConsistency<ForwardRate, Linear, IterativeBootstrapForYield>( vars, settings);
         }
 
         [TestMethod()]
@@ -328,8 +328,8 @@ namespace TestSuite {
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
 
-				testCurveConsistency<ForwardRate, BackwardFlat, IterativeBootstrapForYield>( vars );
-				testBMACurveConsistency<ForwardRate, BackwardFlat, IterativeBootstrapForYield>( vars );
+				testCurveConsistency<ForwardRate, BackwardFlat, IterativeBootstrapForYield>( vars, settings);
+				testBMACurveConsistency<ForwardRate, BackwardFlat, IterativeBootstrapForYield>( vars, settings);
         }
 
         //[TestMethod()]
@@ -343,13 +343,13 @@ namespace TestSuite {
 				testCurveConsistency<ForwardRate, Cubic, IterativeBootstrapForYield>(
                            vars,
                            new Cubic(CubicInterpolation.DerivativeApprox.Spline, true,
-                                 CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
-                                 CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0));
+                               CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
+                               CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0), settings);
 				testBMACurveConsistency<ForwardRate, Cubic, IterativeBootstrapForYield>(
                            vars,
                            new Cubic(CubicInterpolation.DerivativeApprox.Spline, true,
-                                 CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
-                                 CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0));
+                               CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0,
+                               CubicInterpolation.BoundaryCondition.SecondDerivative, 0.0), settings);
         }
 
         [TestMethod()]
@@ -359,8 +359,8 @@ namespace TestSuite {
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
 
-				testCurveConsistency<ForwardRate, ConvexMonotone, IterativeBootstrapForYield>( vars );
-            testBMACurveConsistency<ForwardRate,ConvexMonotone,IterativeBootstrapForYield>(vars);
+				testCurveConsistency<ForwardRate, ConvexMonotone, IterativeBootstrapForYield>( vars, settings);
+            testBMACurveConsistency<ForwardRate,ConvexMonotone,IterativeBootstrapForYield>(vars, settings);
         }
 
         [TestMethod()]
@@ -369,8 +369,8 @@ namespace TestSuite {
 
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
-            testCurveConsistency<ForwardRate, ConvexMonotone, LocalBootstrapForYield>(vars, new ConvexMonotone(), 1.0e-7);
-				testBMACurveConsistency<ForwardRate, ConvexMonotone, LocalBootstrapForYield>( vars, new ConvexMonotone(), 1.0e-9 );
+            testCurveConsistency<ForwardRate, ConvexMonotone, LocalBootstrapForYield>(vars, new ConvexMonotone(), 1.0e-7, settings);
+				testBMACurveConsistency<ForwardRate, ConvexMonotone, LocalBootstrapForYield>( vars, new ConvexMonotone(), 1.0e-9, settings);
         }
 
         [TestMethod()]
@@ -420,7 +420,7 @@ namespace TestSuite {
                 swapHelpers.Add(new SwapRateHelper(r, new Period(vars.swapData[i].n, vars.swapData[i].units),
                                    vars.calendar,
                                    vars.fixedLegFrequency, vars.fixedLegConvention,
-                                   vars.fixedLegDayCounter, euribor6m));
+                                   vars.fixedLegDayCounter, euribor6m, settings));
             }
 
             vars.termStructure = new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlement, swapHelpers, new Actual360());
@@ -431,7 +431,7 @@ namespace TestSuite {
             for (int i=0; i<vars.swaps; i++) {
                 Period tenor = new Period(vars.swapData[i].n, vars.swapData[i].units);
 
-                VanillaSwap swap = new MakeVanillaSwap(tenor, index, 0.0)
+                VanillaSwap swap = new MakeVanillaSwap(tenor, index, 0.0, settings)
                                         .withEffectiveDate(vars.settlement)
                                         .withFixedLegDayCount(vars.fixedLegDayCounter)
                                         .withFixedLegTenor(new Period(vars.fixedLegFrequency))
@@ -464,7 +464,7 @@ namespace TestSuite {
             for (int i=0; i<vars.swaps; i++) {
                 Period tenor = new Period(vars.swapData[i].n, vars.swapData[i].units);
 
-                VanillaSwap swap = new MakeVanillaSwap(tenor, index, 0.0)
+                VanillaSwap swap = new MakeVanillaSwap(tenor, index, 0.0, settings)
                     .withEffectiveDate(vars.settlement)
                     .withFixedLegDayCount(vars.fixedLegDayCounter)
                     .withFixedLegTenor(new Period(vars.fixedLegFrequency))
@@ -535,7 +535,7 @@ namespace TestSuite {
                 vars.instruments[i] = new SwapRateHelper(r, new Period(vars.swapData[i].n, vars.swapData[i].units),
                                                           vars.calendar,
                                                           vars.fixedLegFrequency, vars.fixedLegConvention,
-                                                          vars.fixedLegDayCounter, index);
+                                                          vars.fixedLegDayCounter, index, settings);
             }
 
             vars.termStructure = new PiecewiseYieldCurve<Discount,LogLinear>(
@@ -553,7 +553,7 @@ namespace TestSuite {
             for (int i=0; i<vars.swaps; i++) {
                 Period tenor = new Period(vars.swapData[i].n, vars.swapData[i].units);
 
-                VanillaSwap swap = new MakeVanillaSwap(tenor, jpylibor6m, 0.0)
+                VanillaSwap swap = new MakeVanillaSwap(tenor, jpylibor6m, 0.0, settings)
                     .withEffectiveDate(vars.settlement)
                     .withFixedLegDayCount(vars.fixedLegDayCounter)
                     .withFixedLegTenor(new Period(vars.fixedLegFrequency))
@@ -606,15 +606,15 @@ namespace TestSuite {
         }
 
 
-        public void testCurveConsistency<T, I, B>(CommonVars vars)
+        public void testCurveConsistency<T, I, B>(CommonVars vars, SavedSettings settings)
 			  where T : ITraits<YieldTermStructure>, new()
            where I : IInterpolationFactory, new()
-			  where B : IBootStrap<PiecewiseYieldCurve>, new() { testCurveConsistency<T, I, B>( vars, new I(), 1.0e-9 ); }
-        public void testCurveConsistency<T, I, B>(CommonVars vars, I interpolator)
+			  where B : IBootStrap<PiecewiseYieldCurve>, new() { testCurveConsistency<T, I, B>( vars, new I(), 1.0e-9, settings); }
+        public void testCurveConsistency<T, I, B>(CommonVars vars, I interpolator, SavedSettings settings)
 			  where T : ITraits<YieldTermStructure>, new()
            where I : IInterpolationFactory, new()
-			  where B : IBootStrap<PiecewiseYieldCurve>, new() { testCurveConsistency<T, I, B>( vars, new I(), 1.0e-9 ); }
-        public void testCurveConsistency<T, I, B>(CommonVars vars, I interpolator, double tolerance)
+			  where B : IBootStrap<PiecewiseYieldCurve>, new() { testCurveConsistency<T, I, B>( vars, new I(), 1.0e-9, settings); }
+        public void testCurveConsistency<T, I, B>(CommonVars vars, I interpolator, double tolerance, SavedSettings settings)
 			  where T : ITraits<YieldTermStructure>, new()
            where I : IInterpolationFactory, new()
 			  where B : IBootStrap<PiecewiseYieldCurve>, new()
@@ -645,7 +645,7 @@ namespace TestSuite {
             for (int i = 0; i < vars.swaps; i++) {
                 Period tenor = new Period(vars.swapData[i].n, vars.swapData[i].units);
 
-                VanillaSwap swap = new MakeVanillaSwap(tenor, euribor6m, 0.0)
+                VanillaSwap swap = new MakeVanillaSwap(tenor, euribor6m, 0.0, settings)
                     .withEffectiveDate(vars.settlement)
                     .withFixedLegDayCount(vars.fixedLegDayCounter)
                     .withFixedLegTenor(new Period(vars.fixedLegFrequency))
@@ -669,7 +669,6 @@ namespace TestSuite {
                                      new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator);
             curveHandle.linkTo(vars.termStructure);
 
-            SavedSettings settings = new SavedSettings();
             for (int i = 0; i < vars.bonds; i++)
             {
                 Date maturity = vars.calendar.advance(vars.today, vars.bondData[i].n, vars.bondData[i].units);
@@ -721,15 +720,15 @@ namespace TestSuite {
             }
         }
 
-        public void testBMACurveConsistency<T, I, B>(CommonVars vars)
+        public void testBMACurveConsistency<T, I, B>(CommonVars vars, SavedSettings settings)
 			  where T : ITraits<YieldTermStructure>, new()
            where I : IInterpolationFactory, new()
-			  where B : IBootStrap<PiecewiseYieldCurve>, new() { testBMACurveConsistency<T, I, B>( vars, new I(), 1.0e-7 ); }
-        public void testBMACurveConsistency<T, I, B>(CommonVars vars, I interpolator)
+			  where B : IBootStrap<PiecewiseYieldCurve>, new() { testBMACurveConsistency<T, I, B>( vars, new I(), 1.0e-7, settings); }
+        public void testBMACurveConsistency<T, I, B>(CommonVars vars, I interpolator, SavedSettings settings)
 			  where T : ITraits<YieldTermStructure>, new()
            where I : IInterpolationFactory, new()
-			  where B : IBootStrap<PiecewiseYieldCurve>, new() { testBMACurveConsistency<T, I, B>( vars, interpolator, 1.0e-7 ); }
-        public void testBMACurveConsistency<T, I, B>(CommonVars vars, I interpolator, double tolerance)
+			  where B : IBootStrap<PiecewiseYieldCurve>, new() { testBMACurveConsistency<T, I, B>( vars, interpolator, 1.0e-7, settings); }
+        public void testBMACurveConsistency<T, I, B>(CommonVars vars, I interpolator, double tolerance, SavedSettings settings)
 			  where T : ITraits<YieldTermStructure>, new()
            where I : IInterpolationFactory, new()
 			  where B : IBootStrap<PiecewiseYieldCurve>, new()
@@ -757,7 +756,7 @@ namespace TestSuite {
                                                 vars.bmaConvention,
                                                 vars.bmaDayCounter,
                                                 bmaIndex,
-                                                liborIndex));
+                                                liborIndex, settings));
             }
 
             int w = vars.today.weekday();
@@ -795,7 +794,7 @@ namespace TestSuite {
                                .value();
                   
                 BMASwap swap = new BMASwap(BMASwap.Type.Payer, 100.0, liborSchedule, 0.75, 0.0,
-                                           libor3m, libor3m.dayCounter(), bmaSchedule, bma, vars.bmaDayCounter);
+                                           libor3m, libor3m.dayCounter(), bmaSchedule, bma, vars.bmaDayCounter, settings);
                 swap.setPricingEngine(new DiscountingSwapEngine(libor3m.forwardingTermStructure()));
 
                 double expectedFraction = vars.bmaData[i].rate / 100,

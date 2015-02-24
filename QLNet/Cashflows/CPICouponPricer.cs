@@ -29,12 +29,13 @@ namespace QLNet
    */
    public class CPICouponPricer : InflationCouponPricer
    {
-      public CPICouponPricer(Handle<CPIVolatilitySurface> capletVol = null)
+      public CPICouponPricer(SavedSettings settings, Handle<CPIVolatilitySurface> capletVol = null)
       {
          if ( capletVol == null ) 
             capletVol = new Handle<CPIVolatilitySurface>();
-        
-        capletVol_ = capletVol;
+
+          settings_ = settings;
+          capletVol_ = capletVol;
 
         if( !capletVol_.empty() ) capletVol_.registerWith(update);
       }
@@ -112,7 +113,7 @@ namespace QLNet
       protected virtual double optionletPrice(Option.Type optionType, double effStrike)
       {
          Date fixingDate = coupon_.fixingDate();
-         if (fixingDate <= Settings.evaluationDate()) 
+         if (fixingDate <= settings_.evaluationDate()) 
          {
             // the amount is determined
             double a, b;
@@ -164,5 +165,6 @@ namespace QLNet
       protected double spread_;
       protected double discount_;
       protected double spreadLegValue_;
+       readonly SavedSettings settings_;
    }
 }

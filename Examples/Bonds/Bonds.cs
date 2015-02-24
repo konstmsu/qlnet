@@ -282,27 +282,27 @@ namespace Bonds {
                      new Handle<Quote>(s2yRate), new Period(2, TimeUnit.Years),
                      calendar, swFixedLegFrequency,
                      swFixedLegConvention, swFixedLegDayCounter,
-                     swFloatingLegIndex, new Handle<Quote>(),forwardStart);
+                     swFloatingLegIndex, new Handle<Quote>(),forwardStart,settings);
              RateHelper s3y = new SwapRateHelper(
                      new Handle<Quote>(s3yRate), new Period(3, TimeUnit.Years),
                      calendar, swFixedLegFrequency,
                      swFixedLegConvention, swFixedLegDayCounter,
-                     swFloatingLegIndex, new Handle<Quote>(),forwardStart);
+                     swFloatingLegIndex, new Handle<Quote>(), forwardStart, settings);
              RateHelper s5y = new SwapRateHelper(
                      new Handle<Quote>(s5yRate), new Period(5, TimeUnit.Years),
                      calendar, swFixedLegFrequency,
                      swFixedLegConvention, swFixedLegDayCounter,
-                     swFloatingLegIndex, new Handle<Quote>(),forwardStart);
+                     swFloatingLegIndex, new Handle<Quote>(), forwardStart, settings);
              RateHelper s10y = new SwapRateHelper(
                      new Handle<Quote>(s10yRate), new Period(10, TimeUnit.Years),
                      calendar, swFixedLegFrequency,
                      swFixedLegConvention, swFixedLegDayCounter,
-                     swFloatingLegIndex, new Handle<Quote>(),forwardStart);
+                     swFloatingLegIndex, new Handle<Quote>(), forwardStart, settings);
              RateHelper s15y = new SwapRateHelper(
                      new Handle<Quote>(s15yRate), new Period(15, TimeUnit.Years),
                      calendar, swFixedLegFrequency,
                      swFixedLegConvention, swFixedLegDayCounter,
-                     swFloatingLegIndex, new Handle<Quote>(),forwardStart);
+                     swFloatingLegIndex, new Handle<Quote>(), forwardStart, settings);
 
 
              /*********************
@@ -414,7 +414,7 @@ namespace Bonds {
              floatingRateBond.setPricingEngine(bondEngine);
 
              // Coupon pricers
-             IborCouponPricer pricer = new BlackIborCouponPricer();
+             IborCouponPricer pricer = new BlackIborCouponPricer(settings);
 
              // optionLet volatilities
              double volatility = 0.0;

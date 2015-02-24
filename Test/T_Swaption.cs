@@ -134,7 +134,7 @@ namespace TestSuite
                         double vol = 0.20;
                         
                         for (int l=0; l< strikes.Length ; l++) {
-                            VanillaSwap swap    = new MakeVanillaSwap(lengths[j], vars.index, strikes[l])
+                            VanillaSwap swap    = new MakeVanillaSwap(lengths[j], vars.index, strikes[l], settings)
                                                     .withEffectiveDate(startDate)
                                                     .withFloatingLegSpread(0.0)
                                                     .withType(type[k]);
@@ -232,7 +232,7 @@ namespace TestSuite
                         List<double> values_cash = new InitializedList<double>(spreads.Length);
                         for (int l=0; l<spreads.Length; l++) {
                              VanillaSwap swap =
-                               new MakeVanillaSwap(lengths[j], vars.index, 0.06)
+                               new MakeVanillaSwap(lengths[j], vars.index, 0.06, settings)
                                         .withEffectiveDate(startDate)
                                         .withFloatingLegSpread(spreads[l])
                                         .withType(type[k]);
@@ -312,7 +312,7 @@ namespace TestSuite
                                                   vars.settlementDays,TimeUnit.Days);
                         for (int l=0; l<spreads.Length ; l++) {
                             VanillaSwap swap =
-                                new MakeVanillaSwap(lengths[j], vars.index, 0.06)
+                                new MakeVanillaSwap(lengths[j], vars.index, 0.06, settings)
                                         .withEffectiveDate(startDate)
                                         .withFloatingLegSpread(spreads[l])
                                         .withType(type[k]);
@@ -321,7 +321,7 @@ namespace TestSuite
                                                 swap.floatingLegBPS() /
                                                 swap.fixedLegBPS();
                             VanillaSwap equivalentSwap =
-                                new MakeVanillaSwap(lengths[j], vars.index, 0.06+correction)
+                                new MakeVanillaSwap(lengths[j], vars.index, 0.06+correction, settings)
                                         .withEffectiveDate(startDate)
                                         .withFloatingLegSpread(0.0)
                                         .withType(type[k]);
@@ -374,7 +374,7 @@ namespace TestSuite
             Date startDate = vars.calendar.advance(exerciseDate,
                                                    vars.settlementDays,TimeUnit.Days);
             VanillaSwap swap =
-                new MakeVanillaSwap(new Period(10,TimeUnit.Years), vars.index, 0.06)
+                new MakeVanillaSwap(new Period(10,TimeUnit.Years), vars.index, 0.06, settings)
                 .withEffectiveDate(startDate);
 
             Swaption swaption =
@@ -414,7 +414,7 @@ namespace TestSuite
                     for (int t=0; t<strikes.Length ; t++) {
                         for (int h=0; h<type.Length ; h++) {
                             VanillaSwap swap =
-                                new MakeVanillaSwap(lengths[j], vars.index, strikes[t])
+                                new MakeVanillaSwap(lengths[j], vars.index, strikes[t], settings)
                                         .withEffectiveDate(startDate)
                                         .withFloatingLegSpread(0.0)
                                         .withType(type[h]);
@@ -492,7 +492,7 @@ namespace TestSuite
                     {
                         for (int k = 0; k < type.Length; k++)
                         {
-                            VanillaSwap swap = new MakeVanillaSwap(lengths[j], vars.index, strikes[t])
+                            VanillaSwap swap = new MakeVanillaSwap(lengths[j], vars.index, strikes[t], settings)
                                         .withEffectiveDate(startDate)
                                         .withFloatingLegSpread(0.0)
                                         .withType(type[k]);

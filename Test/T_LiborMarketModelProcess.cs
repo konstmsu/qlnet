@@ -60,14 +60,14 @@ namespace TestSuite
             return index;
         }
 
-        CapletVarianceCurve makeCapVolCurve(Date todaysDate) 
+        CapletVarianceCurve makeCapVolCurve(Date todaysDate, SavedSettings settings) 
         {
             double[] vols = {14.40, 17.15, 16.81, 16.64, 16.17,
                              15.78, 15.40, 15.21, 14.86, 14.54};
 
             List<Date> dates = new List<Date>();
             List<double> capletVols = new List<double>();
-            LiborForwardModelProcess process= new LiborForwardModelProcess(len+1, makeIndex(),null);
+            LiborForwardModelProcess process= new LiborForwardModelProcess(len+1, makeIndex(),null, settings);
 
             for (int i=0; i < len; ++i) 
             {
@@ -79,22 +79,22 @@ namespace TestSuite
                                             capletVols, new ActualActual());
         }
 
-        LiborForwardModelProcess makeProcess()
+        LiborForwardModelProcess makeProcess(SavedSettings settings)
         {
             Matrix volaComp=new Matrix();;
-            return makeProcess(volaComp);
+            return makeProcess(volaComp, settings);
         }
         
-        LiborForwardModelProcess makeProcess(Matrix volaComp)
+        LiborForwardModelProcess makeProcess(Matrix volaComp, SavedSettings settings)
         {
             int factors = (volaComp.empty() ? 1 : volaComp.columns());
 
             IborIndex index = makeIndex();
-            LiborForwardModelProcess process= new LiborForwardModelProcess(len, index,null);
+            LiborForwardModelProcess process= new LiborForwardModelProcess(len, index,null, settings);
 
             LfmCovarianceParameterization fct=new LfmHullWhiteParameterization(
                                                     process,
-                                                    makeCapVolCurve(Settings.evaluationDate()),
+                                                    makeCapVolCurve(Settings.evaluationDate(), settings),
                                                     volaComp * Matrix.transpose(volaComp), factors);
 
             process.setCovarParam(fct);
@@ -107,6 +107,7 @@ namespace TestSuite
         {
             //"Testing caplet LMM process initialisation..."
 
+            SavedSettings settings = new SavedSettings();
             //SavedSettings backup;
 
             DayCounter dayCounter = new Actual360();
@@ -131,7 +132,7 @@ namespace TestSuite
 
                 termStructure.linkTo(Utilities.flatRate(settlementDate, 0.04, dayCounter));
 
-                LiborForwardModelProcess process=new LiborForwardModelProcess(60, index);
+                LiborForwardModelProcess process=new LiborForwardModelProcess(60, index, settings);
 
                 List<double> fixings = process.fixingTimes();
                 for (int i=1; i < fixings.Count-1; ++i) {
@@ -154,12 +155,13 @@ namespace TestSuite
 
             //SavedSettings backup;
 
+            SavedSettings settings = new SavedSettings();
             double tolerance = 1e-10;
             double[] lambdaExpected = {14.3010297550, 19.3821411939, 15.9816590141,
                                           15.9953118303, 14.0570815635, 13.5687599894,
                                           12.7477197786, 13.7056638165, 11.6191989567};
 
-            LiborForwardModelProcess process = makeProcess();
+            LiborForwardModelProcess process = makeProcess(settings);
             Matrix covar = process.covariance(0.0, null, 1.0);
 
             for (int i=0; i<9; ++i) {
@@ -202,6 +204,7 @@ namespace TestSuite
         {
             //"Testing caplet LMM Monte-Carlo caplet pricing..."
 
+            SavedSettings settings = new SavedSettings();
             //SavedSettings backup;
 
             /* factor loadings are taken from Hull & White article
@@ -228,8 +231,8 @@ namespace TestSuite
                 for (int j = 0; j < 3; j++)
                     volaComp[i, j] = ltemp[j];
             }
-            LiborForwardModelProcess process1 = makeProcess();
-            LiborForwardModelProcess process2 = makeProcess(volaComp);
+            LiborForwardModelProcess process1 = makeProcess(settings);
+            LiborForwardModelProcess process2 = makeProcess(volaComp, settings);
 
             List<double> tmp = process1.fixingTimes();
             TimeGrid grid=new TimeGrid(tmp ,12);

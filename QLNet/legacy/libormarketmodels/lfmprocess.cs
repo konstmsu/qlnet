@@ -36,8 +36,9 @@ namespace QLNet
         public List<double> accrualPeriod_;
         Vector m1;
         Vector m2;
+        SavedSettings _settings;
 
-        public LiborForwardModelProcess(int size, IborIndex index, IDiscretization disc)
+        public LiborForwardModelProcess(int size, IborIndex index, IDiscretization disc, SavedSettings settings)
             : base(disc )
         {
             size_ = size;
@@ -76,10 +77,14 @@ namespace QLNet
                 accrualStartTimes_[i]=dayCounter.yearFraction(settlement, coupon.accrualStartDate());
                 accrualEndTimes_[i]=dayCounter.yearFraction(settlement, coupon.accrualEndDate());
             }
+            _settings = settings;
         }
 
-        public LiborForwardModelProcess(int size, IborIndex index)
-            : this( size, index,new EulerDiscretization()){}
+        public LiborForwardModelProcess(int size, IborIndex index, SavedSettings settings)
+            : this( size, index,new EulerDiscretization(), settings)
+        {
+            _settings = settings;
+        }
 
         public override Vector drift(double t, Vector x) {
             Vector f = new Vector(size_, 0.0);
@@ -199,7 +204,7 @@ namespace QLNet
                               index_.businessDayConvention(),
                               DateGeneration.Rule.Forward, false);
 
-            IborLeg cashflows = (IborLeg) new IborLeg(schedule, index_)
+            IborLeg cashflows = (IborLeg) new IborLeg(schedule, index_, _settings)
                                               .withFixingDays(index_.fixingDays())
                                               .withPaymentDayCounter(index_.dayCounter())
                                               .withNotionals(amount)

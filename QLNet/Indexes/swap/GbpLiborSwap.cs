@@ -26,21 +26,21 @@ namespace QLNet
 {
    public class GbpLiborSwapIsdaFix : SwapIndex
    {
-      public GbpLiborSwapIsdaFix(Period tenor)
-         : this(tenor, new Handle<YieldTermStructure>()) { }
+      public GbpLiborSwapIsdaFix(Period tenor, SavedSettings settings)
+         : this(tenor, new Handle<YieldTermStructure>(), settings) { }
 
-      public GbpLiborSwapIsdaFix(Period tenor, Handle<YieldTermStructure> h)
+      public GbpLiborSwapIsdaFix(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
          : base("GbpLiborSwapIsdaFix", // familyName
                 tenor,
                 2, // settlementDays
                 new GBPCurrency(),
                 new TARGET(),
                 tenor > new Period(1, TimeUnit.Years) ?
-                   new Period(6, TimeUnit.Months) : new Period(1, TimeUnit.Years), // fixedLegTenor
+                    new Period(6, TimeUnit.Months) : new Period(1, TimeUnit.Years), // fixedLegTenor
                 BusinessDayConvention.ModifiedFollowing, // fixedLegConvention
                 new Actual365Fixed(), // fixedLegDaycounter
                 tenor > new Period(1, TimeUnit.Years) ?
                     new GBPLibor(new Period(6, TimeUnit.Months), h) :
-                    new GBPLibor(new Period(3, TimeUnit.Months), h)) { }
+                    new GBPLibor(new Period(3, TimeUnit.Months), h), settings) { }
    }
 }

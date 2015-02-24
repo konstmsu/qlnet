@@ -39,11 +39,10 @@ namespace QLNet {
         public double liborSpread() { return liborSpread_; }
 
 
-        public BMASwap(Type type, double nominal,
-                // Libor leg
-                Schedule liborSchedule, double liborFraction, double liborSpread, IborIndex liborIndex, DayCounter liborDayCount,
-                // BMA leg
-                Schedule bmaSchedule, BMAIndex bmaIndex, DayCounter bmaDayCount)
+        public BMASwap(Type type, double nominal, Schedule liborSchedule, double liborFraction, double liborSpread, IborIndex liborIndex, DayCounter liborDayCount, Schedule bmaSchedule, BMAIndex bmaIndex, DayCounter bmaDayCount, SavedSettings settings
+// Libor leg
+            // BMA leg
+            )
             : base(2) {
             type_ = type;
             nominal_ = nominal;
@@ -52,7 +51,7 @@ namespace QLNet {
 
             BusinessDayConvention convention = liborSchedule.businessDayConvention();
 
-            legs_[0] = new IborLeg(liborSchedule, liborIndex)
+            legs_[0] = new IborLeg(liborSchedule, liborIndex, settings)
                         .withPaymentDayCounter(liborDayCount)
                         .withFixingDays(liborIndex.fixingDays())
                         .withGearings(liborFraction)

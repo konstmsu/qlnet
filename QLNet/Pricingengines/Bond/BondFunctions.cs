@@ -340,7 +340,7 @@ namespace QLNet
       {
          return duration(bond, new InterestRate(yield, dayCounter, compounding, frequency), settings, type, settlementDate);
       }
-      public static double convexity(Bond bond, InterestRate yield, Date settlementDate = null)
+      public static double convexity(Bond bond, InterestRate yield, SavedSettings settings, Date settlementDate = null)
       {
          if (settlementDate == null)
             settlementDate = bond.settlementDate();
@@ -349,12 +349,11 @@ namespace QLNet
                    "non tradable at " + settlementDate +
                    " (maturity being " + bond.maturityDate() + ")");
 
-         return CashFlows.convexity(bond.cashflows(), yield, false, settlementDate);
+         return CashFlows.convexity(bond.cashflows(), yield, false, settings, settlementDate: settlementDate);
       }
-      public static double convexity(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                               Date settlementDate = null)
+      public static double convexity(Bond bond, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, SavedSettings settings, Date settlementDate = null)
       {
-         return convexity(bond, new InterestRate(yield, dayCounter, compounding, frequency), settlementDate);
+         return convexity(bond, new InterestRate(yield, dayCounter, compounding, frequency), settings, settlementDate);
       }
       public static double basisPointValue(Bond bond, InterestRate yield, SavedSettings settings, Date settlementDate = null)
       {

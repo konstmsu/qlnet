@@ -106,7 +106,7 @@ namespace QLNet
 										  index_.businessDayConvention(),
 										  index_.businessDayConvention(),
 										  DateGeneration.Rule.Forward, false );
-			List<CashFlow> floatingLeg = new IborLeg( floatSchedule, index_ )
+			List<CashFlow> floatingLeg = new IborLeg( floatSchedule, index_, _settings)
 				 .withFixingDays( 0 )
 				 .withNotionals( nominals )
 				 .withPaymentAdjustment( index_.businessDayConvention() );

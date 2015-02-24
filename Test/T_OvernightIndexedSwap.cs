@@ -300,7 +300,8 @@ namespace TestSuite
       public void testBootstrap() 
       {
          // Testing Eonia-swap curve building...
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          List<RateHelper> eoniaHelpers = new List<RateHelper>();
          List<RateHelper> swap3mHelpers = new List<RateHelper>();
@@ -377,7 +378,7 @@ namespace TestSuite
                                                         vars.fixedSwapFrequency,
                                                         vars.fixedSwapConvention,
                                                         vars.fixedSwapDayCount,
-                                                        euribor3m);
+                                                        euribor3m, settings);
             if (tenor == new Period(3,TimeUnit.Months))
                swap3mHelpers.Add(helper);
          }

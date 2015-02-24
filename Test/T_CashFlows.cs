@@ -157,7 +157,7 @@ namespace TestSuite
 		{
 			// Testing dynamic cast of coupon in Black pricer...
 
-			SavedSettings backup = new SavedSettings();
+            SavedSettings settings = new SavedSettings();
 
 			Date todaysDate = new Date(7, Month.April, 2010);
 			Date settlementDate = new Date(9, Month.April, 2010);
@@ -181,7 +181,7 @@ namespace TestSuite
 			Date startDate = new Date(20, Month.September, 2013);
 			Date endDate = new Date(20, Month.December, 2013);
 			double spread = 0.0115;
-			IborCouponPricer pricer = new BlackIborCouponPricer(vol);
+			IborCouponPricer pricer = new BlackIborCouponPricer(vol, settings);
 			FloatingRateCoupon coupon = new FloatingRateCoupon(100,payDate, startDate, endDate, 2,
 												index3m, 1.0 , spread / 100);
 			coupon.setPricer(pricer);
@@ -233,7 +233,8 @@ namespace TestSuite
 		[TestMethod()]
 		public void testNullFixingDays() 
 		{
-			// Testing ibor leg construction with null fixing days...
+            SavedSettings settings = new SavedSettings();
+            // Testing ibor leg construction with null fixing days...
 			Date today = Settings.evaluationDate();
 			Schedule schedule = new
 				MakeSchedule()
@@ -244,7 +245,7 @@ namespace TestSuite
 				.backwards().value();
 
 			IborIndex index = new USDLibor(new Period(6,TimeUnit.Months));
-			List<CashFlow> leg = new IborLeg( schedule, index )
+			List<CashFlow> leg = new IborLeg( schedule, index, settings)
 				// this can happen with default values, and caused an
 				// exception when the null was not managed properly
 				.withFixingDays( null )

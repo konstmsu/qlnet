@@ -25,10 +25,10 @@ namespace QLNet
 {
    public class JpyLiborSwapIsdaFixAm : SwapIndex
    {
-      public JpyLiborSwapIsdaFixAm(Period tenor)
-         : this(tenor, new Handle<YieldTermStructure>()) { }
+      public JpyLiborSwapIsdaFixAm(Period tenor, SavedSettings settings)
+         : this(tenor, new Handle<YieldTermStructure>(), settings) { }
 
-      public JpyLiborSwapIsdaFixAm(Period tenor, Handle<YieldTermStructure> h)
+      public JpyLiborSwapIsdaFixAm(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
          : base("JpyLiborSwapIsdaFixAm", // familyName
                 tenor,
                 2, // settlementDays
@@ -37,15 +37,15 @@ namespace QLNet
                 new Period(6, TimeUnit.Months), // fixedLegTenor
                 BusinessDayConvention.ModifiedFollowing, // fixedLegConvention
                 new ActualActual(ActualActual.Convention.ISDA), // fixedLegDaycounter
-                new JPYLibor(new Period(6, TimeUnit.Months), h)) { }
+                new JPYLibor(new Period(6, TimeUnit.Months), h), settings) { }
    }
 
    public class JpyLiborSwapIsdaFixPm : SwapIndex
    {
-      public JpyLiborSwapIsdaFixPm(Period tenor)
-         : this(tenor, new Handle<YieldTermStructure>()) { }
+      public JpyLiborSwapIsdaFixPm(Period tenor, SavedSettings settings)
+         : this(tenor, new Handle<YieldTermStructure>(), settings) { }
 
-      public JpyLiborSwapIsdaFixPm(Period tenor, Handle<YieldTermStructure> h)
+      public JpyLiborSwapIsdaFixPm(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
          : base("JpyLiborSwapIsdaFixPm", // familyName
                 tenor,
                 2, // settlementDays
@@ -54,6 +54,6 @@ namespace QLNet
                 new Period(6, TimeUnit.Months), // fixedLegTenor
                 BusinessDayConvention.ModifiedFollowing, // fixedLegConvention
                 new ActualActual(ActualActual.Convention.ISDA), // fixedLegDaycounter
-                new JPYLibor(new Period(6, TimeUnit.Months), h)) { }
+                new JPYLibor(new Period(6, TimeUnit.Months), h), settings) { }
    }
 }

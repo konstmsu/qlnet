@@ -24,13 +24,14 @@ using System.Text;
 namespace QLNet {
     public class DiscountingBasisSwapEngine : Swap.SwapEngine {
         private List<Handle<YieldTermStructure>> discountCurve_;
+        SavedSettings _settings;
 
-        public DiscountingBasisSwapEngine(Handle<YieldTermStructure> discountCurve1 , 
-                                     Handle<YieldTermStructure> discountCurve2) 
+        public DiscountingBasisSwapEngine(Handle<YieldTermStructure> discountCurve1, Handle<YieldTermStructure> discountCurve2, SavedSettings settings) 
         {
            discountCurve_ = new List<Handle<YieldTermStructure>>();
            discountCurve_.Add(discountCurve1);
            discountCurve_.Add(discountCurve2);
+            _settings = settings;
         }
 
         // Instrument interface
@@ -47,7 +48,7 @@ namespace QLNet {
                //results_.legNPV[i] = arguments_.payer[i] * CashFlows.npv(arguments_.legs[i], discountCurve_[i]);
                //results_.legBPS[i] = arguments_.payer[i] * CashFlows.bps(arguments_.legs[i], discountCurve_[i]);
                 results_.value += results_.legNPV[i];
-                results_.cash += arguments_.payer[i] * CashFlows.cash(arguments_.legs[i]);
+                results_.cash += arguments_.payer[i] * CashFlows.cash(arguments_.legs[i], _settings);
                 try {
                     Date d = CashFlows.startDate(arguments_.legs[i]);
                     startDiscounts[i] = discountCurve_[i].link.discount(d);

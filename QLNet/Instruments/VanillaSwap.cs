@@ -68,10 +68,7 @@ namespace QLNet
       private double? fairSpread_;
 
       // constructor
-      public VanillaSwap(Type type, double nominal,
-                         Schedule fixedSchedule, double fixedRate, DayCounter fixedDayCount,
-                         Schedule floatSchedule, IborIndex iborIndex, double spread, DayCounter floatingDayCount,
-                         BusinessDayConvention? paymentConvention = null) :
+      public VanillaSwap(Type type, double nominal, Schedule fixedSchedule, double fixedRate, DayCounter fixedDayCount, Schedule floatSchedule, IborIndex iborIndex, double spread, DayCounter floatingDayCount, SavedSettings settings, BusinessDayConvention? paymentConvention = null) :
          base(2)
       {
          type_ = type;
@@ -94,7 +91,7 @@ namespace QLNet
                                      .withPaymentAdjustment(paymentConvention_)
                                      .withNotionals(nominal);
 
-         legs_[1] = new IborLeg(floatSchedule, iborIndex)
+         legs_[1] = new IborLeg(floatSchedule, iborIndex, settings)
                                      .withPaymentDayCounter(floatingDayCount)
             //.withFixingDays(iborIndex.fixingDays())
                                      .withSpreads(spread)

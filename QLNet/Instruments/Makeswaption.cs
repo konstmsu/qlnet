@@ -115,7 +115,7 @@ namespace QLNet
             BusinessDayConvention bdc = swapIndex_.fixedLegConvention();
             underlyingSwap_ =new MakeVanillaSwap(   swapIndex_.tenor(),
                                                     swapIndex_.iborIndex(), 
-                                                    usedStrike)
+                                                    usedStrike, settings_)
                 .withEffectiveDate(swapIndex_.valueDate(fixingDate_))
                 .withFixedLegCalendar(swapIndex_.fixingCalendar())
                 .withFixedLegDayCount(swapIndex_.dayCounter())

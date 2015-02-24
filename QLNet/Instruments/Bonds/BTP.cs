@@ -221,7 +221,7 @@ namespace QLNet
          {
             swapLenghts_[i] = (i+1);
             swaps_[i] = new MakeVanillaSwap( new Period((int)swapLenghts_[i],TimeUnit.Years), 
-                                             euriborIndex_, dummyRate, new Period(1,TimeUnit.Days))
+                                             euriborIndex_, dummyRate, new Period(1,TimeUnit.Days), settings_)
                                              .withDiscountingTermStructure(discountCurve_);
          }
       }

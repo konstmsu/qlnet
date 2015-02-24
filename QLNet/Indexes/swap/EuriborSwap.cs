@@ -35,10 +35,10 @@ namespace QLNet
    */
    public  class EuriborSwapIsdaFixA : SwapIndex 
    {
-      public EuriborSwapIsdaFixA(Period tenor)
-         :this(tenor,new Handle<YieldTermStructure>()) {}
+      public EuriborSwapIsdaFixA(Period tenor, SavedSettings settings)
+         :this(tenor,new Handle<YieldTermStructure>(), settings) {}
 
-      public EuriborSwapIsdaFixA(Period tenor,Handle<YieldTermStructure> h)
+      public EuriborSwapIsdaFixA(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
          :base("EuriborSwapIsdaFixA", // familyName
                 tenor,
                 2, // settlementDays
@@ -49,11 +49,9 @@ namespace QLNet
                 new Thirty360(Thirty360.Thirty360Convention.BondBasis), // fixedLegDaycounter
                 tenor > new Period(1,TimeUnit.Years) ?
                     new Euribor(new Period(6,TimeUnit.Months), h) :
-                    new Euribor(new Period(3,TimeUnit.Months), h)) {}
+                    new Euribor(new Period(3,TimeUnit.Months), h), settings) {}
       
-      public EuriborSwapIsdaFixA(Period tenor,
-                                 Handle<YieldTermStructure> forwarding, 
-                                 Handle<YieldTermStructure> discounting)
+      public EuriborSwapIsdaFixA(Period tenor, Handle<YieldTermStructure> forwarding, Handle<YieldTermStructure> discounting, SavedSettings settings)
          : base("EuriborSwapIsdaFixA", // familyName
                 tenor,
                 2, // settlementDays
@@ -65,7 +63,7 @@ namespace QLNet
                 tenor > new Period(1,TimeUnit.Years) ?
                     new Euribor(new Period(6,TimeUnit.Months), forwarding) :
                     new Euribor(new Period(3,TimeUnit.Months), forwarding),
-                discounting) {}
+                discounting,settings) {}
    }
 
    //! %EuriborSwapIsdaFixB index base class
@@ -80,10 +78,10 @@ namespace QLNet
    */
    public class EuriborSwapIsdaFixB : SwapIndex 
    {
-      public EuriborSwapIsdaFixB(Period tenor)
-         :this(tenor,new Handle<YieldTermStructure>() ){}
+      public EuriborSwapIsdaFixB(Period tenor, SavedSettings settings)
+         :this(tenor,new Handle<YieldTermStructure>(), settings){}
 
-      public EuriborSwapIsdaFixB(Period tenor,Handle<YieldTermStructure> h)
+      public EuriborSwapIsdaFixB(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
          : base("EuriborSwapIsdaFixB", // familyName
                 tenor,
                 2, // settlementDays
@@ -94,12 +92,10 @@ namespace QLNet
                 new Thirty360(Thirty360.Thirty360Convention.BondBasis), // fixedLegDaycounter
                 tenor > new Period(1,TimeUnit.Years) ?
                     new Euribor(new Period(6,TimeUnit.Months), h) :
-                    new Euribor(new Period(3,TimeUnit.Months), h)) {}
+                    new Euribor(new Period(3,TimeUnit.Months), h), settings) {}
 
 
-      public EuriborSwapIsdaFixB(Period tenor,
-                                 Handle<YieldTermStructure> forwarding,
-                                 Handle<YieldTermStructure> discounting)
+      public EuriborSwapIsdaFixB(Period tenor, Handle<YieldTermStructure> forwarding, Handle<YieldTermStructure> discounting, SavedSettings settings)
          : base("EuriborSwapIsdaFixB", // familyName
                 tenor,
                 2, // settlementDays
@@ -111,7 +107,7 @@ namespace QLNet
                 tenor > new Period(1,TimeUnit.Years) ?
                     new Euribor(new Period(6,TimeUnit.Months), forwarding) :
                     new Euribor(new Period(3,TimeUnit.Months), forwarding),
-                discounting) {}
+                discounting, settings) {}
    }
 
    //! %EuriborSwapIfrFix index base class
@@ -123,10 +119,10 @@ namespace QLNet
    */
    public class EuriborSwapIfrFix : SwapIndex 
    {
-      public EuriborSwapIfrFix(Period tenor)
-         : this(tenor, new Handle<YieldTermStructure>()) { }
+      public EuriborSwapIfrFix(Period tenor, SavedSettings settings)
+         : this(tenor, new Handle<YieldTermStructure>(), settings) { }
 
-      public EuriborSwapIfrFix(Period tenor,Handle<YieldTermStructure> h)
+      public EuriborSwapIfrFix(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
          : base("EuriborSwapIfrFix", // familyName
                 tenor,
                 2, // settlementDays
@@ -137,11 +133,9 @@ namespace QLNet
                 new Thirty360(Thirty360.Thirty360Convention.BondBasis), // fixedLegDaycounter
                 tenor > new Period(1,TimeUnit.Years) ?
                     new Euribor(new Period(6,TimeUnit.Months), h) :
-                    new Euribor(new Period(3,TimeUnit.Months), h)) {}
+                    new Euribor(new Period(3,TimeUnit.Months), h), settings) {}
 
-      public EuriborSwapIfrFix(Period tenor,
-                               Handle<YieldTermStructure> forwarding,
-                               Handle<YieldTermStructure> discounting)
+      public EuriborSwapIfrFix(Period tenor, Handle<YieldTermStructure> forwarding, Handle<YieldTermStructure> discounting, SavedSettings settings)
 
          : base("EuriborSwapIfrFix", // familyName
                 tenor,
@@ -154,7 +148,7 @@ namespace QLNet
                 tenor > new Period(1, TimeUnit.Years) ?
                     new Euribor(new Period(6, TimeUnit.Months), forwarding) :
                     new Euribor(new Period(3, TimeUnit.Months), forwarding),
-                discounting) {}
+                discounting, settings) {}
 
     };
 }

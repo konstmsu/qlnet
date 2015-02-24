@@ -33,7 +33,7 @@ namespace QLNet {
         public FloatingRateBond(int settlementDays, double faceAmount, Schedule schedule, IborIndex index, DayCounter paymentDayCounter, BusinessDayConvention paymentConvention, int fixingDays, List<double> gearings, List<double> spreads, List<double> caps, List<double> floors, bool inArrears, double redemption, Date issueDate, SavedSettings settings)
             : base(settlementDays, schedule.calendar(), settings, issueDate) {
             maturityDate_ = schedule.endDate();
-            cashflows_ = new IborLeg(schedule, index)
+            cashflows_ = new IborLeg(schedule, index, settings)
                             .withPaymentDayCounter(paymentDayCounter)
                             .withFixingDays(fixingDays)
                             .withGearings(gearings)
@@ -96,7 +96,7 @@ namespace QLNet {
             Schedule schedule = new Schedule(startDate, maturityDate_, new Period(couponFrequency), calendar_,
                                              accrualConvention, accrualConvention, rule, endOfMonth, firstDate, nextToLastDate);
 
-            cashflows_ = new IborLeg(schedule, index)
+            cashflows_ = new IborLeg(schedule, index, settings)
                             .withPaymentDayCounter(accrualDayCounter)
                             .withFixingDays(fixingDays)
                             .withGearings(gearings)

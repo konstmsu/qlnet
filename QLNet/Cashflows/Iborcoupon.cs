@@ -132,10 +132,12 @@ namespace QLNet
    //! helper class building a sequence of capped/floored ibor-rate coupons
    public class IborLeg : FloatingLegBase
    {
-      // constructor
-      public IborLeg(Schedule schedule, IborIndex index)
+       readonly SavedSettings settings_;
+       // constructor
+      public IborLeg(Schedule schedule, IborIndex index, SavedSettings settings)
       {
-         schedule_ = schedule;
+          settings_ = settings;
+          schedule_ = schedule;
          index_ = index;
          paymentAdjustment_ = BusinessDayConvention.Following;
          inArrears_ = false;
@@ -151,7 +153,7 @@ namespace QLNet
 
          if (caps_.Count == 0 && floors_.Count == 0 && !inArrears_)
          {
-            Utils.setCouponPricer(cashflows, new BlackIborCouponPricer());
+            Utils.setCouponPricer(cashflows, new BlackIborCouponPricer(settings_));
          }
          return cashflows;
       }

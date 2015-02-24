@@ -126,6 +126,7 @@ namespace TestSuite
         public void testSwaps() {
             //BOOST_MESSAGE("Testing Hull-White swap pricing against known values...");
 
+            SavedSettings settings = new SavedSettings();
             Date today;  //=Settings::instance().evaluationDate();;
             
             Calendar calendar = new TARGET();
@@ -216,7 +217,7 @@ namespace TestSuite
 
                         VanillaSwap swap = new VanillaSwap(VanillaSwap.Type.Payer, 1000000.0,
                                          fixedSchedule, rates[k], new Thirty360(),
-                                         floatSchedule, euribor, 0.0, new Actual360());
+                                         floatSchedule, euribor, 0.0, new Actual360(), settings);
                         swap.setPricingEngine(new DiscountingSwapEngine(termStructure));
                         double expected = swap.NPV();
                         swap.setPricingEngine(engine);

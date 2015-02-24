@@ -67,7 +67,7 @@ namespace TestSuite
          // SavedSettings backup;
 
          // setup
-         public CommonVars()
+         public CommonVars(SavedSettings settings)
          {
             calendar = new TARGET();
             settlementDays = 2;
@@ -90,7 +90,7 @@ namespace TestSuite
             for (int i = 0; i < swaps; ++i)
             {
                instruments.Add(new SwapRateHelper(swapData[i].rate / 100, new Period(swapData[i].n, swapData[i].units),
-                               calendar, Frequency.Annual, BusinessDayConvention.Unadjusted, new Thirty360(), index));
+                               calendar, Frequency.Annual, BusinessDayConvention.Unadjusted, new Thirty360(), index, settings));
             }
             termStructure = new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, new Actual360());
             dummyTermStructure = new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, new Actual360());
@@ -102,7 +102,8 @@ namespace TestSuite
       {
          // ("Testing term structure against evaluation date change...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars(settings);
 
          SimpleQuote flatRate = new SimpleQuote();
          Handle<Quote> flatRateHandle = new Handle<Quote>(flatRate);
@@ -135,7 +136,8 @@ namespace TestSuite
       {
          // ("Testing consistency of implied term structure...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars(settings);
 
          double tolerance = 1.0e-10;
          Date today = Settings.evaluationDate();
@@ -157,7 +159,8 @@ namespace TestSuite
       {
          // ("Testing observability of implied term structure...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars(settings);
 
          Date today = Settings.evaluationDate();
          Date newToday = today + new Period(3, TimeUnit.Years);
@@ -175,7 +178,8 @@ namespace TestSuite
       public void testFSpreaded()
       {
          //("Testing consistency of forward-spreaded term structure...");
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars(settings);
 
          double tolerance = 1.0e-10;
          Quote me = new SimpleQuote(0.01);
@@ -200,7 +204,8 @@ namespace TestSuite
       {
          // ("Testing observability of forward-spreaded term structure...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars(settings);
 
          SimpleQuote me = new SimpleQuote(0.01);
          Handle<Quote> mh = new Handle<Quote>(me);
@@ -222,7 +227,8 @@ namespace TestSuite
       {
          // ("Testing consistency of zero-spreaded term structure...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars(settings);
 
          double tolerance = 1.0e-10;
          Quote me = new SimpleQuote(0.01);
@@ -243,7 +249,8 @@ namespace TestSuite
       {
          // ("Testing observability of zero-spreaded term structure...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars(settings);
 
          SimpleQuote me = new SimpleQuote(0.01);
          Handle<Quote> mh = new Handle<Quote>(me);

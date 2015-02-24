@@ -103,7 +103,7 @@ namespace BermudanSwaption
                 type, 1000.0,
                 fixedSchedule, dummyFixedRate, fixedLegDayCounter,
                 floatSchedule, indexSixMonths, 0.0,
-                indexSixMonths.dayCounter());
+                indexSixMonths.dayCounter(), settings);
             swap.setPricingEngine(new DiscountingSwapEngine(rhTermStructure));
             double fixedAtmRate = swap.fairRate();
             double fixedOtmRate = fixedAtmRate * 1.2;
@@ -113,17 +113,17 @@ namespace BermudanSwaption
                 type, 1000.0,
                 fixedSchedule, fixedAtmRate, fixedLegDayCounter,
                 floatSchedule, indexSixMonths, 0.0,
-                indexSixMonths.dayCounter());
+                indexSixMonths.dayCounter(), settings);
             VanillaSwap otmSwap = new VanillaSwap(
                 type, 1000.0,
                 fixedSchedule, fixedOtmRate, fixedLegDayCounter,
                 floatSchedule, indexSixMonths, 0.0,
-                indexSixMonths.dayCounter());
+                indexSixMonths.dayCounter(), settings);
             VanillaSwap itmSwap = new VanillaSwap(
                 type, 1000.0,
                 fixedSchedule, fixedItmRate, fixedLegDayCounter,
                 floatSchedule, indexSixMonths, 0.0,
-                indexSixMonths.dayCounter());
+                indexSixMonths.dayCounter(), settings);
 
             // defining the swaptions to be used in model calibration
             List<Period> swaptionMaturities = new List<Period>(5);

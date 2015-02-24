@@ -294,14 +294,14 @@ namespace QLNet {
         RelinkableHandle<YieldTermStructure> termStructureHandle_ = new RelinkableHandle<YieldTermStructure>();
         protected Handle<Quote> spread_;
         protected Period fwdStart_;
-
+        readonly SavedSettings settings_;
 
         #region ctors
         //public SwapRateHelper(Quote rate, SwapIndex swapIndex) :
         //    this(rate, swapIndex, new SimpleQuote(), new Period(0, TimeUnit.Days)) { }
         //public SwapRateHelper(Quote rate, SwapIndex swapIndex, Quote spread) :
         //    this(rate, swapIndex, spread, new Period(0, TimeUnit.Days)) { }
-        public SwapRateHelper(Handle<Quote> rate, SwapIndex swapIndex, Handle<Quote> spread, Period fwdStart)
+        public SwapRateHelper(Handle<Quote> rate, SwapIndex swapIndex, Handle<Quote> spread, Period fwdStart, SavedSettings settings)
             : base(rate) {
             tenor_ = swapIndex.tenor();
             calendar_ = swapIndex.fixingCalendar();
@@ -311,6 +311,7 @@ namespace QLNet {
             iborIndex_ = swapIndex.iborIndex();
             spread_ = spread;
             fwdStart_ = fwdStart;
+            settings_ = settings;
 
             // add observers
             iborIndex_.notifyObserversEvent += (Callback)update;
@@ -321,15 +322,15 @@ namespace QLNet {
 
         public SwapRateHelper(Handle<Quote> rate, Period tenor, Calendar calendar,
                Frequency fixedFrequency, BusinessDayConvention fixedConvention, DayCounter fixedDayCount,
-               IborIndex iborIndex) :
+               IborIndex iborIndex, SavedSettings settings) :
             this(rate, tenor, calendar, fixedFrequency, fixedConvention, fixedDayCount, iborIndex,
-                 new Handle<Quote>(), new Period(0, TimeUnit.Days)) { }
+                 new Handle<Quote>(), new Period(0, TimeUnit.Days), settings) { }
 
         public SwapRateHelper(double rate, Period tenor, Calendar calendar,
                Frequency fixedFrequency, BusinessDayConvention fixedConvention, DayCounter fixedDayCount,
-               IborIndex iborIndex) :
+               IborIndex iborIndex, SavedSettings settings) :
             this(rate, tenor, calendar, fixedFrequency, fixedConvention, fixedDayCount, iborIndex,
-                 new Handle<Quote>(), new Period(0, TimeUnit.Days)) { }
+                 new Handle<Quote>(), new Period(0, TimeUnit.Days), settings) { }
 
         //public SwapRateHelper(Quote rate, Period tenor, Calendar calendar,
         //               Frequency fixedFrequency, BusinessDayConvention fixedConvention, DayCounter fixedDayCount,
@@ -340,7 +341,7 @@ namespace QLNet {
             // fixed leg
                        Frequency fixedFrequency, BusinessDayConvention fixedConvention, DayCounter fixedDayCount,
             // floating leg
-                       IborIndex iborIndex, Handle<Quote> spread, Period fwdStart)
+                       IborIndex iborIndex, Handle<Quote> spread, Period fwdStart, SavedSettings settings)
             : base(rate) {
             tenor_ = tenor;
             calendar_ = calendar;
@@ -350,6 +351,7 @@ namespace QLNet {
             iborIndex_ = iborIndex;
             spread_ = spread;
             fwdStart_ = fwdStart;
+            settings_ = settings;
 
             // add observers
             iborIndex_.notifyObserversEvent += (Callback)update;
@@ -373,7 +375,7 @@ namespace QLNet {
             // fixed leg
                        Frequency fixedFrequency, BusinessDayConvention fixedConvention, DayCounter fixedDayCount,
             // floating leg
-                       IborIndex iborIndex, Handle<Quote> spread, Period fwdStart)
+                       IborIndex iborIndex, Handle<Quote> spread, Period fwdStart, SavedSettings settings)
             : base(rate) {
             tenor_ = tenor;
             calendar_ = calendar;
@@ -383,6 +385,7 @@ namespace QLNet {
             iborIndex_ = iborIndex;
             spread_ = spread;
             fwdStart_ = fwdStart;
+            settings_ = settings;
 
             // add observers
             iborIndex_.notifyObserversEvent += (Callback)update;
@@ -395,7 +398,7 @@ namespace QLNet {
         //    : this(rate, swapIndex, new SimpleQuote()) { }
         //public SwapRateHelper(double rate, SwapIndex swapIndex, Quote spread)
         //    : this(rate, swapIndex, spread, new Period(0, TimeUnit.Days)) { }
-        public SwapRateHelper(double rate, SwapIndex swapIndex, Handle<Quote> spread, Period fwdStart)
+        public SwapRateHelper(double rate, SwapIndex swapIndex, Handle<Quote> spread, Period fwdStart, SavedSettings settings)
             : base(rate) {
             tenor_ = swapIndex.tenor();
             calendar_ = swapIndex.fixingCalendar();
@@ -405,6 +408,7 @@ namespace QLNet {
             iborIndex_ = swapIndex.iborIndex();
             spread_ = spread;
             fwdStart_ = fwdStart;
+            settings_ = settings;
 
             // add observers
             iborIndex_.notifyObserversEvent += (Callback)update;
@@ -420,7 +424,7 @@ namespace QLNet {
             IborIndex clonedIborIndex = iborIndex_.clone(termStructureHandle_);
 
             // do not pass the spread here, as it might be a Quote i.e. it can dinamically change
-            swap_ = new MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_)
+            swap_ = new MakeVanillaSwap(tenor_, clonedIborIndex, 0.0, fwdStart_, settings_)
                                         .withFixedLegDayCount(fixedDayCount_)
                                         .withFixedLegTenor(new Period(fixedFrequency_))
                                         .withFixedLegConvention(fixedConvention_)
@@ -484,12 +488,12 @@ namespace QLNet {
 
         protected BMASwap swap_;
         protected RelinkableHandle<YieldTermStructure> termStructureHandle_ = new RelinkableHandle<YieldTermStructure>();
+        SavedSettings _settings;
 
-        public BMASwapRateHelper(Handle<Quote> liborFraction, Period tenor,  int settlementDays, Calendar calendar,
-                          // bma leg
-                          Period bmaPeriod, BusinessDayConvention bmaConvention, DayCounter bmaDayCount, BMAIndex bmaIndex,
-                          // ibor leg
-                          IborIndex iborIndex)    
+        public BMASwapRateHelper(Handle<Quote> liborFraction, Period tenor, int settlementDays, Calendar calendar, Period bmaPeriod, BusinessDayConvention bmaConvention, DayCounter bmaDayCount, BMAIndex bmaIndex, IborIndex iborIndex, SavedSettings settings
+// bma leg
+            // ibor leg
+            )    
             : base(liborFraction) {
             tenor_ = tenor;
             settlementDays_ = settlementDays;
@@ -504,7 +508,8 @@ namespace QLNet {
             bmaIndex_.notifyObserversEvent += (Callback)update;
 
             initializeDates();
-        }
+            _settings = settings;
+            }
 
         //! \name RateHelper interface
         public override double impliedQuote() {
@@ -547,7 +552,7 @@ namespace QLNet {
                           .value();
 
             swap_ = new BMASwap(BMASwap.Type.Payer, 100.0, liborSchedule, 0.75, // arbitrary
-                                0.0, iborIndex_, iborIndex_.dayCounter(), bmaSchedule, clonedIndex, bmaDayCount_);
+                                0.0, iborIndex_, iborIndex_.dayCounter(), bmaSchedule, clonedIndex, bmaDayCount_, _settings);
             swap_.setPricingEngine(new DiscountingSwapEngine(iborIndex_.forwardingTermStructure()));
 
             Date d = calendar_.adjust(swap_.maturityDate(), BusinessDayConvention.Following);

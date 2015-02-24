@@ -476,7 +476,7 @@ namespace QLNet {
 
         public override double capletPrice(double effectiveCap) {
             // caplet is equivalent to call option on fixing
-            Date today = Settings.evaluationDate();
+            Date today = settings_.evaluationDate();
             if (fixingDate_ <= today) {
                 // the fixing is determined
                 double Rs = Math.Max(coupon_.swapIndex().fixing(fixingDate_) - effectiveCap, 0.0);
@@ -499,7 +499,7 @@ namespace QLNet {
 
         public override double floorletPrice(double effectiveFloor) {
             // floorlet is equivalent to put option on fixing
-            Date today = Settings.evaluationDate();
+            Date today = settings_.evaluationDate();
             if (fixingDate_ <= today) {
                 // the fixing is determined
                 double Rs = Math.Max(effectiveFloor - coupon_.swapIndex().fixing(fixingDate_), 0.0);
@@ -531,12 +531,13 @@ namespace QLNet {
             update();
         }
 
-        protected HaganPricer(Handle<SwaptionVolatilityStructure> swaptionVol, GFunctionFactory.YieldCurveModel modelOfYieldCurve, Handle<Quote> meanReversion)
+        protected HaganPricer(Handle<SwaptionVolatilityStructure> swaptionVol, GFunctionFactory.YieldCurveModel modelOfYieldCurve, Handle<Quote> meanReversion, SavedSettings settings)
             : base(swaptionVol) {
             modelOfYieldCurve_ = modelOfYieldCurve;
             cutoffForCaplet_ = 2;
             cutoffForFloorlet_ = 0;
             meanReversion_ = meanReversion;
+            settings_ = settings;
 
             if (meanReversion_.link != null)
                 meanReversion_.registerWith(update);
@@ -553,7 +554,7 @@ namespace QLNet {
             SwapIndex swapIndex = coupon_.swapIndex();
             rateCurve_ = swapIndex.forwardingTermStructure().link;
 
-            Date today = Settings.evaluationDate();
+            Date today = settings_.evaluationDate();
 
             if (paymentDate_ > today)
                 discount_ = rateCurve_.discount(paymentDate_);
@@ -619,6 +620,7 @@ namespace QLNet {
         protected Handle<Quote> meanReversion_;
         protected Period swapTenor_;
         protected VanillaOptionPricer vanillaOptionPricer_;
+        protected readonly SavedSettings settings_;
     }
 
 
@@ -636,8 +638,8 @@ namespace QLNet {
         public double precision_;
         public double refiningIntegrationTolerance_;
 
-        public NumericHaganPricer(Handle<SwaptionVolatilityStructure> swaptionVol, GFunctionFactory.YieldCurveModel modelOfYieldCurve, Handle<Quote> meanReversion, double lowerLimit, double upperLimit, double precision)
-            : base(swaptionVol, modelOfYieldCurve, meanReversion) {
+        public NumericHaganPricer(Handle<SwaptionVolatilityStructure> swaptionVol, GFunctionFactory.YieldCurveModel modelOfYieldCurve, Handle<Quote> meanReversion, double lowerLimit, double upperLimit, double precision, SavedSettings settings)
+            : base(swaptionVol, modelOfYieldCurve, meanReversion, settings) {
             upperLimit_ = upperLimit;
             lowerLimit_ = lowerLimit;
             requiredStdDeviations_ = 8;
@@ -718,7 +720,7 @@ namespace QLNet {
         }
 
         public override double swapletPrice() {
-            Date today = Settings.evaluationDate();
+            Date today = settings_.evaluationDate();
             if (fixingDate_ <= today) {
                 // the fixing is determined
                 double Rs = coupon_.swapIndex().fixing(fixingDate_);
@@ -852,8 +854,8 @@ namespace QLNet {
     //                          AnalyticHaganPricer                           //
     //===========================================================================//
     public class AnalyticHaganPricer : HaganPricer {
-        public AnalyticHaganPricer(Handle<SwaptionVolatilityStructure> swaptionVol, GFunctionFactory.YieldCurveModel modelOfYieldCurve, Handle<Quote> meanReversion)
-            : base(swaptionVol, modelOfYieldCurve, meanReversion) {
+        public AnalyticHaganPricer(Handle<SwaptionVolatilityStructure> swaptionVol, GFunctionFactory.YieldCurveModel modelOfYieldCurve, Handle<Quote> meanReversion, SavedSettings settings)
+            : base(swaptionVol, modelOfYieldCurve, meanReversion,settings) {
         }
 
         //Hagan, 3.5b, 3.5c
@@ -882,7 +884,7 @@ namespace QLNet {
 
         //Hagan 3.4c
         public override double swapletPrice() {
-            Date today = Settings.evaluationDate();
+            Date today = settings_.evaluationDate();
             if (fixingDate_ <= today) {
                 // the fixing is determined
                 double Rs = coupon_.swapIndex().fixing(fixingDate_);

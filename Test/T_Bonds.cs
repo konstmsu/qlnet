@@ -574,7 +574,8 @@ namespace TestSuite
       {
          // "Testing floating-rate bond prices against cached values...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          Date today = new Date(22, Month.November, 2004);
          Settings.setEvaluationDate(today);
@@ -589,7 +590,7 @@ namespace TestSuite
 
          double tolerance = 1.0e-6;
 
-         IborCouponPricer pricer = new BlackIborCouponPricer(new Handle<OptionletVolatilityStructure>());
+         IborCouponPricer pricer = new BlackIborCouponPricer(new Handle<OptionletVolatilityStructure>(), settings);
 
          // plain
          Schedule sch = new Schedule(new Date(30, Month.November, 2004), new Date(30, Month.November, 2008),
@@ -597,7 +598,6 @@ namespace TestSuite
                                      BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
                                      DateGeneration.Rule.Backward, false);
 
-          SavedSettings settings=new SavedSettings();
           FloatingRateBond bond1 = new FloatingRateBond(settlementDays, vars.faceAmount, sch,
                                 index, new ActualActual(ActualActual.Convention.ISMA),
                                 BusinessDayConvention.ModifiedFollowing, fixingDays,

@@ -83,11 +83,13 @@ namespace QLNet {
 
     //! Black-formula pricer for capped/floored Ibor coupons
     public class BlackIborCouponPricer : IborCouponPricer {
-        public BlackIborCouponPricer()
-            : this(new Handle<OptionletVolatilityStructure>()) {
+        public BlackIborCouponPricer(SavedSettings settings)
+            : this(new Handle<OptionletVolatilityStructure>(), settings) {
         }
-        public BlackIborCouponPricer(Handle<OptionletVolatilityStructure> v)
-            : base(v) {
+        public BlackIborCouponPricer(Handle<OptionletVolatilityStructure> v, SavedSettings settings)
+            : base(v)
+        {
+            settings_ = settings;
         }
 
         //===========================================================================//
@@ -137,7 +139,7 @@ namespace QLNet {
 
         protected override double optionletPrice(Option.Type optionType, double effStrike) {
             Date fixingDate = coupon_.fixingDate();
-            if (fixingDate <= Settings.evaluationDate()) {
+            if (fixingDate <= settings_.evaluationDate()) {
                 // the amount is determined
                 double a;
                 double b;
@@ -193,6 +195,7 @@ namespace QLNet {
         private double gearing_;
         private double spread_;
         private double spreadLegValue_;
+        readonly SavedSettings settings_;
     }
 
     //! base pricer for vanilla CMS coupons

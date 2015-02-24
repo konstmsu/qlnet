@@ -36,10 +36,10 @@ namespace QLNet
    */
    public class ChfLiborSwapIsdaFix : SwapIndex 
    {
-      public ChfLiborSwapIsdaFix(Period tenor)
-         : this(tenor, new Handle<YieldTermStructure>()) { }
+      public ChfLiborSwapIsdaFix(Period tenor, SavedSettings settings)
+         : this(tenor, new Handle<YieldTermStructure>(), settings) { }
 
-      public ChfLiborSwapIsdaFix(Period tenor,Handle<YieldTermStructure> h)
+      public ChfLiborSwapIsdaFix(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
          : base("ChfLiborSwapIsdaFix", // familyName
                 tenor,
                 2, // settlementDays
@@ -50,6 +50,6 @@ namespace QLNet
                 new Thirty360(Thirty360.Thirty360Convention.BondBasis), // fixedLegDaycounter
                 tenor > new Period(1, TimeUnit.Years) ?
                     new CHFLibor(new Period(6, TimeUnit.Months), h) :
-                    new CHFLibor(new Period(3, TimeUnit.Months), h)) { }
+                    new CHFLibor(new Period(3, TimeUnit.Months), h), settings) { }
     };
 }

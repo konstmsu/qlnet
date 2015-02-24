@@ -302,7 +302,7 @@ namespace QLNet
 
       {
         // !!! notional forcibly set to 100
-        cashflows_ = new IborLeg(schedule, index)
+        cashflows_ = new IborLeg(schedule, index, settings)
                         .withPaymentDayCounter(dayCounter)
                         .withFixingDays(fixingDays)
                         .withSpreads(spreads)

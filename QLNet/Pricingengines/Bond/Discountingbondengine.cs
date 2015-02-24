@@ -53,7 +53,7 @@ namespace QLNet
                                         includeRefDateFlows, _settings, settlementDate: results_.valuationDate,
                                         npvDate: results_.valuationDate);
 
-         results_.cash = CashFlows.cash(arguments_.cashflows, arguments_.settlementDate);
+         results_.cash = CashFlows.cash(arguments_.cashflows, _settings, arguments_.settlementDate);
 
          // a bond's cashflow on settlement date is never taken into
          // account, so we might have to play it safe and recalculate

@@ -143,8 +143,9 @@ namespace QLNet
       private DateGeneration.Rule rule_;
       private bool endOfMonth_;
       private IborIndex index_;
+       SavedSettings _settings;
 
-      public MakeFloatingLoan(Date startDate, Date endDate, double spread, Frequency frequency)
+       public MakeFloatingLoan(Date startDate, Date endDate, double spread, Frequency frequency, SavedSettings settings)
       {
          startDate_ = startDate;
          endDate_ = endDate;
@@ -162,6 +163,7 @@ namespace QLNet
          index_ = new IborIndex();
 
          //engine_ = new DiscountingSwapEngine(index.termStructure());
+           _settings = settings;
       }
 
       public MakeFloatingLoan withType(Loan.Type type)
@@ -235,7 +237,7 @@ namespace QLNet
                                   calendar_, convention_, convention_, rule_, endOfMonth_);
 
          FloatingLoan fl = new FloatingLoan(type_, nominal_, floatingSchedule, spread_, dayCounter_,
-                                     principalSchedule, convention_,index_);
+                                     principalSchedule, convention_,index_, _settings);
          return fl;
 
       }

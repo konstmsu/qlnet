@@ -46,7 +46,7 @@ namespace QLNet
          maturityDate_ = schedule.endDate();
 
 
-         cashflows_ = new IborLeg(schedule, index)
+         cashflows_ = new IborLeg(schedule, index, settings)
                          .withCaps(caps)
                          .withFloors(floors)
                          .inArrears(inArrears)

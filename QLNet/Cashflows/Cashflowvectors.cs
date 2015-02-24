@@ -47,7 +47,7 @@ namespace QLNet {
                                                 List<double> floors,
                                                 bool isInArrears,
                                                 bool isZero)
-            where InterestRateIndexType : InterestRateIndex, new()
+            where InterestRateIndexType : InterestRateIndex
             where FloatingCouponType : FloatingRateCoupon, new()
             where CappedFlooredCouponType : CappedFlooredCoupon, new() {
 
@@ -133,7 +133,7 @@ namespace QLNet {
                                                 bool isPutATMIncluded,
                                                 List<double> putDigitalPayoffs,
                                                 DigitalReplication replication)
-            where InterestRateIndexType : InterestRateIndex, new()
+            where InterestRateIndexType : InterestRateIndex
             where FloatingCouponType : FloatingRateCoupon, new()
             where DigitalCouponType : DigitalCoupon, new() {
 

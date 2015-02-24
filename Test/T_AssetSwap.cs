@@ -41,14 +41,11 @@ namespace TestSuite
          public Compounding compounding;
          public RelinkableHandle<YieldTermStructure> termStructure = new RelinkableHandle<YieldTermStructure>(); 
 
-         // clean-up
-         public SavedSettings backup;
          //public IndexHistoryCleaner indexCleaner;
 
          // initial setup
-         public CommonVars() 
+         public CommonVars(SavedSettings settings) 
          {
-            backup = new SavedSettings();
             //indexCleaner = new IndexHistoryCleaner();
             termStructure = new RelinkableHandle<YieldTermStructure>();
             int swapSettlementDays = 2;
@@ -62,7 +59,7 @@ namespace TestSuite
             swapIndex=  new SwapIndex("EuriborSwapIsdaFixA", new Period(10,TimeUnit.Years), swapSettlementDays,
                                       iborIndex.currency(), calendar,
                                       new Period(fixedFrequency), fixedConvention,
-                                      iborIndex.dayCounter(), iborIndex);
+                                      iborIndex.dayCounter(), iborIndex, settings);
             spread = 0.0;
             nonnullspread = 0.003;
             Date today = new Date(24,Month.April,2007);
@@ -71,13 +68,13 @@ namespace TestSuite
             //Date today = Settings::instance().evaluationDate();
             termStructure.linkTo(Utilities.flatRate(today, 0.05, new Actual365Fixed()));
             
-            pricer = new BlackIborCouponPricer();
+            pricer = new BlackIborCouponPricer(settings);
             Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure = 
                new Handle<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(today, 
                new NullCalendar(),BusinessDayConvention.Following, 0.2, new Actual365Fixed()));
             
             Handle<Quote> meanReversionQuote = new Handle<Quote>(new SimpleQuote(0.01));
-            cmspricer = new AnalyticHaganPricer(swaptionVolatilityStructure, GFunctionFactory.YieldCurveModel.Standard, meanReversionQuote);
+            cmspricer = new AnalyticHaganPricer(swaptionVolatilityStructure, GFunctionFactory.YieldCurveModel.Standard, meanReversionQuote, settings);
         }
       }
 
@@ -86,7 +83,8 @@ namespace TestSuite
       {
 
          // Testing consistency between fair price and fair spread...");
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars(settings);
 
          Calendar bondCalendar = new TARGET();
          int settlementDays = 3;
@@ -99,7 +97,6 @@ namespace TestSuite
                                               new Period(Frequency.Annual), bondCalendar,
                                               BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
                                               DateGeneration.Rule.Backward, false);
-          SavedSettings settings=new SavedSettings();
           Bond bond = new FixedRateBond(settlementDays, vars.faceAmount,
                                        bondSchedule, new List<double>() { 0.04 },
                                        new ActualActual(ActualActual.Convention.ISDA), settings, paymentConvention: BusinessDayConvention.Following,
@@ -110,8 +107,7 @@ namespace TestSuite
 
          bool isPar = true;
 
-         AssetSwap parAssetSwap = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, vars.spread,
-                                                null, vars.iborIndex.dayCounter(), isPar);
+         AssetSwap parAssetSwap = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), isPar);
 
          IPricingEngine swapEngine = new DiscountingSwapEngine(vars.termStructure, true, bond.settlementDate(),
                                                                Settings.evaluationDate());
@@ -122,8 +118,7 @@ namespace TestSuite
 
          double tolerance = 1.0e-13;
 
-         AssetSwap assetSwap2 = new AssetSwap(payFixedRate, bond, fairCleanPrice, vars.iborIndex, vars.spread,
-                                              null, vars.iborIndex.dayCounter(), isPar);
+         AssetSwap assetSwap2 = new AssetSwap(payFixedRate, bond, fairCleanPrice, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), isPar);
 
          assetSwap2.setPricingEngine(swapEngine);
          if (Math.Abs(assetSwap2.NPV()) > tolerance)
@@ -151,8 +146,7 @@ namespace TestSuite
                        "\n  tolerance:    " + tolerance);
          }
 
-         AssetSwap assetSwap3 = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, fairSpread,
-                                              null, vars.iborIndex.dayCounter(), isPar);
+         AssetSwap assetSwap3 = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, fairSpread, settings, null, vars.iborIndex.dayCounter(), isPar);
 
          assetSwap3.setPricingEngine(swapEngine);
          if (Math.Abs(assetSwap3.NPV()) > tolerance)
@@ -200,8 +194,7 @@ namespace TestSuite
                        "\n  tolerance:       " + tolerance);
          }
 
-         assetSwap2 = new AssetSwap(payFixedRate, bond, fairCleanPrice, vars.iborIndex, vars.spread,
-                                    null, vars.iborIndex.dayCounter(), isPar);
+         assetSwap2 = new AssetSwap(payFixedRate, bond, fairCleanPrice, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), isPar);
          assetSwap2.setPricingEngine(swapEngine);
          if (Math.Abs(assetSwap2.NPV()) > tolerance)
          {
@@ -228,8 +221,7 @@ namespace TestSuite
                        "\n  tolerance:    " + tolerance);
          }
 
-         assetSwap3 = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, fairSpread,
-                                    null, vars.iborIndex.dayCounter(), isPar);
+         assetSwap3 = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, fairSpread, settings, null, vars.iborIndex.dayCounter(), isPar);
          assetSwap3.setPricingEngine(swapEngine);
          if (Math.Abs(assetSwap3.NPV()) > tolerance)
          {
@@ -259,8 +251,7 @@ namespace TestSuite
 
          // now market asset swap
          isPar = false;
-         AssetSwap mktAssetSwap = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, vars.spread,
-                                                null, vars.iborIndex.dayCounter(), isPar);
+         AssetSwap mktAssetSwap = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), isPar);
 
          swapEngine = new DiscountingSwapEngine(vars.termStructure, true, bond.settlementDate(),
                                                 Settings.evaluationDate());
@@ -269,8 +260,7 @@ namespace TestSuite
          fairCleanPrice = mktAssetSwap.fairCleanPrice();
          fairSpread = mktAssetSwap.fairSpread();
 
-         AssetSwap assetSwap4 = new AssetSwap(payFixedRate, bond, fairCleanPrice, vars.iborIndex, vars.spread,
-                                              null, vars.iborIndex.dayCounter(), isPar);
+         AssetSwap assetSwap4 = new AssetSwap(payFixedRate, bond, fairCleanPrice, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), isPar);
          assetSwap4.setPricingEngine(swapEngine);
          if (Math.Abs(assetSwap4.NPV()) > tolerance)
          {
@@ -297,8 +287,7 @@ namespace TestSuite
                        "\n  tolerance:    " + tolerance);
          }
 
-         AssetSwap assetSwap5 = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, fairSpread,
-                                              null, vars.iborIndex.dayCounter(), isPar);
+         AssetSwap assetSwap5 = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, fairSpread, settings, null, vars.iborIndex.dayCounter(), isPar);
          assetSwap5.setPricingEngine(swapEngine);
          if (Math.Abs(assetSwap5.NPV()) > tolerance)
          {
@@ -345,8 +334,7 @@ namespace TestSuite
                        "\n  tolerance:    " + tolerance);
          }
 
-         assetSwap4 = new AssetSwap(payFixedRate, bond, fairCleanPrice, vars.iborIndex, vars.spread,
-                                    null, vars.iborIndex.dayCounter(), isPar);
+         assetSwap4 = new AssetSwap(payFixedRate, bond, fairCleanPrice, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), isPar);
          assetSwap4.setPricingEngine(swapEngine);
          if (Math.Abs(assetSwap4.NPV()) > tolerance)
          {
@@ -373,8 +361,7 @@ namespace TestSuite
                        "\n  tolerance:    " + tolerance);
          }
 
-         assetSwap5 = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, fairSpread,
-                                    null, vars.iborIndex.dayCounter(), isPar);
+         assetSwap5 = new AssetSwap(payFixedRate, bond, bondPrice, vars.iborIndex, fairSpread, settings, null, vars.iborIndex.dayCounter(), isPar);
          assetSwap5.setPricingEngine(swapEngine);
          if (Math.Abs(assetSwap5.NPV()) > tolerance)
          {
@@ -407,7 +394,7 @@ namespace TestSuite
       {
          // Testing implied bond value against asset-swap fair price with null spread
           SavedSettings settings = new SavedSettings();
-          CommonVars vars = new CommonVars();
+          CommonVars vars = new CommonVars(settings);
 
          Calendar bondCalendar = new TARGET();
          int settlementDays = 3;
@@ -435,8 +422,7 @@ namespace TestSuite
          fixedBond1.setPricingEngine(bondEngine);
 
          double fixedBondPrice1 = fixedBond1.cleanPrice();
-         AssetSwap fixedBondAssetSwap1 = new AssetSwap(payFixedRate, fixedBond1, fixedBondPrice1, vars.iborIndex, vars.spread,
-                                                       null, vars.iborIndex.dayCounter(), parAssetSwap);
+         AssetSwap fixedBondAssetSwap1 = new AssetSwap(payFixedRate, fixedBond1, fixedBondPrice1, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), parAssetSwap);
          fixedBondAssetSwap1.setPricingEngine(swapEngine);
          double fixedBondAssetSwapPrice1 = fixedBondAssetSwap1.fairCleanPrice();
          double tolerance = 1.0e-13;
@@ -467,8 +453,7 @@ namespace TestSuite
          fixedBond2.setPricingEngine(bondEngine);
 
          double fixedBondPrice2 = fixedBond2.cleanPrice();
-         AssetSwap fixedBondAssetSwap2 = new AssetSwap(payFixedRate, fixedBond2, fixedBondPrice2, vars.iborIndex, vars.spread,
-                                                       null, vars.iborIndex.dayCounter(),  parAssetSwap);
+         AssetSwap fixedBondAssetSwap2 = new AssetSwap(payFixedRate, fixedBond2, fixedBondPrice2, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(),  parAssetSwap);
          fixedBondAssetSwap2.setPricingEngine(swapEngine);
          double fixedBondAssetSwapPrice2 = fixedBondAssetSwap2.fairCleanPrice();
          double error2 = Math.Abs(fixedBondAssetSwapPrice2-fixedBondPrice2);
@@ -506,8 +491,7 @@ namespace TestSuite
          Utils.setCouponPricer(floatingBond1.cashflows(), vars.pricer);
          vars.iborIndex.addFixing(new Date(27,Month.March,2007), 0.0402);
          double floatingBondPrice1 = floatingBond1.cleanPrice();
-         AssetSwap floatingBondAssetSwap1 = new AssetSwap(payFixedRate, floatingBond1, floatingBondPrice1, vars.iborIndex, vars.spread,
-                                                          null, vars.iborIndex.dayCounter(), parAssetSwap);
+         AssetSwap floatingBondAssetSwap1 = new AssetSwap(payFixedRate, floatingBond1, floatingBondPrice1, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), parAssetSwap);
          floatingBondAssetSwap1.setPricingEngine(swapEngine);
          double floatingBondAssetSwapPrice1 = floatingBondAssetSwap1.fairCleanPrice();
          double error3 = Math.Abs(floatingBondAssetSwapPrice1-floatingBondPrice1);
@@ -557,8 +541,7 @@ namespace TestSuite
          }
 
          double floatingBondPrice2 = floatingBond2.cleanPrice();
-         AssetSwap floatingBondAssetSwap2 = new AssetSwap(payFixedRate,floatingBond2, floatingBondPrice2, vars.iborIndex, vars.spread,
-                                                          null, vars.iborIndex.dayCounter(), parAssetSwap);
+         AssetSwap floatingBondAssetSwap2 = new AssetSwap(payFixedRate,floatingBond2, floatingBondPrice2, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), parAssetSwap);
          floatingBondAssetSwap2.setPricingEngine(swapEngine);
          double floatingBondAssetSwapPrice2 = floatingBondAssetSwap2.fairCleanPrice();
          double error5 = Math.Abs(floatingBondAssetSwapPrice2-floatingBondPrice2);
@@ -595,8 +578,7 @@ namespace TestSuite
          Utils.setCouponPricer(cmsBond1.cashflows(), vars.cmspricer);
          vars.swapIndex.addFixing( new Date(18,Month.August,2006), 0.04158);
          double cmsBondPrice1 = cmsBond1.cleanPrice();
-         AssetSwap cmsBondAssetSwap1 = new AssetSwap(payFixedRate, cmsBond1, cmsBondPrice1, vars.iborIndex, vars.spread,
-                                                     null,vars.iborIndex.dayCounter(), parAssetSwap);
+         AssetSwap cmsBondAssetSwap1 = new AssetSwap(payFixedRate, cmsBond1, cmsBondPrice1, vars.iborIndex, vars.spread, settings, null,vars.iborIndex.dayCounter(), parAssetSwap);
          cmsBondAssetSwap1.setPricingEngine(swapEngine);
          double cmsBondAssetSwapPrice1 = cmsBondAssetSwap1.fairCleanPrice();
          double error6 = Math.Abs(cmsBondAssetSwapPrice1-cmsBondPrice1);
@@ -630,8 +612,7 @@ namespace TestSuite
          Utils.setCouponPricer(cmsBond2.cashflows(), vars.cmspricer);
          vars.swapIndex.addFixing( new Date(04,Month.May,2006), 0.04217);
          double cmsBondPrice2 = cmsBond2.cleanPrice();
-         AssetSwap cmsBondAssetSwap2 = new AssetSwap(payFixedRate,cmsBond2, cmsBondPrice2, vars.iborIndex, vars.spread,
-                                                     null, vars.iborIndex.dayCounter(), parAssetSwap);
+         AssetSwap cmsBondAssetSwap2 = new AssetSwap(payFixedRate,cmsBond2, cmsBondPrice2, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), parAssetSwap);
          cmsBondAssetSwap2.setPricingEngine(swapEngine);
          double cmsBondAssetSwapPrice2 = cmsBondAssetSwap2.fairCleanPrice();
          double error7 = Math.Abs(cmsBondAssetSwapPrice2-cmsBondPrice2);
@@ -647,17 +628,15 @@ namespace TestSuite
          // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
          // maturity doesn't occur on a business day
 
-          var savedSettings = new SavedSettings();
           Bond zeroCpnBond1 = new ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                                                 new Date(20,Month.December,2015),
                                                 BusinessDayConvention.Following,
-                                                100.0, new Date(19,Month.December,1985), savedSettings);
+                                                100.0, new Date(19,Month.December,1985), settings);
 
          zeroCpnBond1.setPricingEngine(bondEngine);
 
          double zeroCpnBondPrice1 = zeroCpnBond1.cleanPrice();
-         AssetSwap zeroCpnAssetSwap1 = new AssetSwap(payFixedRate,zeroCpnBond1, zeroCpnBondPrice1, vars.iborIndex, vars.spread,
-                                                     null, vars.iborIndex.dayCounter(), parAssetSwap);
+         AssetSwap zeroCpnAssetSwap1 = new AssetSwap(payFixedRate,zeroCpnBond1, zeroCpnBondPrice1, vars.iborIndex, vars.spread, settings, null, vars.iborIndex.dayCounter(), parAssetSwap);
          zeroCpnAssetSwap1.setPricingEngine(swapEngine);
          double zeroCpnBondAssetSwapPrice1 = zeroCpnAssetSwap1.fairCleanPrice();
          double error8 = Math.Abs(cmsBondAssetSwapPrice1-cmsBondPrice1);
@@ -676,13 +655,12 @@ namespace TestSuite
          Bond zeroCpnBond2 = new ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                            new Date(17,Month.February,2028),
                            BusinessDayConvention.Following,
-                           100.0, new Date(17,Month.February,1998), savedSettings);
+                           100.0, new Date(17,Month.February,1998), settings);
 
          zeroCpnBond2.setPricingEngine(bondEngine);
 
          double zeroCpnBondPrice2 = zeroCpnBond2.cleanPrice();
-         AssetSwap zeroCpnAssetSwap2 = new AssetSwap(payFixedRate, zeroCpnBond2, zeroCpnBondPrice2,  vars.iborIndex, vars.spread,
-                                                     null,vars.iborIndex.dayCounter(), parAssetSwap);
+         AssetSwap zeroCpnAssetSwap2 = new AssetSwap(payFixedRate, zeroCpnBond2, zeroCpnBondPrice2,  vars.iborIndex, vars.spread, settings, null,vars.iborIndex.dayCounter(), parAssetSwap);
          zeroCpnAssetSwap2.setPricingEngine(swapEngine);
          double zeroCpnBondAssetSwapPrice2 = zeroCpnAssetSwap2.fairCleanPrice();
          double error9 = Math.Abs(cmsBondAssetSwapPrice2-cmsBondPrice2);
@@ -702,7 +680,7 @@ namespace TestSuite
       {
          // Testing relationship between market asset swap and par asset swap...
           SavedSettings settings = new SavedSettings();
-          CommonVars vars = new CommonVars();
+          CommonVars vars = new CommonVars(settings);
 
          Calendar bondCalendar = new TARGET();
          int settlementDays = 3;
@@ -733,16 +711,14 @@ namespace TestSuite
          double fixedBondMktFullPrice1=fixedBondMktPrice1+fixedBond1.accruedAmount();
          AssetSwap fixedBondParAssetSwap1 = new AssetSwap(payFixedRate,
                                           fixedBond1, fixedBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          fixedBondParAssetSwap1.setPricingEngine(swapEngine);
          double fixedBondParAssetSwapSpread1 = fixedBondParAssetSwap1.fairSpread();
          AssetSwap fixedBondMktAssetSwap1 = new AssetSwap(payFixedRate,
                                           fixedBond1, fixedBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           mktAssetSwap);
          fixedBondMktAssetSwap1.setPricingEngine(swapEngine);
@@ -778,16 +754,14 @@ namespace TestSuite
          double fixedBondMktFullPrice2=fixedBondMktPrice2+fixedBond2.accruedAmount();
          AssetSwap fixedBondParAssetSwap2 = new AssetSwap(payFixedRate,
                                           fixedBond2, fixedBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          fixedBondParAssetSwap2.setPricingEngine(swapEngine);
          double fixedBondParAssetSwapSpread2 = fixedBondParAssetSwap2.fairSpread();
          AssetSwap fixedBondMktAssetSwap2 = new AssetSwap(payFixedRate,
                                           fixedBond2, fixedBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           mktAssetSwap);
          fixedBondMktAssetSwap2.setPricingEngine(swapEngine);
@@ -830,16 +804,14 @@ namespace TestSuite
          double floatingBondMktFullPrice1 = floatingBondMktPrice1+floatingBond1.accruedAmount();
          AssetSwap floatingBondParAssetSwap1 = new AssetSwap(payFixedRate,
                                              floatingBond1, floatingBondMktPrice1,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              parAssetSwap);
          floatingBondParAssetSwap1.setPricingEngine(swapEngine);
          double floatingBondParAssetSwapSpread1 = floatingBondParAssetSwap1.fairSpread();
          AssetSwap floatingBondMktAssetSwap1= new AssetSwap(payFixedRate,
                                              floatingBond1, floatingBondMktPrice1,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              mktAssetSwap);
          floatingBondMktAssetSwap1.setPricingEngine(swapEngine);
@@ -881,16 +853,14 @@ namespace TestSuite
          double floatingBondMktFullPrice2 = floatingBondMktPrice2+floatingBond2.accruedAmount();
          AssetSwap floatingBondParAssetSwap2= new AssetSwap(payFixedRate,
                                              floatingBond2, floatingBondMktPrice2,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              parAssetSwap);
          floatingBondParAssetSwap2.setPricingEngine(swapEngine);
          double floatingBondParAssetSwapSpread2 = floatingBondParAssetSwap2.fairSpread();
          AssetSwap floatingBondMktAssetSwap2 = new AssetSwap(payFixedRate,
                                              floatingBond2, floatingBondMktPrice2,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              mktAssetSwap);
          floatingBondMktAssetSwap2.setPricingEngine(swapEngine);
@@ -930,16 +900,14 @@ namespace TestSuite
          double cmsBondMktFullPrice1 = cmsBondMktPrice1+cmsBond1.accruedAmount();
          AssetSwap cmsBondParAssetSwap1 = new AssetSwap(payFixedRate,
                                        cmsBond1, cmsBondMktPrice1,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          cmsBondParAssetSwap1.setPricingEngine(swapEngine);
          double cmsBondParAssetSwapSpread1 = cmsBondParAssetSwap1.fairSpread();
          AssetSwap cmsBondMktAssetSwap1 = new AssetSwap(payFixedRate,
                                        cmsBond1, cmsBondMktPrice1,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        mktAssetSwap);
          cmsBondMktAssetSwap1.setPricingEngine(swapEngine);
@@ -979,16 +947,14 @@ namespace TestSuite
          double cmsBondMktFullPrice2 = cmsBondMktPrice2+cmsBond2.accruedAmount();
          AssetSwap cmsBondParAssetSwap2 = new AssetSwap(payFixedRate,
                                        cmsBond2, cmsBondMktPrice2,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          cmsBondParAssetSwap2.setPricingEngine(swapEngine);
          double cmsBondParAssetSwapSpread2 = cmsBondParAssetSwap2.fairSpread();
          AssetSwap cmsBondMktAssetSwap2 = new AssetSwap(payFixedRate,
                                        cmsBond2, cmsBondMktPrice2,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        mktAssetSwap);
          cmsBondMktAssetSwap2.setPricingEngine(swapEngine);
@@ -1018,16 +984,14 @@ namespace TestSuite
          double zeroCpnBondMktFullPrice1 = zeroCpnBondMktPrice1+zeroCpnBond1.accruedAmount();
          AssetSwap zeroCpnBondParAssetSwap1 = new AssetSwap(payFixedRate,zeroCpnBond1,
                                           zeroCpnBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          zeroCpnBondParAssetSwap1.setPricingEngine(swapEngine);
          double zeroCpnBondParAssetSwapSpread1 = zeroCpnBondParAssetSwap1.fairSpread();
          AssetSwap zeroCpnBondMktAssetSwap1 = new AssetSwap(payFixedRate,zeroCpnBond1,
                                           zeroCpnBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           mktAssetSwap);
          zeroCpnBondMktAssetSwap1.setPricingEngine(swapEngine);
@@ -1060,16 +1024,14 @@ namespace TestSuite
          double zeroCpnBondMktFullPrice2 = zeroCpnBondMktPrice2+zeroCpnBond2.accruedAmount();
          AssetSwap zeroCpnBondParAssetSwap2 = new AssetSwap(payFixedRate,zeroCpnBond2,
                                           zeroCpnBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          zeroCpnBondParAssetSwap2.setPricingEngine(swapEngine);
          double zeroCpnBondParAssetSwapSpread2 = zeroCpnBondParAssetSwap2.fairSpread();
          AssetSwap zeroCpnBondMktAssetSwap2 = new AssetSwap(payFixedRate,zeroCpnBond2,
                                           zeroCpnBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           mktAssetSwap);
          zeroCpnBondMktAssetSwap2.setPricingEngine(swapEngine);
@@ -1091,7 +1053,7 @@ namespace TestSuite
       {
          // Testing clean and dirty price with null Z-spread against theoretical prices...
           SavedSettings settings = new SavedSettings();
-          CommonVars vars = new CommonVars();
+          CommonVars vars = new CommonVars(settings);
 
          Calendar bondCalendar = new TARGET();
          int settlementDays = 3;
@@ -1363,8 +1325,9 @@ namespace TestSuite
       {
 
          // Testing implied generic-bond value against asset-swap fair price with null spread...
-
-         CommonVars vars = new CommonVars();
+            var settings  = new SavedSettings();
+          
+         CommonVars vars = new CommonVars(settings);
 
          Calendar bondCalendar = new TARGET();
          int settlementDays = 3;
@@ -1388,7 +1351,6 @@ namespace TestSuite
          Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                          BusinessDayConvention.Following);
          fixedBondLeg1.Add((new SimpleCashFlow(100.0, fixedbondRedemption1)));
-          SavedSettings settings=new SavedSettings();
           Bond fixedBond1 = new Bond(settlementDays, bondCalendar, vars.faceAmount,
                   fixedBondMaturityDate1, settings, fixedBondStartDate1, fixedBondLeg1);
          IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
@@ -1398,8 +1360,7 @@ namespace TestSuite
          double fixedBondPrice1 = fixedBond1.cleanPrice();
          AssetSwap fixedBondAssetSwap1 = new AssetSwap(payFixeddouble,
                                        fixedBond1, fixedBondPrice1,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          fixedBondAssetSwap1.setPricingEngine(swapEngine);
@@ -1436,8 +1397,7 @@ namespace TestSuite
          double fixedBondPrice2 = fixedBond2.cleanPrice();
          AssetSwap fixedBondAssetSwap2= new AssetSwap(payFixeddouble,
                                        fixedBond2, fixedBondPrice2,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          fixedBondAssetSwap2.setPricingEngine(swapEngine);
@@ -1461,7 +1421,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex)
+         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
             .withSpreads(0.0056)
@@ -1479,8 +1439,7 @@ namespace TestSuite
          double floatingBondPrice1 = floatingBond1.cleanPrice();
          AssetSwap floatingBondAssetSwap1= new AssetSwap(payFixeddouble,
                                           floatingBond1, floatingBondPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          floatingBondAssetSwap1.setPricingEngine(swapEngine);
@@ -1505,7 +1464,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex)
+         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
             .withSpreads(0.0025)
@@ -1537,8 +1496,7 @@ namespace TestSuite
          double floatingBondPrice2 = floatingBond2.cleanPrice();
          AssetSwap floatingBondAssetSwap2= new AssetSwap(payFixeddouble,
                                           floatingBond2, floatingBondPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          floatingBondAssetSwap2.setPricingEngine(swapEngine);
@@ -1581,8 +1539,7 @@ namespace TestSuite
          double cmsBondPrice1 = cmsBond1.cleanPrice();
          AssetSwap cmsBondAssetSwap1 = new AssetSwap(payFixeddouble,
                                     cmsBond1, cmsBondPrice1,
-                                    vars.iborIndex, vars.spread,
-                                    null,
+                                    vars.iborIndex, vars.spread, settings, null,
                                     vars.iborIndex.dayCounter(),
                                     parAssetSwap);
          cmsBondAssetSwap1.setPricingEngine(swapEngine);
@@ -1623,8 +1580,7 @@ namespace TestSuite
          double cmsBondPrice2 = cmsBond2.cleanPrice();
          AssetSwap cmsBondAssetSwap2= new AssetSwap(payFixeddouble,
                                     cmsBond2, cmsBondPrice2,
-                                    vars.iborIndex, vars.spread,
-                                    null,
+                                    vars.iborIndex, vars.spread, settings, null,
                                     vars.iborIndex.dayCounter(),
                                     parAssetSwap);
          cmsBondAssetSwap2.setPricingEngine(swapEngine);
@@ -1652,8 +1608,7 @@ namespace TestSuite
          double zeroCpnBondPrice1 = zeroCpnBond1.cleanPrice();
          AssetSwap zeroCpnAssetSwap1 = new AssetSwap(payFixeddouble,
                                     zeroCpnBond1, zeroCpnBondPrice1,
-                                    vars.iborIndex, vars.spread,
-                                    null,
+                                    vars.iborIndex, vars.spread, settings, null,
                                     vars.iborIndex.dayCounter(),
                                     parAssetSwap);
          zeroCpnAssetSwap1.setPricingEngine(swapEngine);
@@ -1681,8 +1636,7 @@ namespace TestSuite
          double zeroCpnBondPrice2 = zeroCpnBond2.cleanPrice();
          AssetSwap zeroCpnAssetSwap2= new AssetSwap(payFixeddouble,
                                     zeroCpnBond2, zeroCpnBondPrice2,
-                                    vars.iborIndex, vars.spread,
-                                    null,
+                                    vars.iborIndex, vars.spread, settings, null,
                                     vars.iborIndex.dayCounter(),
                                     parAssetSwap);
          zeroCpnAssetSwap2.setPricingEngine(swapEngine);
@@ -1703,7 +1657,8 @@ namespace TestSuite
       {
          // Testing market asset swap against par asset swap with generic bond...
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings=new SavedSettings();
+         CommonVars vars = new CommonVars(settings);
 
          Calendar bondCalendar = new TARGET();
          int settlementDays = 3;
@@ -1728,7 +1683,6 @@ namespace TestSuite
             .withNotionals(vars.faceAmount);
          Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,   BusinessDayConvention.Following);
          fixedBondLeg1.Add(new SimpleCashFlow(100.0, fixedbondRedemption1));
-          SavedSettings settings=new SavedSettings();
           Bond fixedBond1 = new Bond(settlementDays, bondCalendar, vars.faceAmount, fixedBondMaturityDate1, 
             settings,fixedBondStartDate1, fixedBondLeg1);
          IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
@@ -1739,16 +1693,14 @@ namespace TestSuite
          double fixedBondMktFullPrice1=fixedBondMktPrice1+fixedBond1.accruedAmount();
          AssetSwap fixedBondParAssetSwap1= new AssetSwap(payFixedRate,
                                           fixedBond1, fixedBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          fixedBondParAssetSwap1.setPricingEngine(swapEngine);
          double fixedBondParAssetSwapSpread1 = fixedBondParAssetSwap1.fairSpread();
          AssetSwap fixedBondMktAssetSwap1 = new AssetSwap(payFixedRate,
                                           fixedBond1, fixedBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           mktAssetSwap);
          fixedBondMktAssetSwap1.setPricingEngine(swapEngine);
@@ -1789,16 +1741,14 @@ namespace TestSuite
          double fixedBondMktFullPrice2=fixedBondMktPrice2+fixedBond2.accruedAmount();
          AssetSwap fixedBondParAssetSwap2= new AssetSwap(payFixedRate,
                                           fixedBond2, fixedBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          fixedBondParAssetSwap2.setPricingEngine(swapEngine);
          double fixedBondParAssetSwapSpread2 = fixedBondParAssetSwap2.fairSpread();
          AssetSwap fixedBondMktAssetSwap2= new AssetSwap(payFixedRate,
                                           fixedBond2, fixedBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           mktAssetSwap);
          fixedBondMktAssetSwap2.setPricingEngine(swapEngine);
@@ -1823,7 +1773,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex)
+         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
             .withSpreads(0.0056)
@@ -1844,8 +1794,7 @@ namespace TestSuite
             floatingBondMktPrice1+floatingBond1.accruedAmount();
          AssetSwap floatingBondParAssetSwap1 = new AssetSwap(payFixedRate,
                                              floatingBond1, floatingBondMktPrice1,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              parAssetSwap);
          floatingBondParAssetSwap1.setPricingEngine(swapEngine);
@@ -1853,8 +1802,7 @@ namespace TestSuite
             floatingBondParAssetSwap1.fairSpread();
          AssetSwap floatingBondMktAssetSwap1 = new AssetSwap(payFixedRate,
                                              floatingBond1, floatingBondMktPrice1,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              mktAssetSwap);
          floatingBondMktAssetSwap1.setPricingEngine(swapEngine);
@@ -1880,7 +1828,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex)
+         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withFixingDays(fixingDays)
             .withSpreads(0.0025)
             .inArrears(inArrears)
@@ -1903,16 +1851,14 @@ namespace TestSuite
             floatingBondMktPrice2+floatingBond2.accruedAmount();
          AssetSwap floatingBondParAssetSwap2 = new AssetSwap(payFixedRate,
                                              floatingBond2, floatingBondMktPrice2,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              parAssetSwap);
          floatingBondParAssetSwap2.setPricingEngine(swapEngine);
          double floatingBondParAssetSwapSpread2 = floatingBondParAssetSwap2.fairSpread();
          AssetSwap floatingBondMktAssetSwap2 = new AssetSwap(payFixedRate,
                                              floatingBond2, floatingBondMktPrice2,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              mktAssetSwap);
          floatingBondMktAssetSwap2.setPricingEngine(swapEngine);
@@ -1957,16 +1903,14 @@ namespace TestSuite
          double cmsBondMktFullPrice1 = cmsBondMktPrice1+cmsBond1.accruedAmount();
          AssetSwap cmsBondParAssetSwap1 = new AssetSwap(payFixedRate,
                                        cmsBond1, cmsBondMktPrice1,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          cmsBondParAssetSwap1.setPricingEngine(swapEngine);
          double cmsBondParAssetSwapSpread1 = cmsBondParAssetSwap1.fairSpread();
          AssetSwap cmsBondMktAssetSwap1 = new AssetSwap(payFixedRate,
                                        cmsBond1, cmsBondMktPrice1,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        mktAssetSwap);
          cmsBondMktAssetSwap1.setPricingEngine(swapEngine);
@@ -2010,16 +1954,14 @@ namespace TestSuite
          double cmsBondMktFullPrice2 = cmsBondMktPrice2+cmsBond2.accruedAmount();
          AssetSwap cmsBondParAssetSwap2 = new AssetSwap(payFixedRate,
                                        cmsBond2, cmsBondMktPrice2,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          cmsBondParAssetSwap2.setPricingEngine(swapEngine);
          double cmsBondParAssetSwapSpread2 = cmsBondParAssetSwap2.fairSpread();
          AssetSwap cmsBondMktAssetSwap2 = new AssetSwap(payFixedRate,
                                        cmsBond2, cmsBondMktPrice2,
-                                       vars.iborIndex, vars.spread,
-                                       null,
+                                       vars.iborIndex, vars.spread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        mktAssetSwap);
          cmsBondMktAssetSwap2.setPricingEngine(swapEngine);
@@ -2053,16 +1995,14 @@ namespace TestSuite
             zeroCpnBondMktPrice1+zeroCpnBond1.accruedAmount();
          AssetSwap zeroCpnBondParAssetSwap1 = new AssetSwap(payFixedRate,zeroCpnBond1,
                                           zeroCpnBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          zeroCpnBondParAssetSwap1.setPricingEngine(swapEngine);
          double zeroCpnBondParAssetSwapSpread1 = zeroCpnBondParAssetSwap1.fairSpread();
          AssetSwap zeroCpnBondMktAssetSwap1 = new AssetSwap(payFixedRate,zeroCpnBond1,
                                           zeroCpnBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           mktAssetSwap);
          zeroCpnBondMktAssetSwap1.setPricingEngine(swapEngine);
@@ -2097,16 +2037,14 @@ namespace TestSuite
             zeroCpnBondMktPrice2+zeroCpnBond2.accruedAmount();
          AssetSwap zeroCpnBondParAssetSwap2 = new AssetSwap(payFixedRate,zeroCpnBond2,
                                           zeroCpnBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          zeroCpnBondParAssetSwap2.setPricingEngine(swapEngine);
          double zeroCpnBondParAssetSwapSpread2 = zeroCpnBondParAssetSwap2.fairSpread();
          AssetSwap zeroCpnBondMktAssetSwap2 = new AssetSwap(payFixedRate,zeroCpnBond2,
                                           zeroCpnBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           mktAssetSwap);
          zeroCpnBondMktAssetSwap2.setPricingEngine(swapEngine);
@@ -2128,7 +2066,8 @@ namespace TestSuite
       {
          // Testing clean and dirty price with null Z-spread against theoretical prices...
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars(settings);
 
          Calendar bondCalendar = new TARGET();
          int settlementDays = 3;
@@ -2151,7 +2090,6 @@ namespace TestSuite
          Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                          BusinessDayConvention.Following);
          fixedBondLeg1.Add(new SimpleCashFlow(100.0, fixedbondRedemption1));
-          SavedSettings settings=new SavedSettings();
           Bond fixedBond1 = new Bond(settlementDays, bondCalendar, vars.faceAmount, fixedBondMaturityDate1,settings, fixedBondStartDate1,
                   fixedBondLeg1);
          IPricingEngine bondEngine = new DiscountingBondEngine(vars.termStructure, settings);
@@ -2220,7 +2158,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex)
+         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
             .withSpreads(0.0056)
@@ -2261,7 +2199,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex)
+         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withFixingDays(fixingDays)
             .withSpreads(0.0025)
             .withPaymentDayCounter(new Actual360())
@@ -2440,7 +2378,7 @@ namespace TestSuite
       {
          // Testing clean and dirty prices for specialized bond against equivalent generic bond...
           SavedSettings settings = new SavedSettings();
-          CommonVars vars = new CommonVars();
+          CommonVars vars = new CommonVars(settings);
 
          Calendar bondCalendar = new TARGET();
          int settlementDays = 3;
@@ -2567,7 +2505,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex)
+         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
             .withSpreads(0.0056)
@@ -2636,7 +2574,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex)
+         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
             .withSpreads(0.0025)
@@ -2934,7 +2872,7 @@ namespace TestSuite
       {
          // Testing asset-swap prices and spreads for specialized bond against equivalent generic bond...
           SavedSettings settings = new SavedSettings();
-          CommonVars vars = new CommonVars();
+          CommonVars vars = new CommonVars(settings);
 
          Calendar bondCalendar = new TARGET();
          int settlementDays = 3;
@@ -2975,8 +2913,7 @@ namespace TestSuite
          double fixedSpecializedBondPrice1 = fixedSpecializedBond1.cleanPrice();
          AssetSwap fixedBondAssetSwap1 = new AssetSwap(payFixedRate,
                                        fixedBond1, fixedBondPrice1,
-                                       vars.iborIndex, vars.nonnullspread,
-                                       null,
+                                       vars.iborIndex, vars.nonnullspread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          fixedBondAssetSwap1.setPricingEngine(swapEngine);
@@ -2984,8 +2921,7 @@ namespace TestSuite
                                                 fixedSpecializedBond1,
                                                 fixedSpecializedBondPrice1,
                                                 vars.iborIndex,
-                                                vars.nonnullspread,
-                                                null,
+                                                vars.nonnullspread, settings, null,
                                                 vars.iborIndex.dayCounter(),
                                                 parAssetSwap);
          fixedSpecializedBondAssetSwap1.setPricingEngine(swapEngine);
@@ -3008,16 +2944,14 @@ namespace TestSuite
          double fixedBondMktPrice1= 91.832;
          AssetSwap fixedBondASW1 = new AssetSwap(payFixedRate,
                                  fixedBond1, fixedBondMktPrice1,
-                                 vars.iborIndex, vars.spread,
-                                 null,
+                                 vars.iborIndex, vars.spread, settings, null,
                                  vars.iborIndex.dayCounter(),
                                  parAssetSwap);
          fixedBondASW1.setPricingEngine(swapEngine);
          AssetSwap fixedSpecializedBondASW1 = new AssetSwap(payFixedRate,
                                           fixedSpecializedBond1,
                                           fixedBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          fixedSpecializedBondASW1.setPricingEngine(swapEngine);
@@ -3066,8 +3000,7 @@ namespace TestSuite
          double fixedSpecializedBondPrice2 = fixedSpecializedBond2.cleanPrice();
          AssetSwap fixedBondAssetSwap2 = new AssetSwap(payFixedRate,
                                        fixedBond2, fixedBondPrice2,
-                                       vars.iborIndex, vars.nonnullspread,
-                                       null,
+                                       vars.iborIndex, vars.nonnullspread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          fixedBondAssetSwap2.setPricingEngine(swapEngine);
@@ -3075,8 +3008,7 @@ namespace TestSuite
                                                 fixedSpecializedBond2,
                                                 fixedSpecializedBondPrice2,
                                                 vars.iborIndex,
-                                                vars.nonnullspread,
-                                                null,
+                                                vars.nonnullspread, settings, null,
                                                 vars.iborIndex.dayCounter(),
                                                 parAssetSwap);
          fixedSpecializedBondAssetSwap2.setPricingEngine(swapEngine);
@@ -3097,16 +3029,14 @@ namespace TestSuite
          double fixedBondMktPrice2= 102.178;
          AssetSwap fixedBondASW2 = new AssetSwap(payFixedRate,
                                  fixedBond2, fixedBondMktPrice2,
-                                 vars.iborIndex, vars.spread,
-                                 null,
+                                 vars.iborIndex, vars.spread, settings, null,
                                  vars.iborIndex.dayCounter(),
                                  parAssetSwap);
          fixedBondASW2.setPricingEngine(swapEngine);
          AssetSwap fixedSpecializedBondASW2 = new AssetSwap(payFixedRate,
                                           fixedSpecializedBond2,
                                           fixedBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          fixedSpecializedBondASW2.setPricingEngine(swapEngine);
@@ -3133,7 +3063,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex)
+         List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
             .withSpreads(0.0056)
@@ -3165,8 +3095,7 @@ namespace TestSuite
          double floatingSpecializedBondPrice1= floatingSpecializedBond1.cleanPrice();
          AssetSwap floatingBondAssetSwap1= new AssetSwap(payFixedRate,
                                           floatingBond1, floatingBondPrice1,
-                                          vars.iborIndex, vars.nonnullspread,
-                                          null,
+                                          vars.iborIndex, vars.nonnullspread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          floatingBondAssetSwap1.setPricingEngine(swapEngine);
@@ -3174,8 +3103,7 @@ namespace TestSuite
                                                    floatingSpecializedBond1,
                                                    floatingSpecializedBondPrice1,
                                                    vars.iborIndex,
-                                                   vars.nonnullspread,
-                                                   null,
+                                                   vars.nonnullspread, settings, null,
                                                    vars.iborIndex.dayCounter(),
                                                    parAssetSwap);
          floatingSpecializedBondAssetSwap1.setPricingEngine(swapEngine);
@@ -3198,16 +3126,14 @@ namespace TestSuite
          double floatingBondMktPrice1= 101.33;
          AssetSwap floatingBondASW1= new AssetSwap(payFixedRate,
                                     floatingBond1, floatingBondMktPrice1,
-                                    vars.iborIndex, vars.spread,
-                                    null,
+                                    vars.iborIndex, vars.spread, settings, null,
                                     vars.iborIndex.dayCounter(),
                                     parAssetSwap);
          floatingBondASW1.setPricingEngine(swapEngine);
          AssetSwap floatingSpecializedBondASW1= new AssetSwap(payFixedRate,
                                              floatingSpecializedBond1,
                                              floatingBondMktPrice1,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              parAssetSwap);
          floatingSpecializedBondASW1.setPricingEngine(swapEngine);
@@ -3234,7 +3160,7 @@ namespace TestSuite
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
                                        DateGeneration.Rule.Backward, false);
-         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex)
+         List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
             .withSpreads(0.0025)
@@ -3269,8 +3195,7 @@ namespace TestSuite
          double floatingSpecializedBondPrice2= floatingSpecializedBond2.cleanPrice();
          AssetSwap floatingBondAssetSwap2= new AssetSwap(payFixedRate,
                                           floatingBond2, floatingBondPrice2,
-                                          vars.iborIndex, vars.nonnullspread,
-                                          null,
+                                          vars.iborIndex, vars.nonnullspread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          floatingBondAssetSwap2.setPricingEngine(swapEngine);
@@ -3278,8 +3203,7 @@ namespace TestSuite
                                                    floatingSpecializedBond2,
                                                    floatingSpecializedBondPrice2,
                                                    vars.iborIndex,
-                                                   vars.nonnullspread,
-                                                   null,
+                                                   vars.nonnullspread, settings, null,
                                                    vars.iborIndex.dayCounter(),
                                                    parAssetSwap);
          floatingSpecializedBondAssetSwap2.setPricingEngine(swapEngine);
@@ -3301,16 +3225,14 @@ namespace TestSuite
          double floatingBondMktPrice2 = 101.26;
          AssetSwap floatingBondASW2= new AssetSwap(payFixedRate,
                                     floatingBond2, floatingBondMktPrice2,
-                                    vars.iborIndex, vars.spread,
-                                    null,
+                                    vars.iborIndex, vars.spread, settings, null,
                                     vars.iborIndex.dayCounter(),
                                     parAssetSwap);
          floatingBondASW2.setPricingEngine(swapEngine);
          AssetSwap floatingSpecializedBondASW2= new AssetSwap(payFixedRate,
                                              floatingSpecializedBond2,
                                              floatingBondMktPrice2,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              parAssetSwap);
          floatingSpecializedBondASW2.setPricingEngine(swapEngine);
@@ -3369,15 +3291,13 @@ namespace TestSuite
          double cmsBondPrice1 = cmsBond1.cleanPrice();
          double cmsSpecializedBondPrice1 = cmsSpecializedBond1.cleanPrice();
          AssetSwap cmsBondAssetSwap1= new AssetSwap(payFixedRate,cmsBond1, cmsBondPrice1,
-                                    vars.iborIndex, vars.nonnullspread,
-                                    null,vars.iborIndex.dayCounter(),
+                                    vars.iborIndex, vars.nonnullspread, settings, null,vars.iborIndex.dayCounter(),
                                     parAssetSwap);
          cmsBondAssetSwap1.setPricingEngine(swapEngine);
          AssetSwap cmsSpecializedBondAssetSwap1= new AssetSwap(payFixedRate,cmsSpecializedBond1,
                                                 cmsSpecializedBondPrice1,
                                                 vars.iborIndex,
-                                                vars.nonnullspread,
-                                                null,
+                                                vars.nonnullspread, settings, null,
                                                 vars.iborIndex.dayCounter(),
                                                 parAssetSwap);
          cmsSpecializedBondAssetSwap1.setPricingEngine(swapEngine);
@@ -3398,16 +3318,14 @@ namespace TestSuite
          double cmsBondMktPrice1 = 87.02;// market executable price as of 4th sept 2007
          AssetSwap cmsBondASW1= new AssetSwap(payFixedRate,
                               cmsBond1, cmsBondMktPrice1,
-                              vars.iborIndex, vars.spread,
-                              null,
+                              vars.iborIndex, vars.spread, settings, null,
                               vars.iborIndex.dayCounter(),
                               parAssetSwap);
          cmsBondASW1.setPricingEngine(swapEngine);
          AssetSwap cmsSpecializedBondASW1= new AssetSwap(payFixedRate,
                                           cmsSpecializedBond1,
                                           cmsBondMktPrice1,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          cmsSpecializedBondASW1.setPricingEngine(swapEngine);
@@ -3463,16 +3381,14 @@ namespace TestSuite
          double cmsBondPrice2 = cmsBond2.cleanPrice();
          double cmsSpecializedBondPrice2 = cmsSpecializedBond2.cleanPrice();
          AssetSwap cmsBondAssetSwap2= new AssetSwap(payFixedRate,cmsBond2, cmsBondPrice2,
-                                    vars.iborIndex, vars.nonnullspread,
-                                    null,
+                                    vars.iborIndex, vars.nonnullspread, settings, null,
                                     vars.iborIndex.dayCounter(),
                                     parAssetSwap);
          cmsBondAssetSwap2.setPricingEngine(swapEngine);
          AssetSwap cmsSpecializedBondAssetSwap2= new AssetSwap(payFixedRate,cmsSpecializedBond2,
                                                 cmsSpecializedBondPrice2,
                                                 vars.iborIndex,
-                                                vars.nonnullspread,
-                                                null,
+                                                vars.nonnullspread, settings, null,
                                                 vars.iborIndex.dayCounter(),
                                                 parAssetSwap);
          cmsSpecializedBondAssetSwap2.setPricingEngine(swapEngine);
@@ -3493,16 +3409,14 @@ namespace TestSuite
          double cmsBondMktPrice2 = 94.35;// market executable price as of 4th sept 2007
          AssetSwap cmsBondASW2= new AssetSwap(payFixedRate,
                               cmsBond2, cmsBondMktPrice2,
-                              vars.iborIndex, vars.spread,
-                              null,
+                              vars.iborIndex, vars.spread, settings, null,
                               vars.iborIndex.dayCounter(),
                               parAssetSwap);
          cmsBondASW2.setPricingEngine(swapEngine);
          AssetSwap cmsSpecializedBondASW2= new AssetSwap(payFixedRate,
                                           cmsSpecializedBond2,
                                           cmsBondMktPrice2,
-                                          vars.iborIndex, vars.spread,
-                                          null,
+                                          vars.iborIndex, vars.spread, settings, null,
                                           vars.iborIndex.dayCounter(),
                                           parAssetSwap);
          cmsSpecializedBondASW2.setPricingEngine(swapEngine);
@@ -3543,8 +3457,7 @@ namespace TestSuite
          double zeroCpnSpecializedBondPrice1 = zeroCpnSpecializedBond1.cleanPrice();
          AssetSwap zeroCpnBondAssetSwap1= new AssetSwap(payFixedRate,zeroCpnBond1,
                                        zeroCpnBondPrice1,
-                                       vars.iborIndex, vars.nonnullspread,
-                                       null,
+                                       vars.iborIndex, vars.nonnullspread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          zeroCpnBondAssetSwap1.setPricingEngine(swapEngine);
@@ -3552,8 +3465,7 @@ namespace TestSuite
                                                    zeroCpnSpecializedBond1,
                                                    zeroCpnSpecializedBondPrice1,
                                                    vars.iborIndex,
-                                                   vars.nonnullspread,
-                                                   null,
+                                                   vars.nonnullspread, settings, null,
                                                    vars.iborIndex.dayCounter(),
                                                    parAssetSwap);
          zeroCpnSpecializedBondAssetSwap1.setPricingEngine(swapEngine);
@@ -3575,16 +3487,14 @@ namespace TestSuite
          double zeroCpnBondMktPrice1 = 72.277;
          AssetSwap zeroCpnBondASW1= new AssetSwap(payFixedRate,
                                  zeroCpnBond1,zeroCpnBondMktPrice1,
-                                 vars.iborIndex, vars.spread,
-                                 null,
+                                 vars.iborIndex, vars.spread, settings, null,
                                  vars.iborIndex.dayCounter(),
                                  parAssetSwap);
          zeroCpnBondASW1.setPricingEngine(swapEngine);
          AssetSwap zeroCpnSpecializedBondASW1= new AssetSwap(payFixedRate,
                                              zeroCpnSpecializedBond1,
                                              zeroCpnBondMktPrice1,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              parAssetSwap);
          zeroCpnSpecializedBondASW1.setPricingEngine(swapEngine);
@@ -3628,8 +3538,7 @@ namespace TestSuite
 
          AssetSwap zeroCpnBondAssetSwap2= new AssetSwap(payFixedRate,zeroCpnBond2,
                                        zeroCpnBondPrice2,
-                                       vars.iborIndex, vars.nonnullspread,
-                                       null,
+                                       vars.iborIndex, vars.nonnullspread, settings, null,
                                        vars.iborIndex.dayCounter(),
                                        parAssetSwap);
          zeroCpnBondAssetSwap2.setPricingEngine(swapEngine);
@@ -3637,8 +3546,7 @@ namespace TestSuite
                                                    zeroCpnSpecializedBond2,
                                                    zeroCpnSpecializedBondPrice2,
                                                    vars.iborIndex,
-                                                   vars.nonnullspread,
-                                                   null,
+                                                   vars.nonnullspread, settings, null,
                                                    vars.iborIndex.dayCounter(),
                                                    parAssetSwap);
          zeroCpnSpecializedBondAssetSwap2.setPricingEngine(swapEngine);
@@ -3660,16 +3568,14 @@ namespace TestSuite
          double zeroCpnBondMktPrice2 = 72.277;
          AssetSwap zeroCpnBondASW2= new AssetSwap(payFixedRate,
                                  zeroCpnBond2,zeroCpnBondMktPrice2,
-                                 vars.iborIndex, vars.spread,
-                                 null,
+                                 vars.iborIndex, vars.spread, settings, null,
                                  vars.iborIndex.dayCounter(),
                                  parAssetSwap);
          zeroCpnBondASW2.setPricingEngine(swapEngine);
          AssetSwap zeroCpnSpecializedBondASW2= new AssetSwap(payFixedRate,
                                              zeroCpnSpecializedBond2,
                                              zeroCpnBondMktPrice2,
-                                             vars.iborIndex, vars.spread,
-                                             null,
+                                             vars.iborIndex, vars.spread, settings, null,
                                              vars.iborIndex.dayCounter(),
                                              parAssetSwap);
          zeroCpnSpecializedBondASW2.setPricingEngine(swapEngine);

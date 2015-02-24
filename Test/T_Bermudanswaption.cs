@@ -46,12 +46,10 @@ namespace TestSuite
             public int settlementDays;
 
             public RelinkableHandle<YieldTermStructure> termStructure;
-
-            // cleanup
-            public SavedSettings backup;
+            SavedSettings _settings;
 
             // setup
-            public CommonVars()
+            public CommonVars(SavedSettings settings)
             {
                 startYears = 1;
                 length = 5;
@@ -71,6 +69,7 @@ namespace TestSuite
                 calendar = index.fixingCalendar();
                 today = calendar.adjust(Date.Today);
                 settlement = calendar.advance(today, settlementDays, TimeUnit.Days);
+                _settings = settings;
             }
 
             // utilities
@@ -94,7 +93,7 @@ namespace TestSuite
                           new VanillaSwap(type, nominal,
                                           fixedSchedule, fixedRate, fixedDayCount,
                                           floatSchedule, index, 0.0,
-                                          index.dayCounter());
+                                          index.dayCounter(), _settings);
                 swap.setPricingEngine((IPricingEngine)(new DiscountingSwapEngine(termStructure)));
                 return swap;
             }
@@ -105,7 +104,8 @@ namespace TestSuite
 
             //("Testing Bermudan swaption against cached values...");
 
-            CommonVars vars = new CommonVars();
+            var settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
             vars.today = new Date(15, Month.February, 2002);
 
@@ -144,7 +144,6 @@ namespace TestSuite
 
             double tolerance = 1.0e-4;
 
-            SavedSettings settings=new SavedSettings();
             Swaption swaption = new Swaption(itmSwap, exercise,settings);
             swaption.setPricingEngine(engine);
             if (Math.Abs(swaption.NPV()-itmValue) > tolerance)

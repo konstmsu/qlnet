@@ -245,12 +245,15 @@ namespace QLNet
     */
    public class CPILeg : CPILegBase
    {
-      public CPILeg(Schedule schedule,
+       readonly SavedSettings settings_;
+
+       public CPILeg(Schedule schedule,
                     ZeroInflationIndex index,
                     double baseCPI,
-                    Period observationLag)
+                    Period observationLag, SavedSettings settings)
       {
-         schedule_ = schedule;
+           settings_ = settings;
+           schedule_ = schedule;
          index_ = index;
          baseCPI_ = baseCPI;
          observationLag_ = observationLag;
@@ -333,7 +336,7 @@ namespace QLNet
 
                      // in this case you can set a pricer
                      // straight away because it only provides computation - not data
-                     CPICouponPricer pricer = new CPICouponPricer();
+                     CPICouponPricer pricer = new CPICouponPricer(settings_);
                      coup.setPricer(pricer);
                      leg.Add(coup);
 

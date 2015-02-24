@@ -38,14 +38,7 @@ namespace QLNet
    */
    public class AssetSwap : Swap
    {
-      public AssetSwap(bool payBondCoupon,
-                       Bond bond,
-                       double bondCleanPrice,
-                       IborIndex iborIndex,
-                       double spread,
-                       Schedule floatSchedule = null,
-                       DayCounter floatingDayCount = null,
-                       bool parAssetSwap = true)
+      public AssetSwap(bool payBondCoupon, Bond bond, double bondCleanPrice, IborIndex iborIndex, double spread, SavedSettings settings, Schedule floatSchedule = null, DayCounter floatingDayCount = null, bool parAssetSwap = true)
          : base(2)
       {
          bond_ = bond;
@@ -91,12 +84,12 @@ namespace QLNet
             notional *= dirtyPrice / 100.0;
 
          if (floatingDayCount == null)
-            legs_[1] = new IborLeg(schedule, iborIndex)
+            legs_[1] = new IborLeg(schedule, iborIndex, settings)
                 .withSpreads(spread)
                 .withNotionals(notional)
                 .withPaymentAdjustment(paymentAdjustment);
          else
-            legs_[1] = new IborLeg(schedule, iborIndex)
+            legs_[1] = new IborLeg(schedule, iborIndex, settings)
                 .withSpreads(spread)
                 .withPaymentDayCounter(floatingDayCount)
                 .withNotionals(notional)
@@ -154,16 +147,7 @@ namespace QLNet
          }
       }
 
-      public AssetSwap(bool parAssetSwap,
-                       Bond bond,
-                       double bondCleanPrice,
-                       double nonParRepayment,
-                       double gearing,
-                       IborIndex iborIndex,
-                       double spread = 0.0,
-                       DayCounter floatingDayCount = null,
-                       Date dealMaturity = null,
-                       bool payBondCoupon = false)
+      public AssetSwap(bool parAssetSwap, Bond bond, double bondCleanPrice, double nonParRepayment, double gearing, IborIndex iborIndex, SavedSettings settings, double spread = 0.0, DayCounter floatingDayCount = null, Date dealMaturity = null, bool payBondCoupon = false)
          : base(2)
       {
          bond_ = bond;
@@ -213,13 +197,13 @@ namespace QLNet
             notional *= dirtyPrice / 100.0;
 
          if (floatingDayCount == null)
-            legs_[1] = new IborLeg(schedule, iborIndex)
+            legs_[1] = new IborLeg(schedule, iborIndex, settings)
                   .withSpreads(spread)
                   .withGearings(gearing)
                   .withNotionals(notional)
                   .withPaymentAdjustment(paymentAdjustment);
          else
-            legs_[1] = new IborLeg(schedule, iborIndex)
+            legs_[1] = new IborLeg(schedule, iborIndex, settings)
                   .withSpreads(spread)
                   .withGearings(gearing)
                   .withPaymentDayCounter(floatingDayCount)

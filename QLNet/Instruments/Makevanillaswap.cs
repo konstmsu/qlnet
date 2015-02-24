@@ -45,13 +45,22 @@ namespace QLNet {
         private DayCounter fixedDayCount_, floatDayCount_;
 
         IPricingEngine engine_;
+        SavedSettings _settings;
 
 
-        public MakeVanillaSwap(Period swapTenor, IborIndex index) :
-            this(swapTenor, index, null, new Period(0, TimeUnit.Days)) { }
-        public MakeVanillaSwap(Period swapTenor, IborIndex index, double? fixedRate) :
-            this(swapTenor, index, fixedRate, new Period(0, TimeUnit.Days)) { }
-        public MakeVanillaSwap(Period swapTenor, IborIndex index, double? fixedRate, Period forwardStart) {
+        public MakeVanillaSwap(Period swapTenor, IborIndex index, SavedSettings settings) :
+            this(swapTenor, index, null, new Period(0, TimeUnit.Days),settings)
+        {
+            _settings = settings;
+        }
+
+        public MakeVanillaSwap(Period swapTenor, IborIndex index, double? fixedRate, SavedSettings settings) :
+            this(swapTenor, index, fixedRate, new Period(0, TimeUnit.Days),settings)
+        {
+            _settings = settings;
+        }
+
+        public MakeVanillaSwap(Period swapTenor, IborIndex index, double? fixedRate, Period forwardStart, SavedSettings settings) {
             swapTenor_ = swapTenor;
             iborIndex_ = index;
             fixedRate_ = fixedRate;
@@ -73,6 +82,7 @@ namespace QLNet {
             floatDayCount_ = index.dayCounter();
 
             engine_ = new DiscountingSwapEngine(index.forwardingTermStructure());
+            _settings = settings;
         }
 
         public MakeVanillaSwap receiveFixed() { return receiveFixed(true); }
@@ -228,13 +238,13 @@ namespace QLNet {
                if (iborIndex_.forwardingTermStructure().empty())
                     throw new ArgumentException("no forecasting term structure set to " + iborIndex_.name());
                 VanillaSwap temp = new VanillaSwap(type_, nominal_, fixedSchedule, 0.0, fixedDayCount_,
-                                                   floatSchedule, iborIndex_, floatSpread_, floatDayCount_);
+                                                   floatSchedule, iborIndex_, floatSpread_, floatDayCount_, _settings);
                 temp.setPricingEngine(new DiscountingSwapEngine(iborIndex_.forwardingTermStructure()));
                 usedFixedRate = temp.fairRate();
             }
 
             VanillaSwap swap = new VanillaSwap(type_, nominal_, fixedSchedule, usedFixedRate.Value, fixedDayCount_,
-                                               floatSchedule, iborIndex_, floatSpread_, floatDayCount_);
+                                               floatSchedule, iborIndex_, floatSpread_, floatDayCount_, _settings);
             swap.setPricingEngine(engine_);
             return swap;
         }

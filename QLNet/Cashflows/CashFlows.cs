@@ -19,7 +19,6 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Leg = System.Collections.Generic.List<QLNet.CashFlow>;
@@ -889,8 +888,7 @@ namespace QLNet
       }
 
       //! NPV of a single cash flows 
-      public static double npv(CashFlow cashflow, YieldTermStructure discountCurve,
-                               Date settlementDate = null, Date npvDate = null, int exDividendDays = 0)
+      public static double npv(CashFlow cashflow, YieldTermStructure discountCurve, SavedSettings settings, Date settlementDate = null, Date npvDate = null, int exDividendDays = 0)
       {
          double NPV = 0.0;
 
@@ -898,7 +896,7 @@ namespace QLNet
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+            settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -912,13 +910,13 @@ namespace QLNet
 
 
       //! CASH of the cash flows. The CASH is the sum of the cash flows.
-      public static double cash(List<CashFlow> cashflows, Date settlementDate = null, int exDividendDays = 0 )
+      public static double cash(Leg cashflows, SavedSettings settings, Date settlementDate = null, int exDividendDays = 0)
       {
          if (cashflows.Count == 0)
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+            settlementDate = settings.evaluationDate();
 
          double totalCASH = cashflows.Where(x => !x.hasOccurred(settlementDate + exDividendDays)).
             Sum(c => c.amount());
@@ -970,7 +968,7 @@ namespace QLNet
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+            settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -1005,14 +1003,13 @@ namespace QLNet
           where \f$ P \f$ is the present value of the cash flows
           according to the given IRR \f$ y \f$.
       */
-      public static double convexity(Leg leg, InterestRate yield, bool includeSettlementDateFlows,
-                                     Date settlementDate = null, Date npvDate = null)
+      public static double convexity(Leg leg, InterestRate yield, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          if (leg.empty())
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+            settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -1095,11 +1092,10 @@ namespace QLNet
         return d2Pdy2/P;
       }
 
-      public static double convexity(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency,
-                                     bool includeSettlementDateFlows, Date settlementDate = null, Date npvDate = null)
+      public static double convexity(Leg leg, double yield, DayCounter dayCounter, Compounding compounding, Frequency frequency, bool includeSettlementDateFlows, SavedSettings settings, Date settlementDate = null, Date npvDate = null)
       {
          return convexity(leg, new InterestRate(yield, dayCounter, compounding, frequency),
-                          includeSettlementDateFlows, settlementDate, npvDate);
+                          includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
       }
       
       //! Basis-point value
@@ -1112,7 +1108,7 @@ namespace QLNet
             return 0.0;
 
          if (settlementDate == null)
-            settlementDate = Settings.evaluationDate();
+            settlementDate = settings.evaluationDate();
 
          if (npvDate == null)
             npvDate = settlementDate;
@@ -1120,7 +1116,7 @@ namespace QLNet
          double npv = CashFlows.npv(leg, yield,includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
          double modifiedDuration = CashFlows.duration(leg, yield, Duration.Type.Modified,includeSettlementDateFlows,
                                                       settings, settlementDate, npvDate);
-         double convexity = CashFlows.convexity(leg, yield, includeSettlementDateFlows, settlementDate, npvDate);
+         double convexity = CashFlows.convexity(leg, yield, includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
          double delta = -modifiedDuration*npv;
          double gamma = (convexity/100.0)*npv;
 
