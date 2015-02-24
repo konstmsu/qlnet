@@ -27,15 +27,10 @@ namespace QLNet
    //! AU CPI index (either quarterly or annual)
    public class AUCPI : ZeroInflationIndex 
    {
-      public AUCPI(Frequency frequency,
-                   bool revised,
-                   bool interpolated)
-         :this(frequency,revised,interpolated,new Handle<ZeroInflationTermStructure>()) {} 
+      public AUCPI(Frequency frequency, bool revised, bool interpolated, SavedSettings settings)
+         :this(frequency,revised,interpolated,new Handle<ZeroInflationTermStructure>(), settings) {} 
 
-      public AUCPI(Frequency frequency,
-                   bool revised,
-                   bool interpolated,
-                   Handle<ZeroInflationTermStructure> ts)
+      public AUCPI(Frequency frequency, bool revised, bool interpolated, Handle<ZeroInflationTermStructure> ts, SavedSettings settings)
         : base("CPI",
                new AustraliaRegion(),
                revised,
@@ -43,7 +38,7 @@ namespace QLNet
                frequency,
                new Period(2, TimeUnit.Months),
                new AUDCurrency(),
-               ts) {}
+               ts, settings) {}
 
    }
     

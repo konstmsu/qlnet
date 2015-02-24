@@ -89,7 +89,8 @@ namespace TestSuite
       public void testZeroIndex()
       {
          // Testing zero inflation indices...
-         EUHICP euhicp = new EUHICP(true);
+		    var settings = new SavedSettings();
+         EUHICP euhicp = new EUHICP(true, settings);
 
          if (euhicp.name() != "EU HICP"
              || euhicp.frequency() != Frequency.Monthly
@@ -105,7 +106,7 @@ namespace TestSuite
                         + euhicp.availabilityLag() + ")");
          }
 
-         UKRPI ukrpi = new UKRPI(false);
+         UKRPI ukrpi = new UKRPI(false, settings);
          if (ukrpi.name() != "UK RPI"
              || ukrpi.frequency() != Frequency.Monthly
              || ukrpi.revised()
@@ -145,7 +146,7 @@ namespace TestSuite
                               207.3, 206.1, -999.0 };
 
          bool interp = false;
-         UKRPI iir = new UKRPI(interp);
+         UKRPI iir = new UKRPI(interp, settings);
 
          for (int i = 0; i < rpiSchedule.Count - 1; i++)
          {
@@ -209,7 +210,7 @@ namespace TestSuite
 
 			RelinkableHandle<ZeroInflationTermStructure> hz = new RelinkableHandle<ZeroInflationTermStructure>();
 			bool interp = false;
-			UKRPI iiUKRPI = new UKRPI( interp, hz );
+			UKRPI iiUKRPI = new UKRPI( interp, hz, backup);
 			for ( int i = 0; i < rpiSchedule.Count; i++ )
 			{
 				iiUKRPI.addFixing( rpiSchedule[i], fixData[i] );
@@ -511,7 +512,7 @@ namespace TestSuite
 			// UKRPI (to save making another term structure)
 
 			bool interpYES = true;
-			UKRPI iiUKRPIyes = new UKRPI( interpYES, hz );
+			UKRPI iiUKRPIyes = new UKRPI( interpYES, hz, backup);
 			for ( int i = 0; i < fixData.Length; i++ )
 			{
 				iiUKRPIyes.addFixing( rpiSchedule[i], fixData[i] );

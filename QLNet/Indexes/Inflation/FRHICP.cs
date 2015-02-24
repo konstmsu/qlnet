@@ -28,11 +28,10 @@ namespace QLNet
    //! FR HICP index
    public class FRHICP : ZeroInflationIndex 
    {
-      public FRHICP(bool interpolated)
-         :this(interpolated,new Handle<ZeroInflationTermStructure>()){}
+      public FRHICP(bool interpolated, SavedSettings settings)
+         :this(interpolated,new Handle<ZeroInflationTermStructure>(), settings){}
 
-      public FRHICP(bool interpolated,
-                    Handle<ZeroInflationTermStructure> ts )
+      public FRHICP(bool interpolated, Handle<ZeroInflationTermStructure> ts, SavedSettings settings)
         : base("HICP",
                new FranceRegion(),
                false,
@@ -40,7 +39,7 @@ namespace QLNet
                Frequency.Monthly,
                new Period(1, TimeUnit.Months),
                new EURCurrency(),
-               ts) {}
+               ts, settings) {}
    }
 
    //! Genuine year-on-year FR HICP (i.e. not a ratio)

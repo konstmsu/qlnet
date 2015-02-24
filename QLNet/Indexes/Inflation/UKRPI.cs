@@ -27,12 +27,12 @@ namespace QLNet
    //! UK Retail Price Inflation Index
    public class UKRPI : ZeroInflationIndex
    {
-      public UKRPI(bool interpolated)
-         : this(interpolated,new Handle<ZeroInflationTermStructure>()) { }
+      public UKRPI(bool interpolated, SavedSettings settings)
+         : this(interpolated,new Handle<ZeroInflationTermStructure>(), settings) { }
 
-      public UKRPI(bool interpolated,Handle<ZeroInflationTermStructure> ts)
+      public UKRPI(bool interpolated, Handle<ZeroInflationTermStructure> ts, SavedSettings settings)
         : base("RPI",new UKRegion(),false,interpolated,Frequency.Monthly,
-               new Period(1, TimeUnit.Months),new GBPCurrency(),ts) {}
+               new Period(1, TimeUnit.Months),new GBPCurrency(),ts, settings) {}
    }
 
    //! Genuine year-on-year UK RPI (i.e. not a ratio of UK RPI)

@@ -27,13 +27,13 @@ namespace QLNet
    //! EU HICP index
    public class EUHICP : ZeroInflationIndex
    {
-      public EUHICP(bool interpolated)
-         : this(interpolated,new Handle<ZeroInflationTermStructure>()) { }
+      public EUHICP(bool interpolated, SavedSettings settings)
+         : this(interpolated,new Handle<ZeroInflationTermStructure>(), settings) { }
 
-      public EUHICP(bool interpolated, Handle<ZeroInflationTermStructure> ts)
+      public EUHICP(bool interpolated, Handle<ZeroInflationTermStructure> ts, SavedSettings settings)
         : base("HICP",new EURegion(),false,interpolated,Frequency.Monthly,
                new Period(1, TimeUnit.Months), // availability
-               new EURCurrency(), ts) {}
+               new EURCurrency(), ts, settings) {}
    }
 
     //! Genuine year-on-year EU HICP (i.e. not a ratio of EU HICP)

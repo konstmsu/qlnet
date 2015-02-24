@@ -154,9 +154,9 @@ namespace QLNet
                                 bool interpolated,
                                 Frequency frequency,
                                 Period availabilityLag,
-                                Currency currency)
+                                Currency currency, SavedSettings settings)
          :this(familyName,region,revised,interpolated,frequency,availabilityLag,
-               currency,new Handle<ZeroInflationTermStructure>()){}
+               currency,new Handle<ZeroInflationTermStructure>(), settings){}
 
       public ZeroInflationIndex(string familyName,
                                 Region region,
@@ -165,12 +165,13 @@ namespace QLNet
                                 Frequency frequency,
                                 Period availabilityLag,
                                 Currency currency,
-                                Handle<ZeroInflationTermStructure> ts)
+                                Handle<ZeroInflationTermStructure> ts, SavedSettings settings)
          : base(familyName, region, revised, interpolated,
                      frequency, availabilityLag, currency)
       {
          zeroInflation_ = ts;
-         zeroInflation_.registerWith (update);
+          settings_ = settings;
+          zeroInflation_.registerWith (update);
       }
 
         /*! \warning the forecastTodaysFixing parameter (required by
@@ -218,7 +219,7 @@ namespace QLNet
             // (because you need the next one to interpolate).
             // The interpolation is calculated (linearly) on demand.
 
-            Date today = Settings.evaluationDate();
+            Date today = settings_.evaluationDate();
             Date todayMinusLag = today - availabilityLag_;
 
             Date historicalFixingKnown = Utils.inflationPeriod(todayMinusLag, frequency_).Key - 1;
@@ -254,7 +255,7 @@ namespace QLNet
    
            return new ZeroInflationIndex(familyName_, region_, revised_,
                                              interpolated_, frequency_,
-                                             availabilityLag_, currency_, h);
+                                             availabilityLag_, currency_, h, settings_);
         }
 
 
@@ -289,7 +290,8 @@ namespace QLNet
         }
 
         private Handle<ZeroInflationTermStructure> zeroInflation_;
-    };
+       SavedSettings settings_;
+   };
     
    //! Base class for year-on-year inflation indices.
    /*! These may be genuine indices published on, say, Bloomberg, or

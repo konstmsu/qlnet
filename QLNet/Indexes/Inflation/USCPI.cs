@@ -26,11 +26,10 @@ namespace QLNet
    //! US CPI index
    public class USCPI : ZeroInflationIndex 
    {
-      public USCPI(bool interpolated)
-         :this(interpolated,new Handle<ZeroInflationTermStructure>()) {}
+      public USCPI(bool interpolated, SavedSettings settings)
+         :this(interpolated,new Handle<ZeroInflationTermStructure>(), settings) {}
 
-      public USCPI(bool interpolated,
-                   Handle<ZeroInflationTermStructure> ts)
+      public USCPI(bool interpolated, Handle<ZeroInflationTermStructure> ts, SavedSettings settings)
         : base("CPI",
                new USRegion(),
                false,
@@ -38,7 +37,7 @@ namespace QLNet
                Frequency.Monthly,
                new Period(1, TimeUnit.Months), // availability
                new USDCurrency(),
-               ts) {}
+               ts, settings) {}
    }
 
    //! Genuine year-on-year US CPI (i.e. not a ratio of US CPI)

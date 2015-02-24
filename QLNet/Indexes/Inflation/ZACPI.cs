@@ -26,11 +26,10 @@ namespace QLNet
 	//! South African CPI index
 	public class ZACPI : ZeroInflationIndex
 	{
-		public ZACPI( bool interpolated )
-			: this( interpolated, new Handle<ZeroInflationTermStructure>() ) { }
+		public ZACPI(bool interpolated, SavedSettings settings)
+			: this( interpolated, new Handle<ZeroInflationTermStructure>(), settings) { }
 
-		public ZACPI( bool interpolated,
-						 Handle<ZeroInflationTermStructure> ts )
+		public ZACPI(bool interpolated, Handle<ZeroInflationTermStructure> ts, SavedSettings settings)
 			: base( "CPI",
 					 new ZARegion(),
 					 false,
@@ -38,7 +37,7 @@ namespace QLNet
 					 Frequency.Monthly,
 					 new Period( 1, TimeUnit.Months ), // availability
 					 new ZARCurrency(),
-					 ts ) { }
+					 ts,settings ) { }
 	}
 
 	//! Genuine year-on-year South African CPI (i.e. not a ratio of South African CPI)
