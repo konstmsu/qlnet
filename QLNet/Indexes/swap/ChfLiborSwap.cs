@@ -49,7 +49,7 @@ namespace QLNet
                 BusinessDayConvention.ModifiedFollowing, // fixedLegConvention
                 new Thirty360(Thirty360.Thirty360Convention.BondBasis), // fixedLegDaycounter
                 tenor > new Period(1, TimeUnit.Years) ?
-                    new CHFLibor(new Period(6, TimeUnit.Months), h) :
-                    new CHFLibor(new Period(3, TimeUnit.Months), h), settings) { }
+                    new CHFLibor(new Period(6, TimeUnit.Months), h, settings) :
+                    new CHFLibor(new Period(3, TimeUnit.Months), h, settings), settings) { }
     };
 }

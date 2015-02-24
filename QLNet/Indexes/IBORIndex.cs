@@ -34,22 +34,25 @@ namespace QLNet {
         public Handle<YieldTermStructure> forwardingTermStructure() { return termStructure_; }
 
         bool endOfMonth_;
+        SavedSettings _settings;
         public bool endOfMonth() { return endOfMonth_; }
 
         // need by CashFlowVectors
-        public IborIndex() { }
+        public IborIndex(SavedSettings settings) : base(settings)
+        {
+            _settings = settings;
+        }
 
-        public IborIndex(string familyName, Period tenor, int settlementDays, Currency currency,
-                 Calendar fixingCalendar, BusinessDayConvention convention, bool endOfMonth,
-                 DayCounter dayCounter)
+        public IborIndex(string familyName, Period tenor, int settlementDays, Currency currency, Calendar fixingCalendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, SavedSettings settings)
             : this(familyName, tenor, settlementDays, currency,
                    fixingCalendar, convention, endOfMonth,
-                   dayCounter, new Handle<YieldTermStructure>()) { }
+                   dayCounter, new Handle<YieldTermStructure>(), settings)
+        {
+            _settings = settings;
+        }
 
-        public IborIndex(string familyName, Period tenor, int settlementDays, Currency currency,
-                     Calendar fixingCalendar, BusinessDayConvention convention, bool endOfMonth,
-                     DayCounter dayCounter, Handle<YieldTermStructure> h) :
-            base(familyName, tenor, settlementDays, currency, fixingCalendar, dayCounter) {
+        public IborIndex(string familyName, Period tenor, int settlementDays, Currency currency, Calendar fixingCalendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, Handle<YieldTermStructure> h, SavedSettings settings) :
+            base(familyName, tenor, settlementDays, currency, fixingCalendar, dayCounter, settings) {
             convention_ = convention;
             termStructure_ = h;
             endOfMonth_ = endOfMonth;
@@ -57,7 +60,8 @@ namespace QLNet {
             // observer interface
             if (!termStructure_.empty())
                 termStructure_.registerWith(update);
-        }
+            _settings = settings;
+            }
 
         //! Date calculations
         public override Date maturityDate(Date valueDate) {
@@ -80,28 +84,27 @@ namespace QLNet {
         public virtual IborIndex clone(Handle<YieldTermStructure> forwarding)
         {
             return new IborIndex(familyName(), tenor(), fixingDays(), currency(), fixingCalendar(),
-                                 businessDayConvention(), endOfMonth(), dayCounter(), forwarding);
+                                 businessDayConvention(), endOfMonth(), dayCounter(), forwarding, _settings);
         }
     }
    
    public class OvernightIndex : IborIndex 
    {
-      public OvernightIndex(string familyName,
-                            int settlementDays,
-                            Currency currency,
-                            Calendar fixingCalendar,
-                            DayCounter dayCounter,
-                            Handle<YieldTermStructure> h) :
+       SavedSettings _settings;
+
+       public OvernightIndex(string familyName, int settlementDays, Currency currency, Calendar fixingCalendar, DayCounter dayCounter, Handle<YieldTermStructure> h, SavedSettings settings) :
       
                base(familyName, new Period(1,TimeUnit.Days), settlementDays, 
-                    currency,fixingCalendar, BusinessDayConvention.Following, false, dayCounter, h) 
-      {}
-      
-      //! returns a copy of itself linked to a different forwarding curve
+                    currency,fixingCalendar, BusinessDayConvention.Following, false, dayCounter, h, settings)
+       {
+           _settings = settings;
+       }
+
+       //! returns a copy of itself linked to a different forwarding curve
       public new IborIndex clone(Handle<YieldTermStructure> h)
       {
          return new OvernightIndex(familyName(), fixingDays(), currency(), fixingCalendar(),
-                                   dayCounter(), h);
+                                   dayCounter(), h, _settings);
 
       }
     };

@@ -33,13 +33,13 @@ namespace QLNet {
 //    
 	public class CADLibor : Libor
 	{
-        public CADLibor(Period tenor)
-            : base("CADLibor", tenor, 2, new CADCurrency(), new Canada(), new Actual360(), new Handle<YieldTermStructure>())
+        public CADLibor(Period tenor, SavedSettings settings)
+            : base("CADLibor", tenor, 2, new CADCurrency(), new Canada(), new Actual360(), new Handle<YieldTermStructure>(), settings)
 		{
 		}
 
-        public CADLibor(Period tenor, Handle<YieldTermStructure> h)
-            : base("CADLibor", tenor, 2, new CADCurrency(), new Canada(), new Actual360(), h)
+        public CADLibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("CADLibor", tenor, 2, new CADCurrency(), new Canada(), new Actual360(), h, settings)
 		{
 		}
 	}
@@ -47,13 +47,13 @@ namespace QLNet {
 	//! Overnight %CAD %Libor index
 	public class CADLiborON : DailyTenorLibor
 	{
-        public CADLiborON()
-            : base("CADLibor", 0, new CADCurrency(), new Canada(), new Actual360(), new Handle<YieldTermStructure>())
+        public CADLiborON(SavedSettings settings)
+            : base("CADLibor", 0, new CADCurrency(), new Canada(), new Actual360(), new Handle<YieldTermStructure>(), settings)
 		{
 		}
 
-        public CADLiborON(Handle<YieldTermStructure> h)
-            : base("CADLibor", 0, new CADCurrency(), new Canada(), new Actual360(), h)
+        public CADLiborON(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("CADLibor", 0, new CADCurrency(), new Canada(), new Actual360(), h, settings)
 		{
 		}
 	}

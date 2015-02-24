@@ -183,14 +183,14 @@ namespace TestSuite {
                 schedules = new List<Schedule>(bonds);
                 bmaHelpers = new List<RateHelper>(bmas);
 
-                IborIndex euribor6m = new Euribor6M();
+                IborIndex euribor6m = new Euribor6M(settings);
                 for (int i = 0; i < deposits; i++) {
                     Handle<Quote> r = new Handle<Quote>(rates[i]);
                     instruments.Add(new DepositRateHelper(r, new Period(depositData[i].n, depositData[i].units),
                                       euribor6m.fixingDays(), calendar,
                                       euribor6m.businessDayConvention(),
                                       euribor6m.endOfMonth(),
-                                      euribor6m.dayCounter()));
+                                      euribor6m.dayCounter(), settings));
                 }
                 for (int i = 0; i < swaps; i++) {
                     Handle<Quote> r = new Handle<Quote>(rates[i + deposits]);
@@ -198,7 +198,7 @@ namespace TestSuite {
                                     fixedLegFrequency, fixedLegConvention, fixedLegDayCounter, euribor6m, settings));
                 }
 
-                Euribor3M euribor3m = new Euribor3M();
+                Euribor3M euribor3m = new Euribor3M(settings);
                 for (int i = 0; i < fras; i++) {
                     Handle<Quote> r = new Handle<Quote>(fraRates[i]);
                     fraHelpers.Add(new FraRateHelper(r, fraData[i].n, fraData[i].n + 3,
@@ -206,7 +206,7 @@ namespace TestSuite {
                                       euribor3m.fixingCalendar(),
                                       euribor3m.businessDayConvention(),
                                       euribor3m.endOfMonth(),
-                                      euribor3m.dayCounter()));
+                                      euribor3m.dayCounter(), settings));
                 }
 
                 for (int i = 0; i < bonds; i++) {
@@ -413,7 +413,7 @@ namespace TestSuite {
             CommonVars vars = new CommonVars(settings);
 
             var swapHelpers = new InitializedList<RateHelper>();
-            IborIndex euribor6m = new Euribor6M();
+            IborIndex euribor6m = new Euribor6M(settings);
 
             for (int i=0; i<vars.swaps; i++) {
                 Handle<Quote> r = new Handle<Quote>(vars.rates[i+vars.deposits]);
@@ -427,7 +427,7 @@ namespace TestSuite {
 
             Handle<YieldTermStructure> curveHandle = new Handle<YieldTermStructure>(vars.termStructure);
 
-            IborIndex index = new Euribor6M(curveHandle);
+            IborIndex index = new Euribor6M(curveHandle, settings);
             for (int i=0; i<vars.swaps; i++) {
                 Period tenor = new Period(vars.swapData[i].n, vars.swapData[i].units);
 
@@ -531,7 +531,7 @@ namespace TestSuite {
             // rate helpers
             vars.instruments = new InitializedList<RateHelper>(vars.swaps);
 
-            IborIndex index = new JPYLibor(new Period(6, TimeUnit.Months));
+            IborIndex index = new JPYLibor(new Period(6, TimeUnit.Months), settings);
             for (int i=0; i<vars.swaps; i++) {
                 Handle<Quote> r = new Handle<Quote>(vars.rates[i]);
                 vars.instruments[i] = new SwapRateHelper(r, new Period(vars.swapData[i].n, vars.swapData[i].units),
@@ -551,7 +551,7 @@ namespace TestSuite {
             curveHandle.linkTo(vars.termStructure);
 
             // check swaps
-            IborIndex jpylibor6m = new JPYLibor(new Period(6, TimeUnit.Months),curveHandle);
+            IborIndex jpylibor6m = new JPYLibor(new Period(6, TimeUnit.Months),curveHandle, settings);
             for (int i=0; i<vars.swaps; i++) {
                 Period tenor = new Period(vars.swapData[i].n, vars.swapData[i].units);
 
@@ -630,7 +630,7 @@ namespace TestSuite {
 
             // check deposits
             for (int i = 0; i < vars.deposits; i++) {
-                Euribor index = new Euribor(new Period(vars.depositData[i].n, vars.depositData[i].units), curveHandle);
+                Euribor index = new Euribor(new Period(vars.depositData[i].n, vars.depositData[i].units), curveHandle, settings);
                 double expectedRate = vars.depositData[i].rate / 100,
                        estimatedRate = index.fixing(vars.today);
                 if (Math.Abs(expectedRate - estimatedRate) > tolerance) {
@@ -643,7 +643,7 @@ namespace TestSuite {
             }
 
             // check swaps
-            IborIndex euribor6m = new Euribor6M(curveHandle);
+            IborIndex euribor6m = new Euribor6M(curveHandle, settings);
             for (int i = 0; i < vars.swaps; i++) {
                 Period tenor = new Period(vars.swapData[i].n, vars.swapData[i].units);
 
@@ -699,7 +699,7 @@ namespace TestSuite {
                                         new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator);
             curveHandle.linkTo(vars.termStructure);
 
-            IborIndex euribor3m = new Euribor3M(curveHandle);
+            IborIndex euribor3m = new Euribor3M(curveHandle, settings);
             for (int i = 0; i < vars.fras; i++) {
                 Date start = vars.calendar.advance(vars.settlement,
                                           vars.fraData[i].n,
@@ -737,8 +737,8 @@ namespace TestSuite {
 		  {
 
             // readjust settlement
-            vars.calendar = new JointCalendar(new BMAIndex().fixingCalendar(),
-                                          new USDLibor(new Period(3, TimeUnit.Months)).fixingCalendar(),
+            vars.calendar = new JointCalendar(new BMAIndex(settings).fixingCalendar(),
+                                          new USDLibor(new Period(3, TimeUnit.Months), settings).fixingCalendar(),
                                           JointCalendar.JointCalendarRule.JoinHolidays);
             vars.today = vars.calendar.adjust(Date.Today);
             Settings.setEvaluationDate(vars.today);
@@ -747,8 +747,8 @@ namespace TestSuite {
             Handle<YieldTermStructure> riskFreeCurve = new Handle<YieldTermStructure>(
                                                        new FlatForward(vars.settlement, 0.04, new Actual360()));
 
-            BMAIndex bmaIndex = new BMAIndex();
-            IborIndex liborIndex = new USDLibor(new Period(3, TimeUnit.Months), riskFreeCurve);
+            BMAIndex bmaIndex = new BMAIndex(settings);
+            IborIndex liborIndex = new USDLibor(new Period(3, TimeUnit.Months), riskFreeCurve, settings);
             for (int i = 0; i < vars.bmas; ++i) {
                 Handle<Quote> f = new Handle<Quote>(vars.fractions[i]);
                 vars.bmaHelpers.Add(new BMASwapRateHelper(f, new Period(vars.bmaData[i].n, vars.bmaData[i].units),
@@ -773,8 +773,8 @@ namespace TestSuite {
             curveHandle.linkTo(vars.termStructure);
 
             // check BMA swaps
-            BMAIndex bma = new BMAIndex(curveHandle);
-            IborIndex libor3m = new USDLibor(new Period(3, TimeUnit.Months), riskFreeCurve);
+            BMAIndex bma = new BMAIndex(curveHandle, settings);
+            IborIndex libor3m = new USDLibor(new Period(3, TimeUnit.Months), riskFreeCurve, settings);
             for (int i = 0; i < vars.bmas; i++) {
                 Period tenor = new Period(vars.bmaData[i].n, vars.bmaData[i].units);
 

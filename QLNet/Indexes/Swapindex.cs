@@ -28,14 +28,14 @@ namespace QLNet
    public class SwapIndex : InterestRateIndex 
    {
       // need by CashFlowVectors
-      public SwapIndex(SavedSettings settings)
+      public SwapIndex(SavedSettings settings) : base(settings)
       {
           settings_ = settings;
       }
 
 
        public SwapIndex(string familyName, Period tenor, int settlementDays, Currency currency, Calendar calendar, Period fixedLegTenor, BusinessDayConvention fixedLegConvention, DayCounter fixedLegDayCounter, IborIndex iborIndex, SavedSettings settings) :
-         base(familyName, tenor, settlementDays, currency, calendar, fixedLegDayCounter)
+         base(familyName, tenor, settlementDays, currency, calendar, fixedLegDayCounter, settings)
       {
          tenor_ = tenor;
          iborIndex_ = iborIndex;
@@ -48,7 +48,7 @@ namespace QLNet
            settings_ = settings;
       }
 
-      public SwapIndex(string familyName, Period tenor, int settlementDays, Currency currency, Calendar calendar, Period fixedLegTenor, BusinessDayConvention fixedLegConvention, DayCounter fixedLegDayCounter, IborIndex iborIndex, Handle<YieldTermStructure> discountingTermStructure, SavedSettings settings)
+      public SwapIndex(string familyName, Period tenor, int settlementDays, Currency currency, Calendar calendar, Period fixedLegTenor, BusinessDayConvention fixedLegConvention, DayCounter fixedLegDayCounter, IborIndex iborIndex, Handle<YieldTermStructure> discountingTermStructure, SavedSettings settings) : base(settings)
       {
          tenor_ = tenor;
          iborIndex_ = iborIndex;

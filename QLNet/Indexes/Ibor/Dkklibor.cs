@@ -30,12 +30,12 @@ namespace QLNet {
 //    
 	public class DKKLibor : Libor
 	{
-        public DKKLibor(Period tenor)
-            : base("DKKLibor", tenor, 2, new DKKCurrency(), new Denmark(), new Actual360(), new Handle<YieldTermStructure>())
+        public DKKLibor(Period tenor, SavedSettings settings)
+            : base("DKKLibor", tenor, 2, new DKKCurrency(), new Denmark(), new Actual360(), new Handle<YieldTermStructure>(), settings)
 		{
 		}
-        public DKKLibor(Period tenor, Handle<YieldTermStructure> h)
-            : base("DKKLibor", tenor, 2, new DKKCurrency(), new Denmark(), new Actual360(), h)
+        public DKKLibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("DKKLibor", tenor, 2, new DKKCurrency(), new Denmark(), new Actual360(), h, settings)
         {
         }
     }

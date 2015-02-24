@@ -175,7 +175,7 @@ namespace TestSuite
 											           volatility,
 											           new Actual365Fixed()));
 
-			IborIndex index3m =new USDLibor(new Period(3,TimeUnit.Months), rhTermStructure);
+			IborIndex index3m =new USDLibor(new Period(3,TimeUnit.Months), rhTermStructure, settings);
 
 			Date payDate = new Date(20, Month.December, 2013);
 			Date startDate = new Date(20, Month.September, 2013);
@@ -244,7 +244,7 @@ namespace TestSuite
 				.withConvention(BusinessDayConvention.Following)
 				.backwards().value();
 
-			IborIndex index = new USDLibor(new Period(6,TimeUnit.Months));
+			IborIndex index = new USDLibor(new Period(6,TimeUnit.Months), settings);
 			List<CashFlow> leg = new IborLeg( schedule, index, settings)
 				// this can happen with default values, and caused an
 				// exception when the null was not managed properly

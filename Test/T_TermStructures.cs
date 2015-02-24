@@ -82,11 +82,11 @@ namespace TestSuite
             for (int i = 0; i < deposits; i++)
             {
                instruments.Add(new DepositRateHelper(depositData[i].rate / 100, new Period(depositData[i].n, depositData[i].units),
-                               settlementDays, calendar, BusinessDayConvention.ModifiedFollowing, true, new Actual360()));
+                               settlementDays, calendar, BusinessDayConvention.ModifiedFollowing, true, new Actual360(), settings));
             }
 
             IborIndex index = new IborIndex("dummy", new Period(6, TimeUnit.Months), settlementDays, new Currency(),
-                                            calendar, BusinessDayConvention.ModifiedFollowing, false, new Actual360());
+                                            calendar, BusinessDayConvention.ModifiedFollowing, false, new Actual360(), settings);
             for (int i = 0; i < swaps; ++i)
             {
                instruments.Add(new SwapRateHelper(swapData[i].rate / 100, new Period(swapData[i].n, swapData[i].units),

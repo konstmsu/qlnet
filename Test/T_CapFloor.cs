@@ -41,9 +41,10 @@ namespace TestSuite {
 
             // setup
             public CommonVars() {
+
                 nominals = new List<double>() { 100 };
                 frequency = Frequency.Semiannual;
-                index = (IborIndex)new Euribor6M(termStructure);
+                index = (IborIndex)new Euribor6M(termStructure, settings_);
                 calendar = index.fixingCalendar();
                 convention = BusinessDayConvention.ModifiedFollowing;
                 Date today = calendar.adjust(Date.Today);

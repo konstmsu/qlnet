@@ -65,7 +65,7 @@ namespace TestSuite
                 termStructure = new RelinkableHandle<YieldTermStructure>(); 
                 termStructure.linkTo(Utilities.flatRate(new Date(19, Month.February, 2002), 0.04875825, new Actual365Fixed()));
 
-                index = new Euribor6M(termStructure);
+                index = new Euribor6M(termStructure, settings);
                 calendar = index.fixingCalendar();
                 today = calendar.adjust(Date.Today);
                 settlement = calendar.advance(today, settlementDays, TimeUnit.Days);

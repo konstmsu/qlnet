@@ -33,12 +33,12 @@ namespace QLNet {
 //    
 	public class Tibor : IborIndex
 	{
-        public Tibor(Period tenor)
-            : base("Tibor", tenor, 2, new JPYCurrency(), new Japan(), BusinessDayConvention.ModifiedFollowing, false, new Actual365Fixed(), new Handle<YieldTermStructure>())
+        public Tibor(Period tenor, SavedSettings settings)
+            : base("Tibor", tenor, 2, new JPYCurrency(), new Japan(), BusinessDayConvention.ModifiedFollowing, false, new Actual365Fixed(), new Handle<YieldTermStructure>(), settings)
         {
         }
-        public Tibor(Period tenor, Handle<YieldTermStructure> h)
-            : base("Tibor", tenor, 2, new JPYCurrency(), new Japan(), BusinessDayConvention.ModifiedFollowing, false, new Actual365Fixed(), h)
+        public Tibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("Tibor", tenor, 2, new JPYCurrency(), new Japan(), BusinessDayConvention.ModifiedFollowing, false, new Actual365Fixed(), h, settings)
 		{
 		}
 	}

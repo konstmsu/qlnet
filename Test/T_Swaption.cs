@@ -61,6 +61,7 @@ namespace TestSuite
             public IborIndex index;
             public int settlementDays;
             public RelinkableHandle<YieldTermStructure> termStructure = new RelinkableHandle<YieldTermStructure>();
+            public readonly SavedSettings settings_ = new SavedSettings();
 
             // cleanup
             // SavedSettings backup;
@@ -100,7 +101,7 @@ namespace TestSuite
                 fixedFrequency = Frequency.Annual;
                 fixedDayCount = new Thirty360();
 
-                index =new Euribor6M(termStructure);
+                index =new Euribor6M(termStructure, settings_);
                 floatingConvention = index.businessDayConvention();
                 floatingTenor = index.tenor();
                 calendar = index.fixingCalendar();

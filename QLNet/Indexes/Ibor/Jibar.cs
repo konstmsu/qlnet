@@ -30,12 +30,12 @@ namespace QLNet {
 //    
 	public class Jibar : IborIndex
 	{
-        public Jibar(Period tenor)
-            : base("Jibar", tenor, 0, new ZARCurrency(), new SouthAfrica(), BusinessDayConvention.ModifiedFollowing, false, new Actual365Fixed(), new Handle<YieldTermStructure>())
+        public Jibar(Period tenor, SavedSettings settings)
+            : base("Jibar", tenor, 0, new ZARCurrency(), new SouthAfrica(), BusinessDayConvention.ModifiedFollowing, false, new Actual365Fixed(), new Handle<YieldTermStructure>(), settings)
         {
         }
-        public Jibar(Period tenor, Handle<YieldTermStructure> h)
-            : base("Jibar", tenor, 0, new ZARCurrency(), new SouthAfrica(), BusinessDayConvention.ModifiedFollowing, false, new Actual365Fixed(), h)
+        public Jibar(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("Jibar", tenor, 0, new ZARCurrency(), new SouthAfrica(), BusinessDayConvention.ModifiedFollowing, false, new Actual365Fixed(), h, settings)
 		{
 		}
 	}

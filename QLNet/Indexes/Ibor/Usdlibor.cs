@@ -24,21 +24,21 @@ namespace QLNet {
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
     */
     public class USDLibor : Libor {
-        public USDLibor(Period tenor) : this(tenor, new Handle<YieldTermStructure>()) { }
-        public USDLibor(Period tenor, Handle<YieldTermStructure> h)
-            : base("USDLibor", tenor, 2, new USDCurrency(), new UnitedStates(UnitedStates.Market.Settlement), new Actual360(), h) { }
+        public USDLibor(Period tenor, SavedSettings settings) : this(tenor, new Handle<YieldTermStructure>(), settings) { }
+        public USDLibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("USDLibor", tenor, 2, new USDCurrency(), new UnitedStates(UnitedStates.Market.Settlement), new Actual360(), h, settings) { }
     }
 
     //! base class for the one day deposit BBA %USD %LIBOR indexes
     public class DailyTenorUSDLibor : DailyTenorLibor {
-        public DailyTenorUSDLibor(int settlementDays) : this(settlementDays, new Handle<YieldTermStructure>()) {}
-        public DailyTenorUSDLibor(int settlementDays, Handle<YieldTermStructure> h)
-            : base("USDLibor", settlementDays, new USDCurrency(), new UnitedStates(UnitedStates.Market.Settlement), new Actual360(), h) {}
+        public DailyTenorUSDLibor(int settlementDays, SavedSettings settings) : this(settlementDays, new Handle<YieldTermStructure>(), settings) {}
+        public DailyTenorUSDLibor(int settlementDays, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("USDLibor", settlementDays, new USDCurrency(), new UnitedStates(UnitedStates.Market.Settlement), new Actual360(), h, settings) {}
     };
 
     //! Overnight %USD %Libor index
     public class USDLiborON : DailyTenorUSDLibor {
-        public USDLiborON() : this(new Handle<YieldTermStructure>()) { }
-        public USDLiborON(Handle<YieldTermStructure> h) : base(0, h) {}
+        public USDLiborON(SavedSettings settings) : this(new Handle<YieldTermStructure>(), settings) { }
+        public USDLiborON(Handle<YieldTermStructure> h, SavedSettings settings) : base(0, h, settings) {}
     }
 }

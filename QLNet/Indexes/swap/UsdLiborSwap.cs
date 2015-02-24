@@ -37,7 +37,7 @@ namespace QLNet
                 new Period(6, TimeUnit.Months), // fixedLegTenor
                 BusinessDayConvention.ModifiedFollowing, // fixedLegConvention
                 new Thirty360(Thirty360.Thirty360Convention.BondBasis), // fixedLegDaycounter
-                new USDLibor(new Period(3, TimeUnit.Months), h), settings) { }
+                new USDLibor(new Period(3, TimeUnit.Months), h, settings), settings) { }
    }
 
    public class UsdLiborSwapIsdaFixPm : SwapIndex
@@ -54,6 +54,6 @@ namespace QLNet
                 new Period(6, TimeUnit.Months), // fixedLegTenor
                 BusinessDayConvention.ModifiedFollowing, // fixedLegConvention
                 new Thirty360(Thirty360.Thirty360Convention.BondBasis), // fixedLegDaycounter
-                new USDLibor(new Period(3, TimeUnit.Months), h), settings) { }
+                new USDLibor(new Period(3, TimeUnit.Months), h, settings), settings) { }
    }
 }

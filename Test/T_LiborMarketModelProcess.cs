@@ -32,7 +32,7 @@ namespace TestSuite
 
         int len = 10;
 
-        IborIndex makeIndex() 
+        IborIndex makeIndex(SavedSettings settings) 
         {
             DayCounter dayCounter = new Actual360();
             List<Date> dates = new List<Date>();
@@ -45,7 +45,7 @@ namespace TestSuite
             RelinkableHandle<YieldTermStructure> termStructure= new RelinkableHandle<YieldTermStructure>();;
             //termStructure.linkTo(new InterpolatedZeroCurve<Linear>(dates, rates, dayCounter, Interpolator));
 
-            IborIndex index = new Euribor1Y(termStructure);
+            IborIndex index = new Euribor1Y(termStructure, settings);
 
             Date todaysDate =
             index.fixingCalendar().adjust(new Date(4,9,2005));
@@ -67,7 +67,7 @@ namespace TestSuite
 
             List<Date> dates = new List<Date>();
             List<double> capletVols = new List<double>();
-            LiborForwardModelProcess process= new LiborForwardModelProcess(len+1, makeIndex(),null, settings);
+            LiborForwardModelProcess process= new LiborForwardModelProcess(len+1, makeIndex(settings),null, settings);
 
             for (int i=0; i < len; ++i) 
             {
@@ -89,7 +89,7 @@ namespace TestSuite
         {
             int factors = (volaComp.empty() ? 1 : volaComp.columns());
 
-            IborIndex index = makeIndex();
+            IborIndex index = makeIndex(settings);
             LiborForwardModelProcess process= new LiborForwardModelProcess(len, index,null, settings);
 
             LfmCovarianceParameterization fct=new LfmHullWhiteParameterization(
@@ -114,7 +114,7 @@ namespace TestSuite
             RelinkableHandle<YieldTermStructure> termStructure= new RelinkableHandle<YieldTermStructure>();;
             termStructure.linkTo(Utilities.flatRate(Date.Today, 0.04, dayCounter));
 
-            IborIndex index=new Euribor6M(termStructure);
+            IborIndex index=new Euribor6M(termStructure, settings);
             OptionletVolatilityStructure capletVol = new ConstantOptionletVolatility(
                                                         termStructure.currentLink().referenceDate(),
                                                         termStructure.currentLink().calendar(),

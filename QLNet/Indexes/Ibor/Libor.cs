@@ -27,11 +27,11 @@ namespace QLNet {
     public class Libor : IborIndex {
         private Calendar financialCenterCalendar_;
         private Calendar jointCalendar_;
+        SavedSettings _settings;
 
         //public Libor(string familyName, Period tenor, int settlementDays, Currency currency, Calendar financialCenterCalendar,
         //             DayCounter dayCounter, YieldTermStructure h = YieldTermStructure())
-        public Libor(string familyName, Period tenor, int settlementDays, Currency currency, Calendar financialCenterCalendar,
-                     DayCounter dayCounter, Handle<YieldTermStructure> h)
+        public Libor(string familyName, Period tenor, int settlementDays, Currency currency, Calendar financialCenterCalendar, DayCounter dayCounter, Handle<YieldTermStructure> h, SavedSettings settings)
             : base(familyName, tenor, settlementDays, currency,
                 // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
                 // UnitedKingdom::Exchange is the fixing calendar for
@@ -39,7 +39,7 @@ namespace QLNet {
                 // b) all indexes but o/n and s/n
                 new UnitedKingdom(UnitedKingdom.Market.Exchange),
                 Utils.liborConvention(tenor), Utils.liborEOM(tenor),
-                dayCounter, h) {
+                dayCounter, h, settings) {
 
             financialCenterCalendar_ = financialCenterCalendar;
             jointCalendar_ = new JointCalendar(new UnitedKingdom(UnitedKingdom.Market.Exchange),
@@ -49,7 +49,8 @@ namespace QLNet {
                                                ") dedicated DailyTenor constructor must be used");
             if (currency == new EURCurrency())
                 throw new ApplicationException("for EUR Libor dedicated EurLibor constructor must be used");
-        }
+            _settings = settings;
+                }
 
         public override Date valueDate(Date fixingDate) {
             if (!isValidFixingDate(fixingDate))
@@ -81,7 +82,7 @@ namespace QLNet {
         //! \name Other methods
         public override IborIndex clone(Handle<YieldTermStructure> h) {
             return new Libor(familyName(), tenor(), fixingDays(), currency(), financialCenterCalendar_,
-                             dayCounter(), h);
+                             dayCounter(), h, _settings);
         }
     }
 
@@ -95,16 +96,14 @@ namespace QLNet {
         // no o/n or s/n fixings (as the case may be) will take place
         // when the principal centre of the currency concerned is
         // closed but London is open on the fixing day.
-        public DailyTenorLibor(string familyName, int settlementDays, Currency currency, Calendar financialCenterCalendar,
-                               DayCounter dayCounter)
-            : this(familyName, settlementDays, currency, financialCenterCalendar, dayCounter, new Handle<YieldTermStructure>()) {
+        public DailyTenorLibor(string familyName, int settlementDays, Currency currency, Calendar financialCenterCalendar, DayCounter dayCounter, SavedSettings settings)
+            : this(familyName, settlementDays, currency, financialCenterCalendar, dayCounter, new Handle<YieldTermStructure>(), settings) {
         }
 
-        public DailyTenorLibor(string familyName, int settlementDays, Currency currency, Calendar financialCenterCalendar,
-                               DayCounter dayCounter, Handle<YieldTermStructure> h)
+        public DailyTenorLibor(string familyName, int settlementDays, Currency currency, Calendar financialCenterCalendar, DayCounter dayCounter, Handle<YieldTermStructure> h, SavedSettings settings)
             : base(familyName, new Period(1, TimeUnit.Days), settlementDays, currency,
                    new JointCalendar(new UnitedKingdom(UnitedKingdom.Market.Exchange), financialCenterCalendar, JointCalendar.JointCalendarRule.JoinHolidays),
-                   Utils.liborConvention(new Period(1, TimeUnit.Days)), Utils.liborEOM(new Period(1, TimeUnit.Days)), dayCounter, h) {
+                   Utils.liborConvention(new Period(1, TimeUnit.Days)), Utils.liborEOM(new Period(1, TimeUnit.Days)), dayCounter, h, settings) {
             if (!(currency != new EURCurrency()))
                 throw new ApplicationException("for EUR Libor dedicated EurLibor constructor must be used");
         }

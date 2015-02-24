@@ -34,10 +34,10 @@ namespace QLNet {
         protected Handle<YieldTermStructure> termStructure_;
         public Handle<YieldTermStructure> forwardingTermStructure() { return termStructure_; }
 
-        public BMAIndex() : this(new Handle<YieldTermStructure>()) { }
-        public BMAIndex(Handle<YieldTermStructure> h)
+        public BMAIndex(SavedSettings settings) : this(new Handle<YieldTermStructure>(), settings) { }
+        public BMAIndex(Handle<YieldTermStructure> h, SavedSettings settings)
             : base("BMA", new Period(1, TimeUnit.Weeks), 1, new USDCurrency(),
-                   new UnitedStates(UnitedStates.Market.NYSE), new ActualActual(ActualActual.Convention.ISDA)) {
+                   new UnitedStates(UnitedStates.Market.NYSE), new ActualActual(ActualActual.Convention.ISDA), settings) {
             termStructure_ = h;
             h.registerWith(update);
         }

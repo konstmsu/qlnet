@@ -160,7 +160,7 @@ namespace QLNet
          dayCounter_ = new Actual365Fixed();
          rule_ = DateGeneration.Rule.Forward;
          endOfMonth_ = false;
-         index_ = new IborIndex();
+         index_ = new IborIndex(settings);
 
          //engine_ = new DiscountingSwapEngine(index.termStructure());
            _settings = settings;

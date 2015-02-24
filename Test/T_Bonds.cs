@@ -585,7 +585,7 @@ namespace TestSuite
          var riskFreeRate = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.025, new Actual360()));
          var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.03, new Actual360()));
 
-         IborIndex index = new USDLibor(new Period(6, TimeUnit.Months), riskFreeRate);
+         IborIndex index = new USDLibor(new Period(6, TimeUnit.Months), riskFreeRate, settings);
          int fixingDays = 1;
 
          double tolerance = 1.0e-6;

@@ -34,13 +34,13 @@ namespace QLNet {
 //    
 	public class Cdor : IborIndex
 	{
-        public Cdor(Period tenor)
-            : base("CDOR", tenor, 2, new CADCurrency(), new Canada(), BusinessDayConvention.ModifiedFollowing, false, new Actual360(), new Handle<YieldTermStructure>())
+        public Cdor(Period tenor, SavedSettings settings)
+            : base("CDOR", tenor, 2, new CADCurrency(), new Canada(), BusinessDayConvention.ModifiedFollowing, false, new Actual360(), new Handle<YieldTermStructure>(), settings)
         {
         }
 
-        public Cdor(Period tenor, Handle<YieldTermStructure> h)
-            : base("CDOR", tenor, 2, new CADCurrency(), new Canada(), BusinessDayConvention.ModifiedFollowing, false, new Actual360(), h)
+        public Cdor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("CDOR", tenor, 2, new CADCurrency(), new Canada(), BusinessDayConvention.ModifiedFollowing, false, new Actual360(), h, settings)
 		{
 		}
 	}

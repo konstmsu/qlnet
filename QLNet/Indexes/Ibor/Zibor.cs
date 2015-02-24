@@ -34,12 +34,12 @@ namespace QLNet {
 //    
 	public class Zibor : IborIndex
 	{
-        public Zibor(Period tenor)
-            : base("Zibor", tenor, 2, new CHFCurrency(), new Switzerland(), BusinessDayConvention.ModifiedFollowing, false, new Actual360(), new Handle<YieldTermStructure>())
+        public Zibor(Period tenor, SavedSettings settings)
+            : base("Zibor", tenor, 2, new CHFCurrency(), new Switzerland(), BusinessDayConvention.ModifiedFollowing, false, new Actual360(), new Handle<YieldTermStructure>(), settings)
         {
         }
-        public Zibor(Period tenor, Handle<YieldTermStructure> h)
-            : base("Zibor", tenor, 2, new CHFCurrency(), new Switzerland(), BusinessDayConvention.ModifiedFollowing, false, new Actual360(), h)
+        public Zibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("Zibor", tenor, 2, new CHFCurrency(), new Switzerland(), BusinessDayConvention.ModifiedFollowing, false, new Actual360(), h, settings)
 		{
 		}
 	}

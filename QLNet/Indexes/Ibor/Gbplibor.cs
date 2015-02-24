@@ -30,24 +30,24 @@ namespace QLNet {
     //        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
     //    
     public class GBPLibor : Libor {
-        public GBPLibor(Period tenor)
+        public GBPLibor(Period tenor, SavedSettings settings)
             : base("GBPLibor", tenor, 0, new GBPCurrency(), new UnitedKingdom(UnitedKingdom.Market.Exchange), new Actual365Fixed(),
-            new Handle<YieldTermStructure>()) {
+            new Handle<YieldTermStructure>(), settings) {
         }
-        public GBPLibor(Period tenor, Handle<YieldTermStructure> h)
-            : base("GBPLibor", tenor, 0, new GBPCurrency(), new UnitedKingdom(UnitedKingdom.Market.Exchange), new Actual365Fixed(), h) {
+        public GBPLibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("GBPLibor", tenor, 0, new GBPCurrency(), new UnitedKingdom(UnitedKingdom.Market.Exchange), new Actual365Fixed(), h, settings) {
         }
     }
 
     //! base class for the one day deposit BBA %GBP %LIBOR indexes
     public class DailyTenorGBPLibor : DailyTenorLibor {
-        public DailyTenorGBPLibor(int settlementDays, Handle<YieldTermStructure> h)
+        public DailyTenorGBPLibor(int settlementDays, Handle<YieldTermStructure> h, SavedSettings settings)
             : base("GBPLibor", settlementDays, new GBPCurrency(), new UnitedKingdom(UnitedKingdom.Market.Exchange),
-                    new Actual365Fixed(), h) {}
+                    new Actual365Fixed(), h, settings) {}
     }
 
     //! Overnight %GBP %Libor index
     public class GBPLiborON : DailyTenorGBPLibor {
-        public GBPLiborON(Handle<YieldTermStructure> h) : base(0, h) {}
+        public GBPLiborON(Handle<YieldTermStructure> h, SavedSettings settings) : base(0, h, settings) {}
     }
 }

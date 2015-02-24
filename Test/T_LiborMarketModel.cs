@@ -31,13 +31,12 @@ namespace TestSuite
     public class T_LiborMarketModel
     {
 
-        IborIndex makeIndex(List<Date> dates,
-                            List<double> rates)
+        IborIndex makeIndex(List<Date> dates, List<double> rates, SavedSettings settings)
         {
             DayCounter dayCounter = new Actual360();
 
             RelinkableHandle<YieldTermStructure> termStructure = new RelinkableHandle<YieldTermStructure>(); ;
-            IborIndex index = new Euribor6M(termStructure);
+            IborIndex index = new Euribor6M(termStructure, settings);
 
             Date todaysDate =
             index.fixingCalendar().adjust(new Date(4, 9, 2005));
@@ -51,7 +50,7 @@ namespace TestSuite
             return index;
         }
 
-        IborIndex makeIndex()
+        IborIndex makeIndex(SavedSettings settings)
         {
             List<Date> dates=new List<Date>();
             List<double> rates = new List<double>();
@@ -60,7 +59,7 @@ namespace TestSuite
             rates.Add(0.039);
             rates.Add(0.041);
 
-            return makeIndex(dates, rates);
+            return makeIndex(dates, rates, settings);
         }
 
         OptionletVolatilityStructure makeCapVolCurve(Date todaysDate, SavedSettings settings) 
@@ -71,7 +70,7 @@ namespace TestSuite
             List<Date> dates=new List<Date>() ;
             List<double> capletVols=new List<double>();
             LiborForwardModelProcess process=
-                                   new LiborForwardModelProcess(10, makeIndex(), settings);
+                                   new LiborForwardModelProcess(10, makeIndex(settings), settings);
 
             for (int i=0; i < 9; ++i) {
                 capletVols.Add(vols[i]/100);
@@ -122,7 +121,7 @@ namespace TestSuite
 
             LfmCovarianceProxy covarProxy=new LfmCovarianceProxy(volaModel, corrModel);
 
-            LiborForwardModelProcess process=new LiborForwardModelProcess(size, makeIndex(), settings);
+            LiborForwardModelProcess process=new LiborForwardModelProcess(size, makeIndex(settings), settings);
 
             LiborForwardModel liborModel=new LiborForwardModel(process, volaModel, corrModel);
 
@@ -171,7 +170,7 @@ namespace TestSuite
             const double tolerance = 1e-12;
             #endif
 
-            IborIndex index = makeIndex();
+            IborIndex index = makeIndex(settings);
             LiborForwardModelProcess process=new LiborForwardModelProcess(size, index,settings);
 
             // set-up pricing engine
@@ -232,7 +231,7 @@ namespace TestSuite
                                          0.146036, 0.134555, 0.124393, 0.115038,
                                          0.106996, 0.100064};
 
-            IborIndex index = makeIndex();
+            IborIndex index = makeIndex(settings);
             LiborForwardModelProcess process = new LiborForwardModelProcess(size, index,settings);
             Handle<YieldTermStructure> termStructure = index.forwardingTermStructure();
 
@@ -328,7 +327,7 @@ namespace TestSuite
             rates.Add(0.04);
             rates.Add(0.08);
 
-            IborIndex index = makeIndex(dates, rates);
+            IborIndex index = makeIndex(dates, rates, settings);
 
             LiborForwardModelProcess process = new LiborForwardModelProcess(size, index,settings);
 

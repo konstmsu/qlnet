@@ -37,7 +37,7 @@ namespace QLNet
                 new Period(6, TimeUnit.Months), // fixedLegTenor
                 BusinessDayConvention.ModifiedFollowing, // fixedLegConvention
                 new ActualActual(ActualActual.Convention.ISDA), // fixedLegDaycounter
-                new JPYLibor(new Period(6, TimeUnit.Months), h), settings) { }
+                new JPYLibor(new Period(6, TimeUnit.Months), h, settings), settings) { }
    }
 
    public class JpyLiborSwapIsdaFixPm : SwapIndex
@@ -54,6 +54,6 @@ namespace QLNet
                 new Period(6, TimeUnit.Months), // fixedLegTenor
                 BusinessDayConvention.ModifiedFollowing, // fixedLegConvention
                 new ActualActual(ActualActual.Convention.ISDA), // fixedLegDaycounter
-                new JPYLibor(new Period(6, TimeUnit.Months), h), settings) { }
+                new JPYLibor(new Period(6, TimeUnit.Months), h, settings), settings) { }
    }
 }

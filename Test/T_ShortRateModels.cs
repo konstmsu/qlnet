@@ -47,7 +47,7 @@ namespace TestSuite
       [TestMethod()]
       public void testCachedHullWhite() {
          //("Testing Hull-White calibration against cached values...");
-
+          var settings = new SavedSettings();
          Date today=new Date(15, Month.February, 2002);
          Date settlement=new Date(19, Month.February, 2002);
          Settings.setEvaluationDate(today);
@@ -61,14 +61,13 @@ namespace TestSuite
                                     new CalibrationData( 3, 3, 0.1070 ),
                                     new CalibrationData( 4, 2, 0.1021 ),
                                     new CalibrationData( 5, 1, 0.1000 )};
-         IborIndex index = new Euribor6M(termStructure);
+         IborIndex index = new Euribor6M(termStructure, settings);
 
          IPricingEngine engine = new JamshidianSwaptionEngine(model);
 
          List<CalibrationHelper> swaptions = new List<CalibrationHelper>();
          for (int i=0; i<data.Length; i++) {
                Quote vol = new SimpleQuote(data[i].volatility);
-             SavedSettings settings=new SavedSettings();
              CalibrationHelper helper =
                                     new SwaptionHelper(new Period(data[i].start,TimeUnit.Years),
                                                       new Period(data[i].length, TimeUnit.Years),
@@ -182,7 +181,7 @@ namespace TestSuite
             int[] start = { -3, 0, 3 };
             int[] length = { 2, 5, 10 };
             double[] rates = { 0.02, 0.04, 0.06 };
-            IborIndex euribor = new Euribor6M(termStructure);
+            IborIndex euribor = new Euribor6M(termStructure, settings);
 
             IPricingEngine engine = new TreeVanillaSwapEngine(model, 120, termStructure);
 

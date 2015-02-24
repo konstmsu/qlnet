@@ -30,13 +30,13 @@ namespace QLNet {
 //    
 	public class AUDLibor : Libor
 	{
-        public AUDLibor(Period tenor)
-            : base("AUDLibor", tenor, 2, new AUDCurrency(), new Australia(), new Actual360(), new Handle<YieldTermStructure>())
+        public AUDLibor(Period tenor, SavedSettings settings)
+            : base("AUDLibor", tenor, 2, new AUDCurrency(), new Australia(), new Actual360(), new Handle<YieldTermStructure>(), settings)
         {
         }
 
-        public AUDLibor(Period tenor, Handle<YieldTermStructure> h)
-            : base("AUDLibor", tenor, 2, new AUDCurrency(), new Australia(), new Actual360(), h)
+        public AUDLibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("AUDLibor", tenor, 2, new AUDCurrency(), new Australia(), new Actual360(), h, settings)
 		{
 		}
 	}

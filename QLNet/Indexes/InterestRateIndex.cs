@@ -41,20 +41,25 @@ namespace QLNet {
         public Currency currency() { return currency_; }
 
         protected DayCounter dayCounter_;
+        SavedSettings settings_;
         public DayCounter dayCounter() { return dayCounter_; }
         #endregion
 
         // need by CashFlowVectors
-        public InterestRateIndex() { }
+        public InterestRateIndex(SavedSettings settings)
+        {
+            settings_ = settings;
+        }
 
         public InterestRateIndex(string familyName, Period tenor, int fixingDays, Currency currency,
-                                 Calendar fixingCalendar, DayCounter dayCounter) {
+                                 Calendar fixingCalendar, DayCounter dayCounter, SavedSettings settings) {
             familyName_ = familyName;
             tenor_ = tenor;
             fixingDays_ = fixingDays;
             currency_ = currency;
             fixingCalendar_ = fixingCalendar;
             dayCounter_ = dayCounter;
+            settings_ = settings;
 
             tenor_.normalize();
 
@@ -94,7 +99,7 @@ namespace QLNet {
             if (fixings.ContainsKey(fixingDate)) {
                 return fixings[fixingDate];
             } else {
-                Date today = Settings.evaluationDate();
+                Date today = settings_.evaluationDate();
                 if (fixingDate < today
                     || (fixingDate == today && !forecastTodaysFixing && Settings.enforcesTodaysHistoricFixings)) {
                     // must have been fixed

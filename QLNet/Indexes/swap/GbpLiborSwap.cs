@@ -40,7 +40,7 @@ namespace QLNet
                 BusinessDayConvention.ModifiedFollowing, // fixedLegConvention
                 new Actual365Fixed(), // fixedLegDaycounter
                 tenor > new Period(1, TimeUnit.Years) ?
-                    new GBPLibor(new Period(6, TimeUnit.Months), h) :
-                    new GBPLibor(new Period(3, TimeUnit.Months), h), settings) { }
+                    new GBPLibor(new Period(6, TimeUnit.Months), h, settings) :
+                    new GBPLibor(new Period(3, TimeUnit.Months), h, settings), settings) { }
    }
 }

@@ -38,10 +38,10 @@ namespace QLNet
                            maturityDate, new Period(6,TimeUnit.Months),
                            new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
                            DateGeneration.Rule.Backward, true),
-                       new Euribor6M(fwdCurve != null ? fwdCurve : new Handle<YieldTermStructure>() ),
+                       new Euribor6M(fwdCurve != null ? fwdCurve : new Handle<YieldTermStructure>(), settings),
                        new Actual360(),
                        BusinessDayConvention.Following,
-                       new Euribor6M().fixingDays(),
+                       new Euribor6M(settings).fixingDays(),
                        new List<double>{1.0}, // gearing
                        new List<double>{spread},
                        new List<double>(), // caps

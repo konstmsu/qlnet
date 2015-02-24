@@ -25,8 +25,9 @@ using QLNet;
 
 namespace Bonds {
     class Bonds {
-        static void Main(string[] args) {
-
+        static void Main(string[] args)
+        {
+            var settings = new SavedSettings();
             DateTime timer = DateTime.Now;
 
             /*********************
@@ -77,15 +78,15 @@ namespace Bonds {
              RateHelper zc3m = new DepositRateHelper(new Handle<Quote>(zc3mRate),
                                                           new Period(3, TimeUnit.Months), fixingDays,
                                                           calendar, BusinessDayConvention.ModifiedFollowing,
-                                                          true, zcBondsDayCounter);
+                                                          true, zcBondsDayCounter, settings);
              RateHelper zc6m = new DepositRateHelper(new Handle<Quote>(zc6mRate),
                                                           new Period(6, TimeUnit.Months), fixingDays,
                                                           calendar, BusinessDayConvention.ModifiedFollowing,
-                                                          true, zcBondsDayCounter);
+                                                          true, zcBondsDayCounter, settings);
              RateHelper zc1y = new DepositRateHelper(new Handle<Quote>(zc1yRate),
                                                           new Period(1, TimeUnit.Years), fixingDays,
                                                           calendar, BusinessDayConvention.ModifiedFollowing,
-                                                          true, zcBondsDayCounter);
+                                                          true, zcBondsDayCounter, settings);
 
             // setup bonds
             double redemption = 100.0;
@@ -134,8 +135,6 @@ namespace Bonds {
             for (int i=0; i<numberOfBonds; i++) {
                 quoteHandle[i].linkTo(quote[i]);
             }
-
-            SavedSettings settings = new SavedSettings();
 
             // Definition of the rate helpers
             List<FixedRateBondHelper> bondsHelpers = new List<FixedRateBondHelper>();
@@ -243,38 +242,38 @@ namespace Bonds {
                      new Handle<Quote>(d1wRate),
                      new Period(1, TimeUnit.Weeks), fixingDays,
                      calendar, BusinessDayConvention.ModifiedFollowing,
-                     true, depositDayCounter);
+                     true, depositDayCounter, settings);
              RateHelper d1m = new DepositRateHelper(
                      new Handle<Quote>(d1mRate),
                      new Period(1, TimeUnit.Months), fixingDays,
                      calendar, BusinessDayConvention.ModifiedFollowing,
-                     true, depositDayCounter);
+                     true, depositDayCounter, settings);
              RateHelper d3m = new DepositRateHelper(
                      new Handle<Quote>(d3mRate),
                      new Period(3, TimeUnit.Months), fixingDays,
                      calendar, BusinessDayConvention.ModifiedFollowing,
-                     true, depositDayCounter);
+                     true, depositDayCounter, settings);
              RateHelper d6m = new DepositRateHelper(
                      new Handle<Quote>(d6mRate),
                      new Period(6, TimeUnit.Months), fixingDays,
                      calendar, BusinessDayConvention.ModifiedFollowing,
-                     true, depositDayCounter);
+                     true, depositDayCounter, settings);
              RateHelper d9m = new DepositRateHelper(
                      new Handle<Quote>(d9mRate),
                      new Period(9, TimeUnit.Months), fixingDays,
                      calendar, BusinessDayConvention.ModifiedFollowing,
-                     true, depositDayCounter);
+                     true, depositDayCounter, settings);
              RateHelper d1y = new DepositRateHelper(
                      new Handle<Quote>(d1yRate),
                      new Period(1, TimeUnit.Years), fixingDays,
                      calendar, BusinessDayConvention.ModifiedFollowing,
-                     true, depositDayCounter);
+                     true, depositDayCounter, settings);
 
              // setup swaps
              Frequency swFixedLegFrequency =Frequency.Annual;
              BusinessDayConvention swFixedLegConvention = BusinessDayConvention.Unadjusted;
              DayCounter swFixedLegDayCounter = new Thirty360(Thirty360.Thirty360Convention.European);
-             IborIndex swFloatingLegIndex = new Euribor6M();
+             IborIndex swFloatingLegIndex = new Euribor6M(settings);
 
              Period forwardStart = new Period(1, TimeUnit.Days);
 
@@ -382,7 +381,7 @@ namespace Bonds {
              // Should and will be priced on another curve later...
 
              RelinkableHandle<YieldTermStructure> liborTermStructure = new RelinkableHandle<YieldTermStructure>();
-             IborIndex libor3m = new USDLibor(new Period(3, TimeUnit.Months), liborTermStructure);
+             IborIndex libor3m = new USDLibor(new Period(3, TimeUnit.Months), liborTermStructure, settings);
              libor3m.addFixing(new Date(17, Month.July, 2008),0.0278625);
 
              Schedule floatingBondSchedule = new Schedule(new Date(21, Month.October, 2005),

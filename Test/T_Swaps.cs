@@ -42,8 +42,9 @@ namespace TestSuite
          public IborIndex index;
          public int settlementDays;
          public RelinkableHandle<YieldTermStructure> termStructure = new RelinkableHandle<YieldTermStructure>();
+          readonly SavedSettings _settings=new SavedSettings();
 
-         // cleanup
+          // cleanup
          // SavedSettings backup;
 
          // utilities
@@ -71,7 +72,7 @@ namespace TestSuite
             floatingFrequency = Frequency.Semiannual;
             fixedDayCount = new Thirty360();
 
-            index = new Euribor(new Period(floatingFrequency), termStructure);
+            index = new Euribor(new Period(floatingFrequency), termStructure, _settings);
 
             calendar = index.fixingCalendar();
             today = calendar.adjust(Date.Today);
@@ -240,7 +241,7 @@ namespace TestSuite
          List<double> nominals = new List<double>() { 100000000.0 };
 
          IborIndex index = new IborIndex("dummy", new Period(1, TimeUnit.Years), 0, new EURCurrency(), calendar,
-                                         BusinessDayConvention.Following, false, dayCounter, vars.termStructure);
+                                         BusinessDayConvention.Following, false, dayCounter, vars.termStructure, settings);
          double oneYear = 0.05;
          double r = Math.Log(1.0 + oneYear);
          vars.termStructure.linkTo(Utilities.flatRate(vars.today, r, dayCounter));

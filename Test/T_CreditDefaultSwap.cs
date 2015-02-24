@@ -426,8 +426,6 @@ namespace TestSuite
 		{
 			// Testing fair-upfront calculation for credit-default swaps...
 
-			SavedSettings backup = new SavedSettings();
-
 			// Initialize curves
 			Calendar calendar = new TARGET();
 			Date today = calendar.adjust(Date.Today);

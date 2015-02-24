@@ -129,25 +129,25 @@ namespace Swap {
             DayCounter depositDayCounter = new Actual360();
 
             RateHelper d1w = new DepositRateHelper(new Handle<Quote>(d1wRate), new Period(1, TimeUnit.Weeks),
-                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter, settings);
             RateHelper d1m = new DepositRateHelper(new Handle<Quote>(d1mRate), new Period(1, TimeUnit.Months),
-                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter, settings);
             RateHelper d3m = new DepositRateHelper(new Handle<Quote>(d3mRate), new Period(3, TimeUnit.Months), 
-                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter, settings);
             RateHelper d6m = new DepositRateHelper(new Handle<Quote>(d6mRate), new Period(6, TimeUnit.Months),
-                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter, settings);
             RateHelper d9m = new DepositRateHelper(new Handle<Quote>(d9mRate), new Period(9, TimeUnit.Months),
-                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter, settings);
             RateHelper d1y = new DepositRateHelper(new Handle<Quote>(d1yRate), new Period(1, TimeUnit.Years),
-                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+                fixingDays, calendar, BusinessDayConvention.ModifiedFollowing, true, depositDayCounter, settings);
 
             // setup FRAs
             RateHelper fra3x6 = new FraRateHelper(new Handle<Quote>(fra3x6Rate), 3, 6, fixingDays, calendar,
-                        BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+                        BusinessDayConvention.ModifiedFollowing, true, depositDayCounter, settings);
             RateHelper fra6x9 = new FraRateHelper(new Handle<Quote>(fra6x9Rate), 6, 9, fixingDays, calendar,
-                        BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+                        BusinessDayConvention.ModifiedFollowing, true, depositDayCounter, settings);
             RateHelper fra6x12 = new FraRateHelper(new Handle<Quote>(fra6x12Rate), 6, 12, fixingDays, calendar,
-                        BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
+                        BusinessDayConvention.ModifiedFollowing, true, depositDayCounter, settings);
 
 
             // setup futures
@@ -192,7 +192,7 @@ namespace Swap {
             BusinessDayConvention swFixedLegConvention = BusinessDayConvention.Unadjusted;
             DayCounter swFixedLegDayCounter = new Thirty360(Thirty360.Thirty360Convention.European);
 
-            IborIndex swFloatingLegIndex = new Euribor6M();
+            IborIndex swFloatingLegIndex = new Euribor6M(settings);
 
             RateHelper s2y = new SwapRateHelper(new Handle<Quote>(s2yRate), new Period(2, TimeUnit.Years),
                 calendar, swFixedLegFrequency, swFixedLegConvention, swFixedLegDayCounter, swFloatingLegIndex, settings);
@@ -293,7 +293,7 @@ namespace Swap {
 
             // floating leg
             Frequency floatingLegFrequency = Frequency.Semiannual;
-            IborIndex euriborIndex = new Euribor6M(forecastingTermStructure);
+            IborIndex euriborIndex = new Euribor6M(forecastingTermStructure, settings);
             double spread = 0.0;
 
             int lenghtInYears = 5;

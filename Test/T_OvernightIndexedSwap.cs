@@ -183,7 +183,8 @@ namespace TestSuite
          
          public CommonVars() 
          {
-            type = OvernightIndexedSwap.Type.Payer;
+             settings_ = new SavedSettings();
+             type = OvernightIndexedSwap.Type.Payer;
             settlementDays = 2;
             nominal = 100.0;
             fixedEoniaConvention = BusinessDayConvention.ModifiedFollowing;
@@ -191,18 +192,17 @@ namespace TestSuite
             fixedEoniaPeriod = new Period(1, TimeUnit.Years);
             floatingEoniaPeriod = new Period(1, TimeUnit.Years);
             fixedEoniaDayCount = new Actual360();
-            eoniaIndex = new Eonia(eoniaTermStructure);
+            eoniaIndex = new Eonia(eoniaTermStructure, settings_);
             fixedSwapConvention = BusinessDayConvention.ModifiedFollowing;
             fixedSwapFrequency = Frequency.Annual;
             fixedSwapDayCount = new Thirty360();
-            swapIndex = (IborIndex) new Euribor3M(swapTermStructure);
+            swapIndex = (IborIndex) new Euribor3M(swapTermStructure, settings_);
             calendar = eoniaIndex.fixingCalendar();
             today = new Date(5, Month.February, 2009);
             //today = calendar.adjust(Date::todaysDate());
             Settings.setEvaluationDate(today);
             settlement = calendar.advance(today,new Period(settlementDays,TimeUnit.Days),BusinessDayConvention.Following);
             eoniaTermStructure.linkTo(Utilities.flatRate(settlement, 0.05,new Actual365Fixed()));
-             settings_ = new SavedSettings();
          }
       }
 
@@ -308,8 +308,8 @@ namespace TestSuite
          List<RateHelper> eoniaHelpers = new List<RateHelper>();
          List<RateHelper> swap3mHelpers = new List<RateHelper>();
 
-         IborIndex euribor3m = new Euribor3M();
-         Eonia eonia = new Eonia();
+         IborIndex euribor3m = new Euribor3M(settings);
+         Eonia eonia = new Eonia(settings);
 
          for (int i = 0; i < depositData.Length; i++) 
          {
@@ -324,7 +324,7 @@ namespace TestSuite
                                          euribor3m.fixingCalendar(),
                                          euribor3m.businessDayConvention(),
                                          euribor3m.endOfMonth(),
-                                         euribor3m.dayCounter());
+                                         euribor3m.dayCounter(), settings);
 
          
             if (term <= new Period(2,TimeUnit.Days))
@@ -347,7 +347,7 @@ namespace TestSuite
                                              euribor3m.fixingCalendar(),
                                              euribor3m.businessDayConvention(),
                                              euribor3m.endOfMonth(),
-                                             euribor3m.dayCounter());
+                                             euribor3m.dayCounter(), settings);
             swap3mHelpers.Add(helper);
          }
 

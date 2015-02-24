@@ -30,11 +30,11 @@ namespace QLNet {
 //    
 	public class SEKLibor : Libor
 	{
-		public SEKLibor(Period tenor) : base("SEKLibor", tenor, 2, new SEKCurrency(), new Sweden(), new Actual360(), new Handle<YieldTermStructure>())
+		public SEKLibor(Period tenor, SavedSettings settings) : base("SEKLibor", tenor, 2, new SEKCurrency(), new Sweden(), new Actual360(), new Handle<YieldTermStructure>(), settings)
 		{
 		}
-        public SEKLibor(Period tenor, Handle<YieldTermStructure> h)
-            : base("SEKLibor", tenor, 2, new SEKCurrency(), new Sweden(), new Actual360(), h)
+        public SEKLibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("SEKLibor", tenor, 2, new SEKCurrency(), new Sweden(), new Actual360(), h, settings)
 		{
 		}
 	}

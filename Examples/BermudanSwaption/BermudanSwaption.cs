@@ -86,7 +86,7 @@ namespace BermudanSwaption
             Frequency floatingLegFrequency = Frequency.Semiannual;
             VanillaSwap.Type type = VanillaSwap.Type.Payer;
             double dummyFixedRate = 0.03;
-            IborIndex indexSixMonths = new Euribor6M(rhTermStructure);
+            IborIndex indexSixMonths = new Euribor6M(rhTermStructure, settings);
 
             Date startDate = calendar.advance(settlementDate, 1, TimeUnit.Years,
                                               floatingLegConvention);

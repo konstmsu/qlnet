@@ -64,20 +64,20 @@ namespace QLNet {
         // JoinBusinessDays is the fixing calendar for
         // all indexes but o/n
 
-        public EURLibor(Period tenor)
+        public EURLibor(Period tenor, SavedSettings settings)
             : base("EURLibor", tenor, 2, new EURCurrency(), new JointCalendar(new UnitedKingdom(UnitedKingdom.Market.Exchange), new TARGET(),
                 JointCalendar.JointCalendarRule.JoinHolidays),
                 Utils.eurliborConvention(tenor), Utils.eurliborEOM(tenor), new Actual360(),
-                new Handle<YieldTermStructure>()) {
+                new Handle<YieldTermStructure>(), settings) {
             target_ = new TARGET();
             if (!(this.tenor().units() != TimeUnit.Days))
                 throw new ApplicationException("for daily tenors (" + this.tenor() + ") dedicated DailyTenor constructor must be used");
         }
 
-        public EURLibor(Period tenor, Handle<YieldTermStructure> h)
+        public EURLibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
             : base("EURLibor", tenor, 2, new EURCurrency(), new JointCalendar(new UnitedKingdom(UnitedKingdom.Market.Exchange), new TARGET(),
                 JointCalendar.JointCalendarRule.JoinHolidays),
-                Utils.eurliborConvention(tenor), Utils.eurliborEOM(tenor), new Actual360(), h) {
+                Utils.eurliborConvention(tenor), Utils.eurliborEOM(tenor), new Actual360(), h, settings) {
             target_ = new TARGET();
             if (!(this.tenor().units() != TimeUnit.Days))
                 throw new ApplicationException("for daily tenors (" + this.tenor() + ") dedicated DailyTenor constructor must be used");
@@ -121,168 +121,168 @@ namespace QLNet {
         // no o/n or s/n fixings (as the case may be) will take place
         // when the principal centre of the currency concerned is
         // closed but London is open on the fixing day.
-        public DailyTenorEURLibor(int settlementDays)
-            : this(settlementDays, new Handle<YieldTermStructure>()) {
+        public DailyTenorEURLibor(int settlementDays, SavedSettings settings)
+            : this(settlementDays, new Handle<YieldTermStructure>(), settings) {
         }
-        public DailyTenorEURLibor()
+        public DailyTenorEURLibor(SavedSettings settings)
             : base("EURLibor", new Period(1, TimeUnit.Days), 0, new EURCurrency(), new TARGET(),
-            Utils.eurliborConvention(new Period(1, TimeUnit.Days)), Utils.eurliborEOM(new Period(1, TimeUnit.Days)), new Actual360(), new Handle<YieldTermStructure>()) {
+            Utils.eurliborConvention(new Period(1, TimeUnit.Days)), Utils.eurliborEOM(new Period(1, TimeUnit.Days)), new Actual360(), new Handle<YieldTermStructure>(), settings) {
         }
-        public DailyTenorEURLibor(int settlementDays, Handle<YieldTermStructure> h)
+        public DailyTenorEURLibor(int settlementDays, Handle<YieldTermStructure> h, SavedSettings settings)
             : base("EURLibor", new Period(1, TimeUnit.Days), settlementDays, new EURCurrency(), new TARGET(),
-            Utils.eurliborConvention(new Period(1, TimeUnit.Days)), Utils.eurliborEOM(new Period(1, TimeUnit.Days)), new Actual360(), h) {
+            Utils.eurliborConvention(new Period(1, TimeUnit.Days)), Utils.eurliborEOM(new Period(1, TimeUnit.Days)), new Actual360(), h, settings) {
         }
     }
 
     //! Overnight %EUR %Libor index
     public class EURLiborON : DailyTenorEURLibor {
-        public EURLiborON()
-            : base(0, new Handle<YieldTermStructure>()) {
+        public EURLiborON(SavedSettings settings)
+            : base(0, new Handle<YieldTermStructure>(), settings) {
         }
 
-        public EURLiborON(Handle<YieldTermStructure> h)
-            : base(0, h) {
+        public EURLiborON(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(0, h, settings) {
         }
     }
 
     //! 1-week %EUR %Libor index
     public class EURLiborSW : EURLibor {
-        public EURLiborSW()
-            : base(new Period(1, TimeUnit.Weeks), new Handle<YieldTermStructure>()) {
+        public EURLiborSW(SavedSettings settings)
+            : base(new Period(1, TimeUnit.Weeks), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLiborSW(Handle<YieldTermStructure> h)
-            : base(new Period(1, TimeUnit.Weeks), h) {
+        public EURLiborSW(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(1, TimeUnit.Weeks), h, settings) {
         }
     }
 
     //! 2-weeks %EUR %Libor index
     public class EURLibor2W : EURLibor {
-        public EURLibor2W()
-            : base(new Period(2, TimeUnit.Weeks), new Handle<YieldTermStructure>()) {
+        public EURLibor2W(SavedSettings settings)
+            : base(new Period(2, TimeUnit.Weeks), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor2W(Handle<YieldTermStructure> h)
-            : base(new Period(2, TimeUnit.Weeks), h) {
+        public EURLibor2W(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(2, TimeUnit.Weeks), h, settings) {
         }
     }
 
 
     //! 1-month %EUR %Libor index
     public class EURLibor1M : EURLibor {
-        public EURLibor1M()
-            : base(new Period(1, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor1M(SavedSettings settings)
+            : base(new Period(1, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor1M(Handle<YieldTermStructure> h)
-            : base(new Period(1, TimeUnit.Months), h) {
+        public EURLibor1M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(1, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 2-months %EUR %Libor index
     public class EURLibor2M : EURLibor {
-        public EURLibor2M()
-            : base(new Period(2, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor2M(SavedSettings settings)
+            : base(new Period(2, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor2M(Handle<YieldTermStructure> h)
-            : base(new Period(2, TimeUnit.Months), h) {
+        public EURLibor2M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(2, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 3-months %EUR %Libor index
     public class EURLibor3M : EURLibor {
-        public EURLibor3M()
-            : base(new Period(3, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor3M(SavedSettings settings)
+            : base(new Period(3, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor3M(Handle<YieldTermStructure> h)
-            : base(new Period(3, TimeUnit.Months), h) {
+        public EURLibor3M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(3, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 4-months %EUR %Libor index
     public class EURLibor4M : EURLibor {
-        public EURLibor4M()
-            : base(new Period(4, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor4M(SavedSettings settings)
+            : base(new Period(4, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor4M(Handle<YieldTermStructure> h)
-            : base(new Period(4, TimeUnit.Months), h) {
+        public EURLibor4M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(4, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 5-months %EUR %Libor index
     public class EURLibor5M : EURLibor {
-        public EURLibor5M()
-            : base(new Period(5, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor5M(SavedSettings settings)
+            : base(new Period(5, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor5M(Handle<YieldTermStructure> h)
-            : base(new Period(5, TimeUnit.Months), h) {
+        public EURLibor5M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(5, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 6-months %EUR %Libor index
     public class EURLibor6M : EURLibor {
-        public EURLibor6M()
-            : base(new Period(6, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor6M(SavedSettings settings)
+            : base(new Period(6, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor6M(Handle<YieldTermStructure> h)
-            : base(new Period(6, TimeUnit.Months), h) {
+        public EURLibor6M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(6, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 7-months %EUR %Libor index
     public class EURLibor7M : EURLibor {
-        public EURLibor7M()
-            : base(new Period(7, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor7M(SavedSettings settings)
+            : base(new Period(7, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor7M(Handle<YieldTermStructure> h)
-            : base(new Period(7, TimeUnit.Months), h) {
+        public EURLibor7M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(7, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 8-months %EUR %Libor index
     public class EURLibor8M : EURLibor {
-        public EURLibor8M()
-            : base(new Period(8, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor8M(SavedSettings settings)
+            : base(new Period(8, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor8M(Handle<YieldTermStructure> h)
-            : base(new Period(8, TimeUnit.Months), h) {
+        public EURLibor8M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(8, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 9-months %EUR %Libor index
     public class EURLibor9M : EURLibor {
-        public EURLibor9M()
-            : base(new Period(9, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor9M(SavedSettings settings)
+            : base(new Period(9, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor9M(Handle<YieldTermStructure> h)
-            : base(new Period(9, TimeUnit.Months), h) {
+        public EURLibor9M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(9, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 10-months %EUR %Libor index
     public class EURLibor10M : EURLibor {
-        public EURLibor10M()
-            : base(new Period(10, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor10M(SavedSettings settings)
+            : base(new Period(10, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor10M(Handle<YieldTermStructure> h)
-            : base(new Period(10, TimeUnit.Months), h) {
+        public EURLibor10M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(10, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 11-months %EUR %Libor index
     public class EURLibor11M : EURLibor {
-        public EURLibor11M()
-            : base(new Period(11, TimeUnit.Months), new Handle<YieldTermStructure>()) {
+        public EURLibor11M(SavedSettings settings)
+            : base(new Period(11, TimeUnit.Months), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor11M(Handle<YieldTermStructure> h)
-            : base(new Period(11, TimeUnit.Months), h) {
+        public EURLibor11M(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(11, TimeUnit.Months), h, settings) {
         }
     }
 
     //! 1-year %EUR %Libor index
     public class EURLibor1Y : EURLibor {
-        public EURLibor1Y()
-            : base(new Period(1, TimeUnit.Years), new Handle<YieldTermStructure>()) {
+        public EURLibor1Y(SavedSettings settings)
+            : base(new Period(1, TimeUnit.Years), new Handle<YieldTermStructure>(), settings) {
         }
-        public EURLibor1Y(Handle<YieldTermStructure> h)
-            : base(new Period(1, TimeUnit.Years), h) {
+        public EURLibor1Y(Handle<YieldTermStructure> h, SavedSettings settings)
+            : base(new Period(1, TimeUnit.Years), h, settings) {
         }
     }
 

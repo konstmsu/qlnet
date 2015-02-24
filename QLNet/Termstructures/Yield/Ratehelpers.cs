@@ -148,37 +148,35 @@ namespace QLNet {
 
         ///////////////////////////////////////////
         // constructors
-        public DepositRateHelper(Handle<Quote> rate, Period tenor, int fixingDays, Calendar calendar,
-                          BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter) :
+        public DepositRateHelper(Handle<Quote> rate, Period tenor, int fixingDays, Calendar calendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, SavedSettings settings) :
             base(rate) {
             iborIndex_ = new IborIndex("no-fix", tenor, fixingDays, new Currency(), calendar, convention,
-                                       endOfMonth, dayCounter, termStructureHandle_);
+                                       endOfMonth, dayCounter, termStructureHandle_, settings);
             initializeDates();
         }
 
-        public DepositRateHelper(double rate, Period tenor, int fixingDays, Calendar calendar,
-                          BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter) :
+        public DepositRateHelper(double rate, Period tenor, int fixingDays, Calendar calendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, SavedSettings settings) :
             base(rate)
         {
             iborIndex_ = new IborIndex("no-fix", tenor, fixingDays, new Currency(), calendar, convention,
-                                       endOfMonth, dayCounter, termStructureHandle_);
+                                       endOfMonth, dayCounter, termStructureHandle_, settings);
             initializeDates();
         }
 
-        public DepositRateHelper(Handle<Quote> rate, IborIndex i)
+        public DepositRateHelper(Handle<Quote> rate, IborIndex i, SavedSettings settings)
                 : base(rate) {
             iborIndex_ = new IborIndex("no-fix", // never take fixing into account
                                       i.tenor(), i.fixingDays(), new Currency(),
                                       i.fixingCalendar(), i.businessDayConvention(),
-                                      i.endOfMonth(), i.dayCounter(), termStructureHandle_);
+                                      i.endOfMonth(), i.dayCounter(), termStructureHandle_, settings);
             initializeDates();
         }
-        public DepositRateHelper(double rate, IborIndex i)
+        public DepositRateHelper(double rate, IborIndex i, SavedSettings settings)
             : base(rate) {
             iborIndex_ = new IborIndex("no-fix", // never take fixing into account
                       i.tenor(), i.fixingDays(), new Currency(),
                       i.fixingCalendar(), i.businessDayConvention(),
-                      i.endOfMonth(), i.dayCounter(), termStructureHandle_);
+                      i.endOfMonth(), i.dayCounter(), termStructureHandle_, settings);
             initializeDates();
         }
 
@@ -212,47 +210,44 @@ namespace QLNet {
         RelinkableHandle<YieldTermStructure> termStructureHandle_ = new RelinkableHandle<YieldTermStructure>();
 
 
-        public FraRateHelper(Handle<Quote> rate, int monthsToStart, int monthsToEnd, int fixingDays,
-                             Calendar calendar, BusinessDayConvention convention, bool endOfMonth,
-                             DayCounter dayCounter) :
+        public FraRateHelper(Handle<Quote> rate, int monthsToStart, int monthsToEnd, int fixingDays, Calendar calendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, SavedSettings settings) :
             base(rate) {
             periodToStart_ = new Period(monthsToStart, TimeUnit.Months);
 
             if (!(monthsToEnd>monthsToStart)) throw new ArgumentException("monthsToEnd must be grater than monthsToStart");
             iborIndex_ = new IborIndex("no-fix", new Period(monthsToEnd - monthsToStart, TimeUnit.Months), fixingDays,
-                                    new Currency(), calendar, convention, endOfMonth, dayCounter, termStructureHandle_);
+                                    new Currency(), calendar, convention, endOfMonth, dayCounter, termStructureHandle_, settings);
             initializeDates();
         }
 
-        public FraRateHelper(double rate, int monthsToStart, int monthsToEnd, int fixingDays, Calendar calendar,
-                             BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter)
+        public FraRateHelper(double rate, int monthsToStart, int monthsToEnd, int fixingDays, Calendar calendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, SavedSettings settings)
             : base(rate) {
             periodToStart_ = new Period(monthsToStart, TimeUnit.Months);
 
             if (!(monthsToEnd>monthsToStart)) throw new ArgumentException("monthsToEnd must be grater than monthsToStart");
             iborIndex_ = new IborIndex("no-fix", new Period(monthsToEnd - monthsToStart, TimeUnit.Months), fixingDays,
-                                    new Currency(), calendar, convention, endOfMonth, dayCounter, termStructureHandle_);
+                                    new Currency(), calendar, convention, endOfMonth, dayCounter, termStructureHandle_, settings);
             initializeDates();
         }
 
-        public FraRateHelper(Handle<Quote> rate, int monthsToStart, IborIndex i) : base(rate) {
+        public FraRateHelper(Handle<Quote> rate, int monthsToStart, IborIndex i, SavedSettings settings) : base(rate) {
             periodToStart_ = new Period(monthsToStart, TimeUnit.Months);
 
             iborIndex_ = new IborIndex("no-fix",  // never take fixing into account
                                        i.tenor(), i.fixingDays(), new Currency(),
                                        i.fixingCalendar(), i.businessDayConvention(),
-                                       i.endOfMonth(), i.dayCounter(), termStructureHandle_);
+                                       i.endOfMonth(), i.dayCounter(), termStructureHandle_, settings);
 
             initializeDates();
         }
 
-        public FraRateHelper(double rate, int monthsToStart, IborIndex i) : base(rate) {
+        public FraRateHelper(double rate, int monthsToStart, IborIndex i, SavedSettings settings) : base(rate) {
             periodToStart_ = new Period(monthsToStart, TimeUnit.Months);
 
             iborIndex_ = new IborIndex("no-fix",  // never take fixing into account
                                        i.tenor(), i.fixingDays(), new Currency(),
                                        i.fixingCalendar(), i.businessDayConvention(),
-                                       i.endOfMonth(), i.dayCounter(), termStructureHandle_);
+                                       i.endOfMonth(), i.dayCounter(), termStructureHandle_, settings);
 
             initializeDates();
         }
@@ -534,7 +529,7 @@ namespace QLNet {
             Date maturity = earliestDate_ + tenor_;
 
             // dummy BMA index with curve/swap arguments
-            BMAIndex clonedIndex = new BMAIndex(termStructureHandle_);
+            BMAIndex clonedIndex = new BMAIndex(termStructureHandle_, _settings);
 
             Schedule bmaSchedule = new MakeSchedule().from(earliestDate_).to(maturity)
                           .withTenor(bmaPeriod_)

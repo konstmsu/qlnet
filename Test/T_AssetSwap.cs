@@ -54,7 +54,7 @@ namespace TestSuite
             compounding = Compounding.Continuous;
             Frequency fixedFrequency = Frequency.Annual;
             Frequency floatingFrequency = Frequency.Semiannual;
-            iborIndex = new Euribor(new Period(floatingFrequency), termStructure);
+            iborIndex = new Euribor(new Period(floatingFrequency), termStructure, settings);
             Calendar calendar = iborIndex.fixingCalendar();
             swapIndex=  new SwapIndex("EuriborSwapIsdaFixA", new Period(10,TimeUnit.Years), swapSettlementDays,
                                       iborIndex.currency(), calendar,

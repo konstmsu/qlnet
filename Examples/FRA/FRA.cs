@@ -25,8 +25,9 @@ using QLNet;
 
 namespace FRA {
     class FRA {
-        static void Main() {
-            
+        static void Main()
+        {
+            var settings = new SavedSettings();
             DateTime timer = DateTime.Now;
 
             /*********************
@@ -34,7 +35,7 @@ namespace FRA {
              *********************/
 
             RelinkableHandle<YieldTermStructure> euriborTermStructure = new RelinkableHandle<YieldTermStructure>();
-            IborIndex euribor3m = new Euribor3M(euriborTermStructure);
+            IborIndex euribor3m = new Euribor3M(euriborTermStructure, settings);
 
             Date todaysDate = new Date(23, Month.May, 2006);
             Settings.setEvaluationDate(todaysDate);
@@ -93,23 +94,23 @@ namespace FRA {
 
             RateHelper fra1x4 =  new FraRateHelper(h1x4, 1, 4,
                                                  fixingDays, calendar, convention,
-                                                 endOfMonth, fraDayCounter);
+                                                 endOfMonth, fraDayCounter, settings);
 
             RateHelper fra2x5 = new FraRateHelper(h2x5, 2, 5,
                                                  fixingDays, calendar, convention,
-                                                 endOfMonth, fraDayCounter);
+                                                 endOfMonth, fraDayCounter, settings);
 
             RateHelper fra3x6 = new FraRateHelper(h3x6, 3, 6,
                                                  fixingDays, calendar, convention,
-                                                 endOfMonth, fraDayCounter);
+                                                 endOfMonth, fraDayCounter, settings);
 
             RateHelper fra6x9 = new FraRateHelper(h6x9, 6, 9,
                                                  fixingDays, calendar, convention,
-                                                 endOfMonth, fraDayCounter);
+                                                 endOfMonth, fraDayCounter, settings);
 
             RateHelper fra9x12 = new FraRateHelper(h9x12, 9, 12,
                                                  fixingDays, calendar, convention,
-                                                 endOfMonth, fraDayCounter);
+                                                 endOfMonth, fraDayCounter, settings);
 
 
             /*********************

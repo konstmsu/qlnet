@@ -97,7 +97,7 @@ namespace QLNet
 							 index_.businessDayConvention(),
 							 index_.endOfMonth(),
 							 termStructure_.link.dayCounter(),
-							 termStructure_ );
+							 termStructure_, settings_);
 
 			InitializedList<double> nominals = new InitializedList<double>( 1, 1.0 );
 

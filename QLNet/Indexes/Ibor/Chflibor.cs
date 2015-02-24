@@ -33,18 +33,18 @@ namespace QLNet {
     //                 you're interested in the Zurich fixing.
     //    
     public class CHFLibor : Libor {
-        public CHFLibor(Period tenor)
-            : base("CHFLibor", tenor, 2, new CHFCurrency(), new Switzerland(), new Actual360(), new Handle<YieldTermStructure>()) {
+        public CHFLibor(Period tenor, SavedSettings settings)
+            : base("CHFLibor", tenor, 2, new CHFCurrency(), new Switzerland(), new Actual360(), new Handle<YieldTermStructure>(), settings) {
         }
 
-        public CHFLibor(Period tenor, Handle<YieldTermStructure> h)
-            : base("CHFLibor", tenor, 2, new CHFCurrency(), new Switzerland(), new Actual360(), h) {
+        public CHFLibor(Period tenor, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("CHFLibor", tenor, 2, new CHFCurrency(), new Switzerland(), new Actual360(), h, settings) {
         }
     }
 
     //! base class for the one day deposit BBA %CHF %LIBOR indexes
     public class DailyTenorCHFLibor : DailyTenorLibor {
-        public DailyTenorCHFLibor(int settlementDays, Handle<YieldTermStructure> h)
-            : base("CHFLibor", settlementDays, new CHFCurrency(), new Switzerland(), new Actual360(), h) {}
+        public DailyTenorCHFLibor(int settlementDays, Handle<YieldTermStructure> h, SavedSettings settings)
+            : base("CHFLibor", settlementDays, new CHFCurrency(), new Switzerland(), new Actual360(), h, settings) {}
     };
 }
