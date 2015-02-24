@@ -39,7 +39,7 @@ namespace QLNet
    public class AssetSwap : Swap
    {
       public AssetSwap(bool payBondCoupon, Bond bond, double bondCleanPrice, IborIndex iborIndex, double spread, SavedSettings settings, Schedule floatSchedule = null, DayCounter floatingDayCount = null, bool parAssetSwap = true)
-         : base(2)
+         : base(2, settings)
       {
          bond_ = bond;
          bondCleanPrice_ = bondCleanPrice;
@@ -148,7 +148,7 @@ namespace QLNet
       }
 
       public AssetSwap(bool parAssetSwap, Bond bond, double bondCleanPrice, double nonParRepayment, double gearing, IborIndex iborIndex, SavedSettings settings, double spread = 0.0, DayCounter floatingDayCount = null, Date dealMaturity = null, bool payBondCoupon = false)
-         : base(2)
+         : base(2, settings)
       {
          bond_ = bond;
          bondCleanPrice_ = bondCleanPrice;

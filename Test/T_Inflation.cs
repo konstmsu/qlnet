@@ -50,11 +50,7 @@ namespace TestSuite
         return new FlatForward(evaluationDate, 0.05, new Actual360());
       }
 
-      private List<BootstrapHelper<ZeroInflationTermStructure>> makeHelpers(Datum[] iiData, int N,
-                                                ZeroInflationIndex ii, Period observationLag,
-                                                Calendar calendar,
-                                                BusinessDayConvention bdc,
-                                                DayCounter dc)
+      private List<BootstrapHelper<ZeroInflationTermStructure>> makeHelpers(Datum[] iiData, int N, ZeroInflationIndex ii, Period observationLag, Calendar calendar, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
       {
          List <BootstrapHelper<ZeroInflationTermStructure>> instruments = new  List<BootstrapHelper<ZeroInflationTermStructure>>();
          for (int i = 0; i < N; i++)
@@ -62,16 +58,12 @@ namespace TestSuite
             Date maturity = iiData[i].date;
             Handle<Quote> quote = new Handle<Quote>(new SimpleQuote(iiData[i].rate / 100.0));
             BootstrapHelper<ZeroInflationTermStructure> anInstrument = new ZeroCouponInflationSwapHelper(quote, observationLag, maturity,
-                      calendar, bdc, dc, ii);
+                      calendar, bdc, dc, ii, settings);
             instruments.Add(anInstrument);
          }
          return instruments;
       }
-		private List<BootstrapHelper<YoYInflationTermStructure>> makeHelpers( Datum[] iiData, int N,
-														YoYInflationIndex ii, Period observationLag,
-														Calendar calendar,
-														BusinessDayConvention bdc,
-														DayCounter dc )
+		private List<BootstrapHelper<YoYInflationTermStructure>> makeHelpers(Datum[] iiData, int N, YoYInflationIndex ii, Period observationLag, Calendar calendar, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
 		{
 			List<BootstrapHelper<YoYInflationTermStructure>> instruments = new List<BootstrapHelper<YoYInflationTermStructure>>();
 			for ( int i = 0; i < N; i++ )
@@ -79,7 +71,7 @@ namespace TestSuite
 				Date maturity = iiData[i].date;
 				Handle<Quote> quote = new Handle<Quote>( new SimpleQuote( iiData[i].rate / 100.0 ) );
 				BootstrapHelper<YoYInflationTermStructure> anInstrument = new YearOnYearInflationSwapHelper( quote, observationLag, maturity,
-							 calendar, bdc, dc, ii );
+							 calendar, bdc, dc, ii, settings);
 				instruments.Add( anInstrument );
 			}
 			return instruments;
@@ -246,7 +238,7 @@ namespace TestSuite
 			List<BootstrapHelper<ZeroInflationTermStructure>> helpers =
 				makeHelpers( zcData, zcData.Length, ii,
 												observationLag,
-												calendar, bdc, dc );
+												calendar, bdc, dc, backup);
 
 			double baseZeroRate = zcData[0].rate / 100.0;
 			PiecewiseZeroInflationCurve<Linear> pZITS = new PiecewiseZeroInflationCurve<Linear>(
@@ -339,7 +331,7 @@ namespace TestSuite
 													 evaluationDate,
 													 zcData[6].date,    // end date = maturity
 													 calendar, bdc, dc, zcData[6].rate / 100.0, // fixed rate
-													 zii, observationLag );
+													 zii, observationLag, backup);
 
 			// N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
 			//      inflation curve attached to the inflation index.
@@ -525,7 +517,7 @@ namespace TestSuite
 			Period observationLagyes = new Period( 3, TimeUnit.Months );
 			List<BootstrapHelper<ZeroInflationTermStructure>> helpersyes =
 				makeHelpers( zcData, zcData.Length,
-				iiyes, observationLagyes, calendar, bdc, dc );
+				iiyes, observationLagyes, calendar, bdc, dc, backup);
 
 			PiecewiseZeroInflationCurve<Linear> pZITSyes =
 					new PiecewiseZeroInflationCurve<Linear>(
@@ -596,7 +588,7 @@ namespace TestSuite
 															  evaluationDate,
 															  zcData[6].date,    // end date = maturity
 															  calendar, bdc, dc, zcData[6].rate / 100.0, // fixed rate
-															  ziiyes, observationLagyes );
+															  ziiyes, observationLagyes, backup);
 
 			// N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
 			//      inflation curve attached to the inflation index.
@@ -844,7 +836,7 @@ namespace TestSuite
 
 			// now build the helpers ...
 			List<BootstrapHelper<YoYInflationTermStructure>> helpers =
-			makeHelpers (yyData, yyData.Length, iir,observationLag, calendar, bdc, dc);
+			makeHelpers (yyData, yyData.Length, iir,observationLag, calendar, bdc, dc, backup);
 
 			double baseYYRate = yyData[0].rate/100.0;
 			PiecewiseYoYInflationCurve<Linear> pYYTS = new PiecewiseYoYInflationCurve<Linear>(
@@ -885,7 +877,7 @@ namespace TestSuite
 					observationLag,
 					0.0,        //spread on index
 					dc,
-					new UnitedKingdom());
+					new UnitedKingdom(), backup);
 
 				yyS2.setPricingEngine(sppe);
 
@@ -923,7 +915,7 @@ namespace TestSuite
 					observationLag,
 					0.0,        //spread on index
 					dc,
-					new UnitedKingdom());
+					new UnitedKingdom(), backup);
 
 				yyS3.setPricingEngine(sppe);
 

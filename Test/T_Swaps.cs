@@ -269,7 +269,7 @@ namespace TestSuite
                                      .withNotionals(nominals);
          Utils.setCouponPricer(floatingLeg, pricer);
 
-         Swap swap = new Swap(floatingLeg, fixedLeg);
+         Swap swap = new Swap(floatingLeg, fixedLeg, settings);
          swap.setPricingEngine(new DiscountingSwapEngine(vars.termStructure));
 
          double storedValue = -144813.0;

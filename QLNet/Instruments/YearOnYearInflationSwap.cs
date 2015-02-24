@@ -43,20 +43,10 @@ namespace QLNet
 	{
 		const double basisPoint = 1.0e-4;
 		public enum Type { Receiver = -1, Payer = 1 };
-		public YearOnYearInflationSwap(
-						  Type type,
-						  double nominal,
-						  Schedule fixedSchedule,
-						  double fixedRate,
-						  DayCounter fixedDayCount,
-						  Schedule yoySchedule,
-						  YoYInflationIndex yoyIndex,
-						  Period observationLag,
-						  double spread,
-						  DayCounter yoyDayCount,
-						  Calendar paymentCalendar,    // inflation index does not have a calendar
-						  BusinessDayConvention paymentConvention = BusinessDayConvention.ModifiedFollowing )
-			: base( 2 )
+		public YearOnYearInflationSwap(Type type, double nominal, Schedule fixedSchedule, double fixedRate, DayCounter fixedDayCount, Schedule yoySchedule, YoYInflationIndex yoyIndex, Period observationLag, double spread, DayCounter yoyDayCount, Calendar paymentCalendar, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.ModifiedFollowing
+// inflation index does not have a calendar
+		    )
+			: base( 2, settings)
 		{
 			type_ = type; 
 			nominal_ = nominal;

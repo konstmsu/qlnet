@@ -155,6 +155,7 @@ namespace TestSuite
          public double nominal;
          public Calendar calendar;
          public int settlementDays;
+          public readonly SavedSettings settings_;
 
          public Period fixedEoniaPeriod, floatingEoniaPeriod;
          public DayCounter fixedEoniaDayCount;
@@ -168,15 +169,12 @@ namespace TestSuite
          public IborIndex swapIndex;
          public RelinkableHandle<YieldTermStructure> swapTermStructure = new RelinkableHandle<YieldTermStructure>();
 
-         // cleanup
-         public SavedSettings backup;
-
          // utilities
          public OvernightIndexedSwap makeSwap(Period length,
                                        double fixedRate,
-                                       double spread)
+                                       double spread, SavedSettings settings)
          {
-            return new MakeOIS(length, eoniaIndex, fixedRate)
+            return new MakeOIS(length, eoniaIndex, fixedRate, settings)
                 .withEffectiveDate(settlement)
                 .withOvernightLegSpread(spread)
                 .withNominal(nominal)
@@ -204,7 +202,8 @@ namespace TestSuite
             Settings.setEvaluationDate(today);
             settlement = calendar.advance(today,new Period(settlementDays,TimeUnit.Days),BusinessDayConvention.Following);
             eoniaTermStructure.linkTo(Utilities.flatRate(settlement, 0.05,new Actual365Fixed()));
-        }
+             settings_ = new SavedSettings();
+         }
       }
 
 
@@ -214,6 +213,7 @@ namespace TestSuite
          // Testing Eonia-swap calculation of fair fixed rate...
 
          CommonVars vars = new CommonVars();
+          var settings = vars.settings_;
 
          Period[] lengths = new Period[] { new Period(1, TimeUnit.Years), new Period(2, TimeUnit.Years), new Period(5, TimeUnit.Years), new Period(10, TimeUnit.Years), new Period(20, TimeUnit.Years) };
          double[] spreads = { -0.001, -0.01, 0.0, 0.01, 0.001 };
@@ -222,9 +222,9 @@ namespace TestSuite
          {
             for (int j = 0; j < spreads.Length; j++)
             {
-               OvernightIndexedSwap swap = vars.makeSwap(lengths[i], 0.0, spreads[j]);
+               OvernightIndexedSwap swap = vars.makeSwap(lengths[i], 0.0, spreads[j], settings);
 
-               swap = vars.makeSwap(lengths[i], swap.fairRate().Value, spreads[j]);
+               swap = vars.makeSwap(lengths[i], swap.fairRate().Value, spreads[j], settings);
 
                if (Math.Abs(swap.NPV()) > 1.0e-10)
                {
@@ -246,6 +246,7 @@ namespace TestSuite
 
          // Testing Eonia-swap calculation of fair floating spread...
          CommonVars vars = new CommonVars();
+          var settings = vars.settings_;
 
          Period[] lengths = { new Period(1,TimeUnit.Years), 
                               new Period(2,TimeUnit.Years), 
@@ -258,9 +259,9 @@ namespace TestSuite
          {
             for (int j=0; j<rates.Length; j++) 
             {
-               OvernightIndexedSwap swap = vars.makeSwap(lengths[i], rates[j], 0.0);
+               OvernightIndexedSwap swap = vars.makeSwap(lengths[i], rates[j], 0.0, settings);
                double? fairSpread = swap.fairSpread();
-               swap = vars.makeSwap(lengths[i], rates[j], fairSpread.Value);
+               swap = vars.makeSwap(lengths[i], rates[j], fairSpread.Value, settings);
 
                if (Math.Abs(swap.NPV()) > 1.0e-10) 
                {
@@ -279,13 +280,14 @@ namespace TestSuite
       {
          // Testing Eonia-swap calculation against cached value...
          CommonVars vars = new CommonVars();
+          var settings = vars.settings_;
 
          Settings.setEvaluationDate(vars.today);
          vars.settlement = vars.calendar.advance(vars.today,vars.settlementDays,TimeUnit.Days);
          double flat = 0.05;
          vars.eoniaTermStructure.linkTo(Utilities.flatRate(vars.settlement,flat,new Actual360()));
          double fixedRate = Math.Exp(flat) - 1;
-         OvernightIndexedSwap swap = vars.makeSwap(new Period(1,TimeUnit.Years), fixedRate, 0.0);
+         OvernightIndexedSwap swap = vars.makeSwap(new Period(1,TimeUnit.Years), fixedRate, 0.0, settings);
          double cachedNPV   = 0.001730450147;
          double tolerance = 1.0e-11;
     
@@ -300,8 +302,8 @@ namespace TestSuite
       public void testBootstrap() 
       {
          // Testing Eonia-swap curve building...
-          SavedSettings settings = new SavedSettings();
           CommonVars vars = new CommonVars();
+          var settings = vars.settings_;
 
          List<RateHelper> eoniaHelpers = new List<RateHelper>();
          List<RateHelper> swap3mHelpers = new List<RateHelper>();
@@ -359,7 +361,7 @@ namespace TestSuite
             RateHelper helper = new OISRateHelper(eoniaSwapData[i].settlementDays,
                                                        term,
                                                        quote,
-                                                       eonia);
+                                                       eonia, settings);
             eoniaHelpers.Add(helper);
          }
 
@@ -401,7 +403,7 @@ namespace TestSuite
         
             double expected = eoniaSwapData[i].rate;
             Period term = new Period(eoniaSwapData[i].n , eoniaSwapData[i].unit);
-            OvernightIndexedSwap swap = vars.makeSwap(term, 0.0, 0.0);
+            OvernightIndexedSwap swap = vars.makeSwap(term, 0.0, 0.0, settings);
             double? calculated = 100.0 * swap.fairRate();
 
             if (Math.Abs(expected-calculated.Value) > tolerance)

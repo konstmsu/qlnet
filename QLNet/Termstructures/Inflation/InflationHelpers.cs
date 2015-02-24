@@ -27,14 +27,10 @@ namespace QLNet
    //! Zero-coupon inflation-swap bootstrap helper
    public class ZeroCouponInflationSwapHelper : BootstrapHelper<ZeroInflationTermStructure> 
    {
-      public ZeroCouponInflationSwapHelper(
-         Handle<Quote> quote,
-         Period swapObsLag,   // lag on swap observation of index
-         Date maturity,
-         Calendar calendar,   // index may have null calendar as valid on every day
-         BusinessDayConvention paymentConvention,
-         DayCounter dayCounter,
-         ZeroInflationIndex zii)
+      public ZeroCouponInflationSwapHelper(Handle<Quote> quote, Period swapObsLag, Date maturity, Calendar calendar, BusinessDayConvention paymentConvention, DayCounter dayCounter, ZeroInflationIndex zii, SavedSettings settings
+// lag on swap observation of index
+          // index may have null calendar as valid on every day
+          )
          : base(quote)
       {
          swapObsLag_ = swapObsLag;
@@ -80,6 +76,7 @@ namespace QLNet
 
          }
          Settings.registerWith(update);
+          _settings = settings;
       }
 
 
@@ -105,7 +102,7 @@ namespace QLNet
 										ZeroCouponInflationSwap.Type.Payer,
 										nominal, start, maturity_,
 										calendar_, paymentConvention_, dayCounter_, K, // fixed side & fixed rate
-										new_zii, swapObsLag_ );
+										new_zii, swapObsLag_, _settings);
 			// Because very simple instrument only takes
 			// standard discounting swap engine.
 			zciis_.setPricingEngine( new DiscountingSwapEngine( z.nominalTermStructure() ) );
@@ -128,18 +125,13 @@ namespace QLNet
       protected DayCounter dayCounter_;
       protected ZeroInflationIndex zii_;
       protected ZeroCouponInflationSwap zciis_;
+       SavedSettings _settings;
    }
 
 	//! Year-on-year inflation-swap bootstrap helper
    public class YearOnYearInflationSwapHelper  : BootstrapHelper<YoYInflationTermStructure> 
 	{
-		public YearOnYearInflationSwapHelper( Handle<Quote> quote,
-												  Period swapObsLag,
-												  Date maturity,
-												  Calendar calendar,
-												  BusinessDayConvention paymentConvention,
-												  DayCounter dayCounter,
-												  YoYInflationIndex yii )
+		public YearOnYearInflationSwapHelper(Handle<Quote> quote, Period swapObsLag, Date maturity, Calendar calendar, BusinessDayConvention paymentConvention, DayCounter dayCounter, YoYInflationIndex yii, SavedSettings settings)
 			: base( quote )
 		{
 			swapObsLag_= swapObsLag; 
@@ -184,6 +176,7 @@ namespace QLNet
         }
 
         Settings.registerWith(update);
+		    _settings = settings;
 		}
 
 		public override void setTermStructure( YoYInflationTermStructure y )
@@ -225,7 +218,7 @@ namespace QLNet
 				spread,
 				dayCounter_,
 				calendar_,  // inflation index does not have a calendar
-				paymentConvention_);
+            _settings, paymentConvention_);
 
 
         // Because very simple instrument only takes
@@ -249,6 +242,7 @@ namespace QLNet
 		protected DayCounter dayCounter_;
 		protected YoYInflationIndex yii_;
 		protected YearOnYearInflationSwap yyiis_;
-    }
+       SavedSettings _settings;
+	}
 
 }

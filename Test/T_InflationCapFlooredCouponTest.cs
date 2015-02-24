@@ -308,7 +308,7 @@ namespace TestSuite
                Date maturity = iiData[i].date;
                Handle<Quote> quote = new Handle<Quote>( new SimpleQuote( iiData[i].rate / 100.0 ) );
                BootstrapHelper<YoYInflationTermStructure> anInstrument = new YearOnYearInflationSwapHelper( quote, observationLag, maturity,
-                         calendar, bdc, dc, ii );
+                         calendar, bdc, dc, ii, settings_);
                instruments.Add( anInstrument );
             }
             return instruments;
@@ -346,11 +346,11 @@ namespace TestSuite
          // floating leg with negative gearing (gearing_n) and spread<>0
          List<CashFlow> floatLeg_n = vars.makeYoYLeg(vars.startDate,vars.length,gearing_n,spread_n);
          // Swap with null fixed leg and floating leg with gearing=1 and spread=0
-         Swap vanillaLeg = new Swap(fixedLeg,floatLeg);
+         Swap vanillaLeg = new Swap(fixedLeg,floatLeg, settings);
          // Swap with null fixed leg and floating leg with positive gearing and spread<>0
-         Swap vanillaLeg_p = new Swap(fixedLeg,floatLeg_p);
+         Swap vanillaLeg_p = new Swap(fixedLeg,floatLeg_p, settings);
          // Swap with null fixed leg and floating leg with negative gearing and spread<>0
-         Swap vanillaLeg_n = new Swap(fixedLeg,floatLeg_n);
+         Swap vanillaLeg_n = new Swap(fixedLeg,floatLeg_n, settings);
 
          IPricingEngine engine = new DiscountingSwapEngine(vars.nominalTS);
 
@@ -370,7 +370,7 @@ namespace TestSuite
          // Case gearing = 1 and spread = 0
          List<CashFlow> cappedLeg = vars.makeYoYCapFlooredLeg(whichPricer,vars.startDate,vars.length,
                               caps,floors0,vars.volatility);
-         Swap capLeg = new Swap(fixedLeg,cappedLeg);
+         Swap capLeg = new Swap(fixedLeg,cappedLeg, settings);
          capLeg.setPricingEngine(engine);
          YoYInflationCap cap = new YoYInflationCap(floatLeg, new List<double>(){capstrike},settings);
          cap.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
@@ -397,7 +397,7 @@ namespace TestSuite
 
          List<CashFlow> flooredLeg = vars.makeYoYCapFlooredLeg(whichPricer,vars.startDate,vars.length,
                               caps0,floors,vars.volatility);
-         Swap floorLeg = new Swap(fixedLeg,flooredLeg);
+         Swap floorLeg = new Swap(fixedLeg,flooredLeg, settings);
          floorLeg.setPricingEngine(engine);
          YoYInflationFloor floor= new YoYInflationFloor(floatLeg, new List<double>(){floorstrike},settings);
          floor.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
@@ -421,7 +421,7 @@ namespace TestSuite
 
          List<CashFlow> collaredLeg = vars.makeYoYCapFlooredLeg(whichPricer,vars.startDate,vars.length,
                               caps,floors,vars.volatility);
-         Swap collarLeg = new Swap(fixedLeg,collaredLeg);
+         Swap collarLeg = new Swap(fixedLeg,collaredLeg, settings);
          collarLeg.setPricingEngine(engine);
          YoYInflationCollar collar = new YoYInflationCollar(floatLeg,
                      new List<double>(){capstrike},
@@ -455,7 +455,7 @@ namespace TestSuite
          // Positive gearing
          List<CashFlow> cappedLeg_p = vars.makeYoYCapFlooredLeg(whichPricer,vars.startDate,vars.length,caps,floors0,
                               vars.volatility,gearing_p,spread_p);
-         Swap capLeg_p = new Swap(fixedLeg,cappedLeg_p);
+         Swap capLeg_p = new Swap(fixedLeg,cappedLeg_p, settings);
          capLeg_p.setPricingEngine(engine);
          YoYInflationCap cap_p = new YoYInflationCap(floatLeg_p,new List<double>(){capstrike},settings);
          cap_p.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
@@ -480,7 +480,7 @@ namespace TestSuite
          // Negative gearing
          List<CashFlow> cappedLeg_n = vars.makeYoYCapFlooredLeg(whichPricer,vars.startDate,vars.length,caps,floors0,
                               vars.volatility,gearing_n,spread_n);
-         Swap capLeg_n = new Swap(fixedLeg,cappedLeg_n);
+         Swap capLeg_n = new Swap(fixedLeg,cappedLeg_n, settings);
          capLeg_n.setPricingEngine(engine);
          YoYInflationFloor floor_n = new YoYInflationFloor(floatLeg,new List<double>(){(capstrike-spread_n)/gearing_n},settings);
          floor_n.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
@@ -518,7 +518,7 @@ namespace TestSuite
          // Positive gearing
          List<CashFlow> flooredLeg_p1 = vars.makeYoYCapFlooredLeg(whichPricer,vars.startDate,vars.length,caps0,floors,
                               vars.volatility,gearing_p,spread_p);
-         Swap floorLeg_p1 = new Swap(fixedLeg,flooredLeg_p1);
+         Swap floorLeg_p1 = new Swap(fixedLeg,flooredLeg_p1, settings);
          floorLeg_p1.setPricingEngine(engine);
          YoYInflationFloor floor_p1 = new YoYInflationFloor(floatLeg_p,new List<double>(){floorstrike},settings);
          floor_p1.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
@@ -541,7 +541,7 @@ namespace TestSuite
          // Negative gearing
          List<CashFlow> flooredLeg_n = vars.makeYoYCapFlooredLeg(whichPricer,vars.startDate,vars.length,caps0,floors,
                               vars.volatility,gearing_n,spread_n);
-         Swap floorLeg_n = new Swap(fixedLeg,flooredLeg_n);
+         Swap floorLeg_n = new Swap(fixedLeg,flooredLeg_n, settings);
          floorLeg_n.setPricingEngine(engine);
          YoYInflationCap cap_n = new YoYInflationCap(floatLeg,new List<double>(){(floorstrike-spread_n)/gearing_n},settings);
          cap_n.setPricingEngine(vars.makeEngine(vars.volatility,whichPricer));
@@ -571,7 +571,7 @@ namespace TestSuite
          // Positive gearing
          List<CashFlow> collaredLeg_p = vars.makeYoYCapFlooredLeg(whichPricer,vars.startDate,vars.length,caps,floors,
                               vars.volatility,gearing_p,spread_p);
-         Swap collarLeg_p1 = new Swap(fixedLeg,collaredLeg_p);
+         Swap collarLeg_p1 = new Swap(fixedLeg,collaredLeg_p, settings);
          collarLeg_p1.setPricingEngine(engine);
          YoYInflationCollar collar_p = new YoYInflationCollar(floatLeg_p,
                         new List<double>(){capstrike},
@@ -599,7 +599,7 @@ namespace TestSuite
          // Negative gearing
          List<CashFlow> collaredLeg_n = vars.makeYoYCapFlooredLeg(whichPricer,vars.startDate,vars.length,caps,floors,
                               vars.volatility,gearing_n,spread_n);
-         Swap collarLeg_n1 = new Swap(fixedLeg,collaredLeg_n);
+         Swap collarLeg_n1 = new Swap(fixedLeg,collaredLeg_n, settings);
          collarLeg_n1.setPricingEngine(engine);
          YoYInflationCollar collar_n = new YoYInflationCollar(floatLeg,
                         new List<double>(){(floorstrike-spread_n)/gearing_n},
@@ -677,7 +677,7 @@ namespace TestSuite
                                                          vars.observationLag,
                                                          0.0,        //spread on index
                                                          vars.dc,
-                                                         new UnitedKingdom());
+                                                         new UnitedKingdom(), settings);
 
                         Handle<YieldTermStructure> hTS = new Handle<YieldTermStructure>(vars.nominalTS);
                         IPricingEngine sppe = new DiscountingSwapEngine(hTS);

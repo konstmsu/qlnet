@@ -43,7 +43,7 @@ namespace QLNet {
 // Libor leg
             // BMA leg
             )
-            : base(2) {
+            : base(2, settings) {
             type_ = type;
             nominal_ = nominal;
             liborFraction_ = liborFraction;

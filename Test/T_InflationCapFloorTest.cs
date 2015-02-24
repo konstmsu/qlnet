@@ -220,7 +220,7 @@ namespace TestSuite
 					Date maturity = iiData[i].date;
 					Handle<Quote> quote = new Handle<Quote>( new SimpleQuote( iiData[i].rate / 100.0 ) );
 					BootstrapHelper<YoYInflationTermStructure> anInstrument = new YearOnYearInflationSwapHelper( quote, observationLag, maturity,
-								 calendar, bdc, dc, ii );
+								 calendar, bdc, dc, ii, settings_);
 					instruments.Add( anInstrument );
 				}
 				return instruments;
@@ -408,7 +408,7 @@ namespace TestSuite
 										vars.observationLag,
 										0.0,        //spread on index
 										vars.dc,
-										new UnitedKingdom());
+										new UnitedKingdom(), settings);
 
 								  Handle<YieldTermStructure> hTS = new Handle<YieldTermStructure>(vars.nominalTS);
 								  IPricingEngine sppe = new DiscountingSwapEngine(hTS);

@@ -69,7 +69,7 @@ namespace QLNet
 
       // constructor
       public VanillaSwap(Type type, double nominal, Schedule fixedSchedule, double fixedRate, DayCounter fixedDayCount, Schedule floatSchedule, IborIndex iborIndex, double spread, DayCounter floatingDayCount, SavedSettings settings, BusinessDayConvention? paymentConvention = null) :
-         base(2)
+         base(2, settings)
       {
          type_ = type;
          nominal_ = nominal;

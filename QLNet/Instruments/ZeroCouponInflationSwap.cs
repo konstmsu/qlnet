@@ -63,20 +63,11 @@ namespace QLNet
          they use an interpolated fixing or not.  Here, we make the
          swap use the interpolation of the index to avoid incompatibilities.
       */
-      public ZeroCouponInflationSwap(Type type,
-                                     double nominal,
-                                     Date startDate,   // start date of contract (only)
-                                     Date maturity,    // this is pre-adjustment!
-                                     Calendar fixCalendar,
-                                     BusinessDayConvention fixConvention,
-                                     DayCounter dayCounter,
-                                     double fixedRate,
-                                     ZeroInflationIndex infIndex,
-                                     Period observationLag,
-                                     bool adjustInfObsDates = false,
-                                     Calendar infCalendar = null,
-                                     BusinessDayConvention? infConvention = null)
-         :base(2)
+      public ZeroCouponInflationSwap(Type type, double nominal, Date startDate, Date maturity, Calendar fixCalendar, BusinessDayConvention fixConvention, DayCounter dayCounter, double fixedRate, ZeroInflationIndex infIndex, Period observationLag, SavedSettings settings, bool adjustInfObsDates = false, Calendar infCalendar = null, BusinessDayConvention? infConvention = null
+// start date of contract (only)
+          // this is pre-adjustment!
+          )
+         :base(2, settings)
       {
          type_ = type;
          nominal_ = nominal;

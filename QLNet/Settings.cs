@@ -93,7 +93,7 @@ namespace QLNet {
 
         public Date evaluationDate()
         {
-            return evaluationDate_;
+            return Settings.evaluationDate();
         }
         
         public SavedSettings()

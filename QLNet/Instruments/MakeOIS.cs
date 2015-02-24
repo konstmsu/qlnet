@@ -48,17 +48,18 @@ namespace QLNet
       private DayCounter fixedDayCount_;
 
       private IPricingEngine engine_;
+       SavedSettings _settings;
 
-      public MakeOIS(Period swapTenor, OvernightIndex overnightIndex,
-                     double? fixedRate) : this(swapTenor,overnightIndex,fixedRate,new Period (0,TimeUnit.Days))
-      {}
+       public MakeOIS(Period swapTenor, OvernightIndex overnightIndex, double? fixedRate, SavedSettings settings) : this(swapTenor,overnightIndex,fixedRate,new Period (0,TimeUnit.Days), settings)
+       {
+       }
 
-      public MakeOIS(Period swapTenor, OvernightIndex overnightIndex) 
-         : this(swapTenor, overnightIndex, null, new Period(0, TimeUnit.Days))
-      {}
+       public MakeOIS(Period swapTenor, OvernightIndex overnightIndex, SavedSettings settings) 
+         : this(swapTenor, overnightIndex, null, new Period(0, TimeUnit.Days), settings)
+       {
+       }
 
-      public MakeOIS(Period swapTenor, OvernightIndex overnightIndex,
-                     double? fixedRate, Period fwdStart)
+       public MakeOIS(Period swapTenor, OvernightIndex overnightIndex, double? fixedRate, Period fwdStart, SavedSettings settings)
       {
          swapTenor_=swapTenor;
          overnightIndex_ = overnightIndex;
@@ -74,6 +75,7 @@ namespace QLNet
          fixedDayCount_ = overnightIndex.dayCounter();
          engine_ = new DiscountingSwapEngine(overnightIndex_.forwardingTermStructure());
 
+           _settings = settings;
       }
 
       public MakeOIS receiveFixed(bool flag) 
@@ -213,7 +215,7 @@ namespace QLNet
                                            schedule,
                                            0.0, // fixed rate
                                            fixedDayCount_,
-                                           overnightIndex_, overnightSpread_);
+                                           overnightIndex_, overnightSpread_, _settings);
 
             // ATM on the forecasting curve
             //bool includeSettlementDateFlows = false;
@@ -225,7 +227,7 @@ namespace QLNet
         OvernightIndexedSwap ois = new OvernightIndexedSwap(type_, nominal_,
                                  schedule,
                                  usedFixedRate.Value, fixedDayCount_,
-                                 overnightIndex_, overnightSpread_);
+                                 overnightIndex_, overnightSpread_, _settings);
 
         ois.setPricingEngine(engine_);
         return ois;

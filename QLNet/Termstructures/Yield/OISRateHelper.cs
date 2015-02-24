@@ -26,10 +26,9 @@ namespace QLNet
 {
    public class OISRateHelper : RelativeDateRateHelper
    {
-      public OISRateHelper(int settlementDays,
-                           Period tenor, // swap maturity
-                           Handle<Quote> fixedRate,
-                           OvernightIndex overnightIndex)
+      public OISRateHelper(int settlementDays, Period tenor, Handle<Quote> fixedRate, OvernightIndex overnightIndex, SavedSettings settings
+// swap maturity
+          )
          : base(fixedRate)
       {
          settlementDays_ = settlementDays;
@@ -37,6 +36,7 @@ namespace QLNet
          overnightIndex_ = overnightIndex;
           overnightIndex_.notifyObserversEvent += (Callback)update;
           initializeDates();
+          _settings = settings;
       }
 
       public OvernightIndexedSwap swap() { return swap_; }
@@ -49,7 +49,7 @@ namespace QLNet
          IborIndex clonedIborIndex = overnightIndex_.clone(termStructureHandle_);
          OvernightIndex clonedOvernightIndex = clonedIborIndex as OvernightIndex;
 
-         swap_ = new MakeOIS(tenor_, clonedOvernightIndex, 0.0)
+         swap_ = new MakeOIS(tenor_, clonedOvernightIndex, 0.0, _settings)
                      .withSettlementDays(settlementDays_)
                      .withDiscountingTermStructure(termStructureHandle_);
          
@@ -78,6 +78,7 @@ namespace QLNet
       protected OvernightIndex overnightIndex_;
       protected OvernightIndexedSwap swap_;
       protected RelinkableHandle<YieldTermStructure> termStructureHandle_ = new RelinkableHandle<YieldTermStructure>();
+       SavedSettings _settings;
    }
 
 
@@ -85,10 +86,7 @@ namespace QLNet
    public class DatedOISRateHelper : RateHelper
    {
       
-      public DatedOISRateHelper(Date startDate,
-                                Date endDate,
-                                Handle<Quote> fixedRate,
-                                OvernightIndex overnightIndex)
+      public DatedOISRateHelper(Date startDate, Date endDate, Handle<Quote> fixedRate, OvernightIndex overnightIndex, SavedSettings settings)
     
          : base(fixedRate) 
       {
@@ -99,14 +97,15 @@ namespace QLNet
         IborIndex clonedIborIndex = overnightIndex.clone(termStructureHandle_);
         OvernightIndex clonedOvernightIndex = clonedIborIndex as OvernightIndex;
 
-         swap_ = new MakeOIS(new Period(), clonedOvernightIndex, 0.0)
+         swap_ = new MakeOIS(new Period(), clonedOvernightIndex, 0.0, _settings)
                               .withEffectiveDate(startDate)
                               .withTerminationDate(endDate)
                               .withDiscountingTermStructure(termStructureHandle_);
 
          earliestDate_ = swap_.startDate();
          latestDate_ = swap_.maturityDate();
-    
+
+          _settings = settings;
       }
 
 
@@ -129,5 +128,6 @@ namespace QLNet
 
       protected OvernightIndexedSwap swap_;
       protected RelinkableHandle<YieldTermStructure> termStructureHandle_ = new RelinkableHandle<YieldTermStructure>();
+       SavedSettings _settings;
    }
 }

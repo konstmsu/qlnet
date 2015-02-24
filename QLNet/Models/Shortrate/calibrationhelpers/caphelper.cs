@@ -38,7 +38,7 @@ namespace QLNet
 			includeFirstSwaplet_ = includeFirstSwaplet;
 
 		    index_.notifyObserversEvent += (Callback)update;
-		    _settings = settings;
+		    settings_ = settings;
 		}
 
 		public override void addTimesTo( List<double> times )
@@ -106,7 +106,7 @@ namespace QLNet
 										  index_.businessDayConvention(),
 										  index_.businessDayConvention(),
 										  DateGeneration.Rule.Forward, false );
-			List<CashFlow> floatingLeg = new IborLeg( floatSchedule, index_, _settings)
+			List<CashFlow> floatingLeg = new IborLeg( floatSchedule, index_, settings_)
 				 .withFixingDays( 0 )
 				 .withNotionals( nominals )
 				 .withPaymentAdjustment( index_.businessDayConvention() );
@@ -120,10 +120,10 @@ namespace QLNet
 				 .withNotionals( nominals )
 				 .withPaymentAdjustment( index_.businessDayConvention() );
 
-			Swap swap = new Swap( floatingLeg, fixedLeg );
+			Swap swap = new Swap( floatingLeg, fixedLeg, settings_ );
 			swap.setPricingEngine( new DiscountingSwapEngine( termStructure_, false ) );
 			double fairRate = fixedRate - (double)(swap.NPV() / ( swap.legBPS( 1 ) / 1.0e-4 ));
-			cap_ = new Cap( floatingLeg, new InitializedList<double>( 1, fairRate ), _settings);
+			cap_ = new Cap( floatingLeg, new InitializedList<double>( 1, fairRate ), settings_);
 
 			base.performCalculations();
 
@@ -135,6 +135,6 @@ namespace QLNet
 		private Frequency fixedLegFrequency_;
 		private DayCounter fixedLegDayCounter_;
 		private bool includeFirstSwaplet_;
-	    SavedSettings _settings;
+	    SavedSettings settings_;
 	}
 }

@@ -54,7 +54,7 @@ namespace QLNet
          : this(type, nominal, float1Schedule, iborIndex1, spread1, float1DayCount,
                                float2Schedule, iborIndex2, spread2, float2DayCount, null, settings) { }
       public BasisSwap(Type type, double nominal, Schedule float1Schedule, IborIndex iborIndex1, double spread1, DayCounter float1DayCount, Schedule float2Schedule, IborIndex iborIndex2, double spread2, DayCounter float2DayCount, BusinessDayConvention? paymentConvention, SavedSettings settings) :
-         base(2)
+         base(2, settings)
       {
          type_ = type;
          nominal_ = nominal;

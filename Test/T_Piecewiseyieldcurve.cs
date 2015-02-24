@@ -514,8 +514,10 @@ namespace TestSuite {
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
 
-            vars.today = new Date(4, Month.October, 2007);
-            Settings.setEvaluationDate(vars.today);
+            var today = new Date(4, Month.October, 2007);
+            Settings.setEvaluationDate(today);
+
+            vars.today = today;
 
             vars.calendar = new Japan();
             vars.settlement = vars.calendar.advance(vars.today,vars.settlementDays, TimeUnit.Days);

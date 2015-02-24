@@ -187,15 +187,17 @@ namespace QLNet
    //! base class for overnight indexed swap indexes
    public class OvernightIndexedSwapIndex : SwapIndex 
    {
-      public OvernightIndexedSwapIndex(string familyName, Period tenor, int settlementDays, Currency currency, OvernightIndex overnightIndex, SavedSettings settings)
+      public OvernightIndexedSwapIndex(string familyName, Period tenor, int settlementDays, Currency currency, OvernightIndex overnightIndex, SavedSettings settings, SavedSettings settings1)
          :base(familyName, tenor, settlementDays,
                 currency, overnightIndex.fixingCalendar(),
                 new Period(1,TimeUnit.Years),BusinessDayConvention.ModifiedFollowing, 
                 overnightIndex.dayCounter(),overnightIndex, settings)
       {
-         overnightIndex_ = overnightIndex;
+          overnightIndex_ = overnightIndex;
+          _settings = settings;
       }
-      //! \name Inspectors
+
+       //! \name Inspectors
       //@{
       public OvernightIndex overnightIndex() { return overnightIndex_;}
       /*! \warning Relinking the term structure underlying the index will
@@ -204,13 +206,14 @@ namespace QLNet
       public new OvernightIndexedSwap underlyingSwap(Date fixingDate)
       {
          double fixedRate = 0.0;
-         return new MakeOIS(tenor_, overnightIndex_, fixedRate)
+         return new MakeOIS(tenor_, overnightIndex_, fixedRate, _settings)
              .withEffectiveDate(valueDate(fixingDate))
              .withFixedLegDayCount(dayCounter_);
       }
       //@}
       protected OvernightIndex overnightIndex_;
-    };
+       SavedSettings _settings;
+   };
 
 
 }

@@ -37,14 +37,8 @@ namespace QLNet
 
       public enum Type { Receiver = -1, Payer = 1 };
       
-      public OvernightIndexedSwap(Type type,
-                                  double nominal,
-                                  Schedule schedule,
-                                  double fixedRate,
-                                  DayCounter fixedDC,
-                                  OvernightIndex overnightIndex,
-                                  double spread) : 
-      base(2)
+      public OvernightIndexedSwap(Type type, double nominal, Schedule schedule, double fixedRate, DayCounter fixedDC, OvernightIndex overnightIndex, double spread, SavedSettings settings) : 
+      base(2, settings)
       {
       
          type_= type;
