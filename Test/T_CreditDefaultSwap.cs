@@ -64,8 +64,8 @@ namespace TestSuite
 			double recoveryRate = 0.4;
 
 			CreditDefaultSwap cds = new CreditDefaultSwap(Protection.Side.Seller, notional, fixedRate,
-										schedule, convention, dayCount, true, true);
-			cds.setPricingEngine(new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve));
+										schedule, convention, dayCount, backup, settlesAccrual: true, paysAtDefaultTime: true);
+			cds.setPricingEngine(new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve, backup));
 
 			double npv = 295.0153398;
 			double fairRate = 0.007517539081;
@@ -87,7 +87,7 @@ namespace TestSuite
 					+ "    expected fair rate:   " + fairRate);
 
 			cds.setPricingEngine(new IntegralCdsEngine(new Period(1,TimeUnit.Days),probabilityCurve,
-																	recoveryRate,discountCurve));
+																	recoveryRate,discountCurve, backup));
 
 			calculatedNpv = cds.NPV();
 			calculatedFairRate = cds.fairSpread();
@@ -107,7 +107,7 @@ namespace TestSuite
 					+ "    calculated fair rate: " + calculatedFairRate + "\n"
 					+ "    expected fair rate:   " + fairRate);
 
-			cds.setPricingEngine(new IntegralCdsEngine(new Period(1,TimeUnit.Weeks),probabilityCurve,recoveryRate,discountCurve));
+			cds.setPricingEngine(new IntegralCdsEngine(new Period(1,TimeUnit.Weeks),probabilityCurve,recoveryRate,discountCurve, backup));
 
 			calculatedNpv = cds.NPV();
 			calculatedFairRate = cds.fairSpread();
@@ -238,8 +238,8 @@ namespace TestSuite
 			double cdsNotional=100.0;
 
 			CreditDefaultSwap cds = new CreditDefaultSwap(Protection.Side.Seller, cdsNotional, fixedRate,
-										schedule, cdsConvention, dayCount, true, true);
-			cds.setPricingEngine(new MidPointCdsEngine(piecewiseFlatHazardRate, recoveryRate,discountCurve));
+										schedule, cdsConvention, dayCount, backup, settlesAccrual: true, paysAtDefaultTime: true);
+			cds.setPricingEngine(new MidPointCdsEngine(piecewiseFlatHazardRate, recoveryRate,discountCurve, backup));
 
 			double calculatedNpv = cds.NPV();
 			double calculatedFairRate = cds.fairSpread();
@@ -315,8 +315,8 @@ namespace TestSuite
 										DateGeneration.Rule.Forward, false);
 
 				CreditDefaultSwap cds = new CreditDefaultSwap(Protection.Side.Seller, notional, fixedRate,
-											schedule, convention, cdsDayCount,true, true);
-				cds.setPricingEngine(new MidPointCdsEngine(probabilityCurve, recoveryRate, discountCurve));
+											schedule, convention, cdsDayCount, backup, settlesAccrual: true, paysAtDefaultTime: true);
+				cds.setPricingEngine(new MidPointCdsEngine(probabilityCurve, recoveryRate, discountCurve, backup));
 
 				double NPV = cds.NPV();
 				double flatRate = cds.impliedHazardRate(NPV, discountCurve,
@@ -344,8 +344,8 @@ namespace TestSuite
 				probability.linkTo(new FlatHazardRate(	today,new Handle<Quote>(new SimpleQuote(flatRate)),dayCounter));
 
 				CreditDefaultSwap cds2 = new CreditDefaultSwap(Protection.Side.Seller, notional, fixedRate,
-												schedule, convention, cdsDayCount,true, true);
-				cds2.setPricingEngine(new MidPointCdsEngine(probability,recoveryRate,discountCurve));
+												schedule, convention, cdsDayCount, backup, settlesAccrual: true, paysAtDefaultTime: true);
+				cds2.setPricingEngine(new MidPointCdsEngine(probability,recoveryRate,discountCurve, backup));
 
 				double NPV2 = cds2.NPV();
 				double tolerance = 1.0;
@@ -398,16 +398,16 @@ namespace TestSuite
 			double notional = 10000.0;
 			double recoveryRate = 0.4;
 
-			IPricingEngine engine = new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve);
+			IPricingEngine engine = new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve, backup);
 
 			CreditDefaultSwap cds = new CreditDefaultSwap(Protection.Side.Seller, notional, fixedRate,
-										schedule, convention, dayCount, true, true);
+										schedule, convention, dayCount, backup, settlesAccrual: true, paysAtDefaultTime: true);
 			cds.setPricingEngine(engine);
 
 			double fairRate = cds.fairSpread();
 
 			CreditDefaultSwap fairCds = new CreditDefaultSwap(Protection.Side.Seller, notional, fairRate,
-											schedule, convention, dayCount, true, true);
+											schedule, convention, dayCount, backup, settlesAccrual: true, paysAtDefaultTime: true);
 			fairCds.setPricingEngine(engine);
 
 			double fairNPV = fairCds.NPV();
@@ -425,6 +425,7 @@ namespace TestSuite
 		public void testFairUpfront() 
 		{
 			// Testing fair-upfront calculation for credit-default swaps...
+            var settings = new SavedSettings();
 
 			// Initialize curves
 			Calendar calendar = new TARGET();
@@ -460,16 +461,16 @@ namespace TestSuite
 			double notional = 10000.0;
 			double recoveryRate = 0.4;
 
-			IPricingEngine engine = new MidPointCdsEngine(probabilityCurve, recoveryRate,	discountCurve, true);
+			IPricingEngine engine = new MidPointCdsEngine(probabilityCurve, recoveryRate,	discountCurve, settings, true);
 
 			CreditDefaultSwap cds = new CreditDefaultSwap(Protection.Side.Seller, notional, upfront, fixedRate,
-										schedule, convention, dayCount, true, true);
+										schedule, convention, dayCount, settings, settlesAccrual: true, paysAtDefaultTime: true);
 			cds.setPricingEngine(engine);
 
 			double fairUpfront = cds.fairUpfront();
 
 			CreditDefaultSwap fairCds = new CreditDefaultSwap(Protection.Side.Seller, notional,
-											fairUpfront, fixedRate,	schedule, convention, dayCount, true, true);
+											fairUpfront, fixedRate,	schedule, convention, dayCount, settings, settlesAccrual: true, paysAtDefaultTime: true);
 			fairCds.setPricingEngine(engine);
 
 			double fairNPV = fairCds.NPV();
@@ -484,13 +485,13 @@ namespace TestSuite
 			// same with null upfront to begin with
 			upfront = 0.0;
 			CreditDefaultSwap cds2 = new CreditDefaultSwap(Protection.Side.Seller, notional, upfront, fixedRate,
-										schedule, convention, dayCount, true, true);
+										schedule, convention, dayCount, settings, settlesAccrual: true, paysAtDefaultTime: true);
 			cds2.setPricingEngine(engine);
 
 			fairUpfront = cds2.fairUpfront();
 
 			CreditDefaultSwap fairCds2 = new CreditDefaultSwap(Protection.Side.Seller, notional,
-												fairUpfront, fixedRate,	schedule, convention, dayCount, true, true);
+												fairUpfront, fixedRate,	schedule, convention, dayCount, settings, settlesAccrual: true, paysAtDefaultTime: true);
 			fairCds2.setPricingEngine(engine);
 
 			fairNPV = fairCds2.NPV();

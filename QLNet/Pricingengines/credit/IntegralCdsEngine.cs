@@ -27,14 +27,14 @@ namespace QLNet
 	{
 		const double basisPoint = 1.0e-4;
 
-		public IntegralCdsEngine(Period step, Handle<DefaultProbabilityTermStructure> probability,
-				 double recoveryRate, Handle<YieldTermStructure> discountCurve, bool? includeSettlementDateFlows = null)
+		public IntegralCdsEngine(Period step, Handle<DefaultProbabilityTermStructure> probability, double recoveryRate, Handle<YieldTermStructure> discountCurve, SavedSettings settings, bool? includeSettlementDateFlows = null)
 		{
 			integrationStep_ = step ;
 			probability_ = probability;
 			recoveryRate_ = recoveryRate;
 			discountCurve_ = discountCurve;
-			includeSettlementDateFlows_ = includeSettlementDateFlows;
+		    settings_ = settings;
+		    includeSettlementDateFlows_ = includeSettlementDateFlows;
 
 			probability_.registerWith(update);
 			discountCurve_.registerWith(update);
@@ -46,7 +46,7 @@ namespace QLNet
          Utils.QL_REQUIRE( !discountCurve_.empty(), () => "no discount term structure set" );
          Utils.QL_REQUIRE( !probability_.empty(), () => "no probability term structure set" );
 
-			Date today = Settings.evaluationDate();
+			Date today = settings_.evaluationDate();
 			Date settlementDate = discountCurve_.link.referenceDate();
 
         // Upfront Flow NPV. Either we are on-the-run (no flow)
@@ -194,5 +194,6 @@ namespace QLNet
 		private double recoveryRate_;
 		private Handle<YieldTermStructure> discountCurve_;
 		private bool? includeSettlementDateFlows_;
+	    readonly SavedSettings settings_;
 	}
 }

@@ -61,16 +61,7 @@ namespace QLNet
           @param protectionStart  The first date where a default
                                   event will trigger the contract.
       */
-		public CreditDefaultSwap(Protection.Side side,
-								  double notional,
-								  double spread,
-								  Schedule schedule,
-								  BusinessDayConvention convention,
-								  DayCounter dayCounter,
-								  bool settlesAccrual = true,
-								  bool paysAtDefaultTime = true,
-								  Date protectionStart = null,
-								  Claim claim = null)
+		public CreditDefaultSwap(Protection.Side side, double notional, double spread, Schedule schedule, BusinessDayConvention convention, DayCounter dayCounter, SavedSettings settings, bool settlesAccrual = true, bool paysAtDefaultTime = true, Date protectionStart = null, Claim claim = null)
 		{
 			side_ = side;
 			notional_ = notional;
@@ -93,6 +84,7 @@ namespace QLNet
             claim_ = new FaceValueClaim();
 
 		  claim_.registerWith(update);
+		    _settings = settings;
 		}
       //! CDS quoted as upfront and running spread
       /*! @param side  Whether the protection is bought or sold.
@@ -114,18 +106,7 @@ namespace QLNet
                                  event will trigger the contract.
           @param upfrontDate Settlement date for the upfront payment.
       */
-		public CreditDefaultSwap(Protection.Side side,
-										 double notional,
-										 double upfront,
-										 double runningSpread,
-										 Schedule schedule,
-										 BusinessDayConvention convention,
-										 DayCounter dayCounter,
-										 bool settlesAccrual = true,
-										 bool paysAtDefaultTime = true,
-										 Date protectionStart = null,
-										 Date upfrontDate = null,
-										 Claim claim = null)
+		public CreditDefaultSwap(Protection.Side side, double notional, double upfront, double runningSpread, Schedule schedule, BusinessDayConvention convention, DayCounter dayCounter, SavedSettings settings, bool settlesAccrual = true, bool paysAtDefaultTime = true, Date protectionStart = null, Date upfrontDate = null, Claim claim = null)
 		{
 			
 			side_ = side;
@@ -149,7 +130,8 @@ namespace QLNet
 
         if (claim_ == null)
             claim_ = new FaceValueClaim();
-		  claim_.registerWith(update);     
+		  claim_.registerWith(update);
+		    _settings = settings;
 		}
       //@}
       //! \name Instrument interface
@@ -321,7 +303,7 @@ namespace QLNet
 			Handle<DefaultProbabilityTermStructure> probability = new Handle<DefaultProbabilityTermStructure>(
             new FlatHazardRate(0, new WeekendsOnly(),new Handle<Quote>(flatRate), dayCounter));
 
-        MidPointCdsEngine engine = new MidPointCdsEngine(probability, recoveryRate, discountCurve);
+        MidPointCdsEngine engine = new MidPointCdsEngine(probability, recoveryRate, discountCurve, _settings);
         setupArguments(engine.getArguments());
         CreditDefaultSwap.Results results = engine.getResults() as CreditDefaultSwap.Results;
 
@@ -375,7 +357,7 @@ namespace QLNet
         Handle<DefaultProbabilityTermStructure> probability = new Handle<DefaultProbabilityTermStructure>(
             new FlatHazardRate(0, new WeekendsOnly(),flatHazardRate, dayCounter));
 
-        MidPointCdsEngine engine = new MidPointCdsEngine(probability, conventionalRecovery,  discountCurve, true);
+        MidPointCdsEngine engine = new MidPointCdsEngine(probability, conventionalRecovery,  discountCurve, _settings, true);
         setupArguments(engine.getArguments());
         engine.calculate();
 		  CreditDefaultSwap.Results results = engine.getResults() as CreditDefaultSwap.Results;
@@ -408,10 +390,10 @@ namespace QLNet
       protected double? couponLegBPS_, couponLegNPV_;
       protected double? upfrontBPS_, upfrontNPV_;
       protected double? defaultLegNPV_;
-	
-		
-		 
-		public class Arguments : IPricingEngineArguments 
+	    SavedSettings _settings;
+
+
+	    public class Arguments : IPricingEngineArguments 
 		{
 			public Arguments()
 			{
