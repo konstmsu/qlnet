@@ -71,7 +71,7 @@ namespace TestSuite
             pricer = new BlackIborCouponPricer(settings);
             Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure = 
                new Handle<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(today, 
-               new NullCalendar(),BusinessDayConvention.Following, 0.2, new Actual365Fixed()));
+               new NullCalendar(),BusinessDayConvention.Following, 0.2, new Actual365Fixed(), settings));
             
             Handle<Quote> meanReversionQuote = new Handle<Quote>(new SimpleQuote(0.01));
             cmspricer = new AnalyticHaganPricer(swaptionVolatilityStructure, GFunctionFactory.YieldCurveModel.Standard, meanReversionQuote, settings);

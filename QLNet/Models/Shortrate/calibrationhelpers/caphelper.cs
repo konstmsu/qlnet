@@ -66,7 +66,7 @@ namespace QLNet
 			calculate();
 			Quote vol = new SimpleQuote( sigma );
 			IPricingEngine black = new BlackCapFloorEngine( termStructure_,
-																		  new Handle<Quote>( vol ) );
+																		  new Handle<Quote>( vol ), settings_);
 			cap_.setPricingEngine( black );
 			double value = cap_.NPV();
 			//cap_.unregisterWith( update );

@@ -73,7 +73,7 @@ namespace TestSuite {
             public IPricingEngine makeEngine(double volatility) {
                 Handle<Quote> vol = new Handle<Quote>(new SimpleQuote(volatility));
 
-                return (IPricingEngine)new BlackCapFloorEngine(termStructure, vol);
+                return (IPricingEngine)new BlackCapFloorEngine(termStructure, vol, settings_);
 
             }
 

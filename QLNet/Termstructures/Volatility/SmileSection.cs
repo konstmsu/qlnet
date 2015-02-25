@@ -41,8 +41,8 @@ namespace QLNet {
 		public SmileSection() {}
 
         // public SmileSection(Date d, DayCounter dc = DayCounter(), Date referenceDate = Date())
-        public SmileSection(Date d, DayCounter dc) : this(d, dc, null) { }
-        public SmileSection(Date d, DayCounter dc, Date referenceDate) {
+        public SmileSection(Date d, DayCounter dc, SavedSettings settings) : this(d, dc, null, settings) { }
+        public SmileSection(Date d, DayCounter dc, Date referenceDate, SavedSettings settings) {
             exerciseDate_ = d;
             dc_ = dc;
 
@@ -50,7 +50,7 @@ namespace QLNet {
             
             if (isFloating_) {
                 Settings.registerWith(update);
-                referenceDate_ = Settings.evaluationDate();
+                referenceDate_ = settings.evaluationDate();
             } else
                 referenceDate_ = referenceDate;
 
@@ -139,8 +139,8 @@ namespace QLNet {
         }
 
         // public SabrSmileSection(Date d, double forward, List<double> sabrParameters, DayCounter dc = Actual365Fixed());
-        public SabrSmileSection(Date d, double forward, List<double> sabrParams, DayCounter dc)
-            : base(d, dc) {
+        public SabrSmileSection(Date d, double forward, List<double> sabrParams, DayCounter dc, SavedSettings settings)
+            : base(d, dc, settings) {
             forward_ = forward;
 
             alpha_ = sabrParams[0];

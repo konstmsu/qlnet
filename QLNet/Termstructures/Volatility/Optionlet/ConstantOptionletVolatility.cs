@@ -25,37 +25,40 @@ namespace QLNet {
     //! Constant caplet volatility, no time-strike dependence
     public class ConstantOptionletVolatility : OptionletVolatilityStructure {
         private Handle<Quote> volatility_;
+        SavedSettings _settings;
 
         //! floating reference date, floating market data
-        public ConstantOptionletVolatility(int settlementDays, Calendar cal, BusinessDayConvention bdc,
-                                           Handle<Quote> vol, DayCounter dc) 
+        public ConstantOptionletVolatility(int settlementDays, Calendar cal, BusinessDayConvention bdc, Handle<Quote> vol, DayCounter dc, SavedSettings settings) 
             : base(settlementDays, cal, bdc, dc) {
             volatility_ = vol;
             
             volatility_.registerWith(update);
-        }
+            _settings = settings;
+            }
 
         //! fixed reference date, floating market data
-        public ConstantOptionletVolatility(Date referenceDate, Calendar cal, BusinessDayConvention bdc,
-                                           Handle<Quote> vol, DayCounter dc)
+        public ConstantOptionletVolatility(Date referenceDate, Calendar cal, BusinessDayConvention bdc, Handle<Quote> vol, DayCounter dc, SavedSettings settings)
             : base(referenceDate, cal, bdc, dc) {
             volatility_ = vol;
             
             volatility_.registerWith(update);
-        }
+            _settings = settings;
+            }
 
         //! floating reference date, fixed market data
-        public ConstantOptionletVolatility(int settlementDays, Calendar cal, BusinessDayConvention bdc,
-                                           double vol, DayCounter dc)
-            : base(settlementDays, cal, bdc, dc) {
+        public ConstantOptionletVolatility(int settlementDays, Calendar cal, BusinessDayConvention bdc, double vol, DayCounter dc, SavedSettings settings)
+            : base(settlementDays, cal, bdc, dc)
+        {
             volatility_ = new Handle<Quote>(new SimpleQuote(vol));
+            _settings = settings;
         }
 
         //! fixed reference date, fixed market data
-        public ConstantOptionletVolatility(Date referenceDate, Calendar cal, BusinessDayConvention bdc,
-                                           double vol, DayCounter dc)
-            : base(referenceDate, cal, bdc, dc) {
+        public ConstantOptionletVolatility(Date referenceDate, Calendar cal, BusinessDayConvention bdc, double vol, DayCounter dc, SavedSettings settings)
+            : base(referenceDate, cal, bdc, dc)
+        {
             volatility_ = new Handle<Quote>(new SimpleQuote(vol));
+            _settings = settings;
         }
 
 
@@ -65,7 +68,7 @@ namespace QLNet {
 
         protected override SmileSection smileSectionImpl(Date d) {
             double atmVol = volatility_.link.value();
-            return new FlatSmileSection(d, atmVol, dayCounter(), referenceDate());
+            return new FlatSmileSection(d, atmVol, dayCounter(), referenceDate(), _settings);
         }
 
         protected override SmileSection smileSectionImpl(double optionTime) {

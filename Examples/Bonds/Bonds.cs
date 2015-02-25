@@ -424,7 +424,7 @@ namespace Bonds {
                                      calendar,
                                      BusinessDayConvention.ModifiedFollowing,
                                      volatility,
-                                     new Actual365Fixed()));
+                                     new Actual365Fixed(), settings));
 
              pricer.setCapletVolatility(vol);
              Utils.setCouponPricer(floatingRateBond.cashflows(),pricer);

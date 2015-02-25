@@ -120,7 +120,7 @@ namespace TestSuite
                                                         termStructure.currentLink().calendar(),
                                                         BusinessDayConvention.Following,
                                                         0.2,
-                                                        termStructure.currentLink().dayCounter());
+                                                        termStructure.currentLink().dayCounter(), settings);
 
             Calendar calendar = index.fixingCalendar();
 

@@ -271,7 +271,7 @@ namespace QLNet
          if (isExpired()) 
             throw new ArgumentException("instrument expired");
 
-         ImpliedVolHelper f = new ImpliedVolHelper(this, discountCurve, targetValue);
+         ImpliedVolHelper f = new ImpliedVolHelper(this, discountCurve, targetValue, settings_);
          //Brent solver;
          NewtonSafe solver = new NewtonSafe();
          solver.setMaxEvaluations(maxEvaluations);
@@ -390,15 +390,14 @@ namespace QLNet
       private SimpleQuote vol_;
       private Instrument.Results results_;
 
-      public ImpliedVolHelper(CapFloor cap,Handle<YieldTermStructure> discountCurve,
-                              double targetValue)
+      public ImpliedVolHelper(CapFloor cap, Handle<YieldTermStructure> discountCurve, double targetValue, SavedSettings settings)
       {
          discountCurve_ = discountCurve;
          targetValue_ = targetValue;
 
          vol_ = new SimpleQuote(-1.0);
          Handle<Quote> h = new Handle<Quote>(vol_);
-         engine_ = (IPricingEngine)new BlackCapFloorEngine(discountCurve_, h);
+         engine_ = (IPricingEngine)new BlackCapFloorEngine(discountCurve_, h, settings);
          cap.setupArguments(engine_.getArguments());
          results_ = engine_.getResults() as Instrument.Results;
 

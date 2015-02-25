@@ -258,7 +258,7 @@ namespace TestSuite
          double capletVolatility = 0.22;
          var vol = new Handle<OptionletVolatilityStructure>(
                         new ConstantOptionletVolatility(vars.today, new NullCalendar(),
-                                                        BusinessDayConvention.Following, capletVolatility, dayCounter));
+                                                        BusinessDayConvention.Following, capletVolatility, dayCounter, settings));
          IborCouponPricer pricer = new BlackIborCouponPricer(vol, settings);
 
          List<CashFlow> floatingLeg = new IborLeg(schedule, index, settings)

@@ -173,7 +173,7 @@ namespace TestSuite
 											           calendar,
 											           BusinessDayConvention.ModifiedFollowing,
 											           volatility,
-											           new Actual365Fixed()));
+											           new Actual365Fixed(), settings));
 
 			IborIndex index3m =new USDLibor(new Period(3,TimeUnit.Months), rhTermStructure, settings);
 

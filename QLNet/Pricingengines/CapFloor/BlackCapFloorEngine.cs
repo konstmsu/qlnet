@@ -14,25 +14,23 @@ namespace QLNet
       private  Handle<YieldTermStructure> termStructure_;
       private Handle<OptionletVolatilityStructure> volatility_;
 
-      public BlackCapFloorEngine(Handle<YieldTermStructure> termStructure, double vol)
-         : this(termStructure, vol, new Actual365Fixed()) { }
-      public BlackCapFloorEngine(Handle<YieldTermStructure> termStructure,
-                                 double vol, DayCounter dc )
+      public BlackCapFloorEngine(Handle<YieldTermStructure> termStructure, double vol, SavedSettings settings)
+         : this(termStructure, vol, new Actual365Fixed(), settings) { }
+      public BlackCapFloorEngine(Handle<YieldTermStructure> termStructure, double vol, DayCounter dc, SavedSettings settings)
       {
          termStructure_ = termStructure;
-         volatility_ = new Handle<OptionletVolatilityStructure>(new ConstantOptionletVolatility(0, new NullCalendar(), BusinessDayConvention.Following, vol, dc));
+         volatility_ = new Handle<OptionletVolatilityStructure>(new ConstantOptionletVolatility(0, new NullCalendar(), BusinessDayConvention.Following, vol, dc, settings));
          termStructure_.registerWith(update );// registerWith(termStructure_);
       }
 
-      public BlackCapFloorEngine(Handle<YieldTermStructure> termStructure, Handle<Quote> vol)
-         : this(termStructure, vol, new Actual365Fixed()) { }
+      public BlackCapFloorEngine(Handle<YieldTermStructure> termStructure, Handle<Quote> vol, SavedSettings settings)
+         : this(termStructure, vol, new Actual365Fixed(), settings) { }
 
-      public BlackCapFloorEngine(Handle<YieldTermStructure> termStructure,
-                                 Handle<Quote> vol, DayCounter dc)
+      public BlackCapFloorEngine(Handle<YieldTermStructure> termStructure, Handle<Quote> vol, DayCounter dc, SavedSettings settings)
       {
          termStructure_ = termStructure;
          volatility_ = new Handle<OptionletVolatilityStructure> (new ConstantOptionletVolatility(
-                             0, new NullCalendar(), BusinessDayConvention.Following, vol, dc));
+                             0, new NullCalendar(), BusinessDayConvention.Following, vol, dc, settings));
          termStructure_.registerWith(update);
          volatility_.registerWith(update);
       }

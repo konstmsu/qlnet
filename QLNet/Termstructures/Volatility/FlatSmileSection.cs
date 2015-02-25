@@ -29,9 +29,9 @@ namespace QLNet {
 
 
         // public FlatSmileSection(Date d, double vol, DayCounter dc, Date referenceDate = Date(), double atmLevel = Null<Rate>());
-        public FlatSmileSection(Date d, double vol, DayCounter dc, Date referenceDate) : this(d, vol, dc, referenceDate, 0) { }
-        public FlatSmileSection(Date d, double vol, DayCounter dc, Date referenceDate, double atmLevel)
-            : base(d, dc, referenceDate) {
+        public FlatSmileSection(Date d, double vol, DayCounter dc, Date referenceDate, SavedSettings settings) : this(d, vol, dc, referenceDate, 0, settings) { }
+        public FlatSmileSection(Date d, double vol, DayCounter dc, Date referenceDate, double atmLevel, SavedSettings settings)
+            : base(d, dc, referenceDate, settings) {
             vol_ = vol;
             atmLevel_ = atmLevel;
         }

@@ -37,7 +37,7 @@ namespace QLNet
         {
             termStructure_ = termStructure;
             settings_ = settings;
-            volatility_ = new Handle<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(0, new NullCalendar(), BusinessDayConvention.Following, vol, dc));
+            volatility_ = new Handle<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(0, new NullCalendar(), BusinessDayConvention.Following, vol, dc, settings));
             termStructure_.registerWith(update);
         }
 
@@ -50,7 +50,7 @@ namespace QLNet
             termStructure_ = termStructure;
             settings_ = settings;
             volatility_ = new Handle<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
-                             0, new NullCalendar(), BusinessDayConvention.Following, vol, dc));
+                             0, new NullCalendar(), BusinessDayConvention.Following, vol, dc, settings));
             termStructure_.registerWith(update);
             volatility_.registerWith(update);
         }

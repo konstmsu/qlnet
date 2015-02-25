@@ -31,52 +31,41 @@ namespace QLNet
     {    
         private Handle<Quote> volatility_;
         private Period maxSwapTenor_;
+        SavedSettings _settings;
 
         //! floating reference date, floating market data
-        public ConstantSwaptionVolatility(int settlementDays,
-                                   Calendar cal,
-                                   BusinessDayConvention bdc,
-                                   Handle<Quote> vol,
-                                   DayCounter dc)
+        public ConstantSwaptionVolatility(int settlementDays, Calendar cal, BusinessDayConvention bdc, Handle<Quote> vol, DayCounter dc, SavedSettings settings)
         : base(settlementDays, cal, bdc, dc){
             volatility_=vol;
             maxSwapTenor_ = new Period(100, TimeUnit.Years);
             volatility_.registerWith(update);
+            _settings = settings;
         }
 
         //! fixed reference date, floating market data
-        public ConstantSwaptionVolatility(Date referenceDate,
-                                   Calendar cal,
-                                   BusinessDayConvention bdc,
-                                   Handle<Quote> vol,
-                                   DayCounter dc)
+        public ConstantSwaptionVolatility(Date referenceDate, Calendar cal, BusinessDayConvention bdc, Handle<Quote> vol, DayCounter dc, SavedSettings settings)
 
         : base(referenceDate, cal, bdc, dc){
             volatility_ = vol;
             maxSwapTenor_ = new Period(100, TimeUnit.Years);
             volatility_.registerWith(update);
+            _settings = settings;
         }
 
         //! floating reference date, fixed market data
-        public ConstantSwaptionVolatility(int settlementDays,
-                                    Calendar cal,
-                                   BusinessDayConvention bdc,
-                                   double vol,
-                                   DayCounter dc)
+        public ConstantSwaptionVolatility(int settlementDays, Calendar cal, BusinessDayConvention bdc, double vol, DayCounter dc, SavedSettings settings)
         : base(settlementDays, cal, bdc, dc){
             volatility_ = new Handle<Quote>(new SimpleQuote(vol));
             maxSwapTenor_ = new Period(100, TimeUnit.Years);
+            _settings = settings;
         }
 
         //! fixed reference date, fixed market data
-        public ConstantSwaptionVolatility( Date referenceDate,
-                                   Calendar cal,
-                                   BusinessDayConvention bdc,
-                                   double vol,
-                                   DayCounter dc)
+        public ConstantSwaptionVolatility(Date referenceDate, Calendar cal, BusinessDayConvention bdc, double vol, DayCounter dc, SavedSettings settings)
         : base(referenceDate, cal, bdc, dc){
             volatility_ = new Handle<Quote>(new SimpleQuote(vol));
             maxSwapTenor_ = new Period(100, TimeUnit.Years);
+            _settings = settings;
         }
         
         //! \name TermStructure interface
@@ -105,7 +94,7 @@ namespace QLNet
 
         protected new SmileSection smileSectionImpl(Date d, Period p) {
             double atmVol = volatility_.link.value();
-            return new FlatSmileSection(d, atmVol, dayCounter(), referenceDate());
+            return new FlatSmileSection(d, atmVol, dayCounter(), referenceDate(), _settings);
         }
 
         protected override SmileSection smileSectionImpl(double optionTime, double time) {
