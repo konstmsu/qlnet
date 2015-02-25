@@ -52,15 +52,8 @@ namespace QLNet
         }
         
         //! fixed reference date, floating market data
-        public SwaptionVolatilityMatrix(
-                    Date referenceDate,
-                    Calendar calendar,
-                    BusinessDayConvention bdc,
-                    List<Period> optionTenors,
-                    List<Period> swapTenors,
-                    List<List<Handle<Quote> > > vols,
-                    DayCounter dayCounter)
-            : base(optionTenors, swapTenors, referenceDate, calendar, bdc, dayCounter)
+        public SwaptionVolatilityMatrix(Date referenceDate, Calendar calendar, BusinessDayConvention bdc, List<Period> optionTenors, List<Period> swapTenors, List<List<Handle<Quote>>> vols, DayCounter dayCounter, SavedSettings settings)
+            : base(optionTenors, swapTenors, referenceDate, calendar, bdc, dayCounter, settings)
         {
             volHandles_ = vols;
             volatilities_ = new Matrix(vols.Count, vols.First().Count );
@@ -96,15 +89,8 @@ namespace QLNet
         }
         
         //! fixed reference date, fixed market data
-        public SwaptionVolatilityMatrix(
-                    Date referenceDate,
-                    Calendar calendar,
-                    BusinessDayConvention bdc,
-                    List<Period> optionTenors,
-                    List<Period> swapTenors,
-                    Matrix vols,
-                    DayCounter dayCounter)
-            : base(optionTenors, swapTenors, referenceDate, calendar, bdc, dayCounter)
+        public SwaptionVolatilityMatrix(Date referenceDate, Calendar calendar, BusinessDayConvention bdc, List<Period> optionTenors, List<Period> swapTenors, Matrix vols, DayCounter dayCounter, SavedSettings settings)
+            : base(optionTenors, swapTenors, referenceDate, calendar, bdc, dayCounter, settings)
         {
             volHandles_ = new InitializedList<List<Handle<Quote>>>(vols.rows());
             volatilities_ = new Matrix(vols.rows(), vols.columns());
@@ -127,12 +113,8 @@ namespace QLNet
         }
 
         // fixed reference date and fixed market data, option dates
-        public SwaptionVolatilityMatrix(Date today,
-                                 List<Date> optionDates,
-                                 List<Period> swapTenors,
-                                 Matrix vols,
-                                 DayCounter dayCounter)
-            : base(optionDates, swapTenors, today, new Calendar(), BusinessDayConvention.Following, dayCounter)
+        public SwaptionVolatilityMatrix(Date today, List<Date> optionDates, List<Period> swapTenors, Matrix vols, DayCounter dayCounter, SavedSettings settings)
+            : base(optionDates, swapTenors, today, new Calendar(), BusinessDayConvention.Following, dayCounter, settings)
         {
             volHandles_ = new InitializedList<List<Handle<Quote>>>(vols.rows());
             volatilities_ = new Matrix(vols.rows(), vols.columns());

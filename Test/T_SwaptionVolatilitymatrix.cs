@@ -338,7 +338,7 @@ namespace TestSuite
                                                 vars.atm.tenors.options,
                                                 vars.atm.tenors.swaps,
                                                 vars.atm.volsHandle,
-                                                vars.conventions.dayCounter);
+                                                vars.conventions.dayCounter, settings);
 
             vars.makeCoherenceTest(description, vol, settings);
 
@@ -361,7 +361,7 @@ namespace TestSuite
                                                 vars.atm.tenors.options,
                                                 vars.atm.tenors.swaps,
                                                 vars.atm.volsHandle,
-                                                vars.conventions.dayCounter);
+                                                vars.conventions.dayCounter, settings);
 
             vars.makeCoherenceTest(description, vol, settings);
         }
@@ -395,7 +395,7 @@ namespace TestSuite
                                                 vars.atm.tenors.options,
                                                 vars.atm.tenors.swaps,
                                                 vars.atm.volsHandle,
-                                                vars.conventions.dayCounter);
+                                                vars.conventions.dayCounter, settings);
             vars.makeObservabilityTest(description, vol, true, false);
 
             // floating reference date, fixed market data
@@ -416,7 +416,7 @@ namespace TestSuite
                                                 vars.atm.tenors.options,
                                                 vars.atm.tenors.swaps,
                                                 vars.atm.volsHandle,
-                                                vars.conventions.dayCounter);
+                                                vars.conventions.dayCounter, settings);
             vars.makeObservabilityTest(description, vol, false, false);
 
            // fixed reference date and fixed market data, option dates

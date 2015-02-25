@@ -123,7 +123,7 @@ namespace TestSuite
 
             LiborForwardModelProcess process=new LiborForwardModelProcess(size, makeIndex(settings), settings);
 
-            LiborForwardModel liborModel=new LiborForwardModel(process, volaModel, corrModel);
+            LiborForwardModel liborModel=new LiborForwardModel(process, volaModel, corrModel, settings);
 
             for (double t=0; t<4.6; t+=0.31) {
                 recon = covarProxy.covariance(t,null)
@@ -182,7 +182,7 @@ namespace TestSuite
 
             LmCorrelationModel corrModel = new LmExponentialCorrelationModel(size, 0.3);
 
-            IAffineModel model = (IAffineModel)(new LiborForwardModel(process, volaModel, corrModel));
+            IAffineModel model = (IAffineModel)(new LiborForwardModel(process, volaModel, corrModel, settings));
 
             Handle<YieldTermStructure> termStructure = process.index().forwardingTermStructure();
 
@@ -241,7 +241,7 @@ namespace TestSuite
 
             LmCorrelationModel corrModel = new LmLinearExponentialCorrelationModel(size, 0.5, 0.8);
 
-            LiborForwardModel  model = new LiborForwardModel(process, volaModel, corrModel);
+            LiborForwardModel  model = new LiborForwardModel(process, volaModel, corrModel, settings);
 
             int swapVolIndex = 0;
             DayCounter dayCounter = index.forwardingTermStructure().link.dayCounter();
@@ -364,7 +364,7 @@ namespace TestSuite
                                                                             grid,
                                                                             rsg, false);
 
-            LiborForwardModel liborModel = new LiborForwardModel(process, volaModel, corrModel);
+            LiborForwardModel liborModel = new LiborForwardModel(process, volaModel, corrModel, settings);
 
             Calendar calendar = index.fixingCalendar();
             DayCounter dayCounter = index.forwardingTermStructure().link.dayCounter();

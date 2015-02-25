@@ -36,6 +36,7 @@ namespace QLNet
         protected List<Period> swapTenors_;
         protected List<double> swapLengths_;
         protected Date evaluationDate_;
+        readonly SavedSettings settings_;
 
 
         public SwaptionVolatilityDiscrete(List<Period> optionTenors, List<Period> swapTenors, int settlementDays, Calendar cal, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
@@ -48,6 +49,7 @@ namespace QLNet
             optionDatesAsReal_ = new InitializedList<double>(nOptionTenors_);
             nSwapTenors_ = swapTenors.Count;
             swapTenors_ = swapTenors;
+            settings_ = settings;
             swapLengths_ = new InitializedList<double>(nSwapTenors_);
 
             checkOptionTenors();
@@ -65,12 +67,7 @@ namespace QLNet
             Settings.registerWith(update);
         }
 
-        public SwaptionVolatilityDiscrete(List<Period> optionTenors,
-                                   List<Period> swapTenors,
-                                   Date referenceDate,
-                                   Calendar cal,
-                                   BusinessDayConvention bdc,
-                                   DayCounter dc)
+        public SwaptionVolatilityDiscrete(List<Period> optionTenors, List<Period> swapTenors, Date referenceDate, Calendar cal, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
             : base(referenceDate, cal, bdc, dc)
         {
             nOptionTenors_ = optionTenors.Count;
@@ -80,6 +77,7 @@ namespace QLNet
             optionDatesAsReal_ = new InitializedList<double>(nOptionTenors_);
             nSwapTenors_ = swapTenors.Count;
             swapTenors_ = swapTenors;
+            settings_ = settings;
             swapLengths_ = new InitializedList<double>(nSwapTenors_);
 
             checkOptionTenors();
@@ -96,12 +94,7 @@ namespace QLNet
             optionInterpolator_.enableExtrapolation();        
         }
 
-        public SwaptionVolatilityDiscrete(List<Date> optionDates,
-                                   List<Period> swapTenors,
-                                   Date referenceDate,
-                                   Calendar cal,
-                                   BusinessDayConvention bdc,
-                                   DayCounter dc)
+        public SwaptionVolatilityDiscrete(List<Date> optionDates, List<Period> swapTenors, Date referenceDate, Calendar cal, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
            : base(referenceDate, cal, bdc, dc)
         {
             nOptionTenors_ = optionDates.Count ;
@@ -111,6 +104,7 @@ namespace QLNet
             optionDatesAsReal_ = new InitializedList<double>(nOptionTenors_);
             nSwapTenors_ = swapTenors.Count;
             swapTenors_=swapTenors;
+            settings_ = settings;
             swapLengths_ = new InitializedList<double>(nSwapTenors_);
 
             checkOptionDates();
@@ -148,7 +142,7 @@ namespace QLNet
 
         public override void update() {
              if (moving_) {
-                Date d = Settings.evaluationDate();
+                Date d = settings_.evaluationDate();
                 if (evaluationDate_ != d) {
                     evaluationDate_ = d;
                     initializeOptionDatesAndTimes();

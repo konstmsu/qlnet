@@ -31,10 +31,9 @@ namespace QLNet
         LfmCovarianceProxy covarProxy_;
         LiborForwardModelProcess process_;
         SwaptionVolatilityMatrix swaptionVola;
+        SavedSettings _settings;
 
-        public LiborForwardModel(LiborForwardModelProcess process,
-                          LmVolatilityModel volaModel,
-                          LmCorrelationModel corrModel)
+        public LiborForwardModel(LiborForwardModelProcess process, LmVolatilityModel volaModel, LmCorrelationModel corrModel, SavedSettings settings)
             : base(volaModel.parameters().Count() + corrModel.parameters().Count()) {
 
             f_ = new InitializedList<double>(process.size());
@@ -58,7 +57,8 @@ namespace QLNet
                                 - process.accrualStartTimes()[i];
                 f_[i] = 1.0/(1.0+accrualPeriod_[i]*process_.initialValues()[i]);
             }
-        }
+            _settings = settings;
+            }
 
 
 
@@ -217,7 +217,7 @@ namespace QLNet
             }
 
             return swaptionVola = new SwaptionVolatilityMatrix( today, exercises, lengths,
-                                                                volatilities,index.dayCounter());
+                                                                volatilities,index.dayCounter(), _settings);
         }
     }
 }
