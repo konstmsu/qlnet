@@ -76,7 +76,7 @@ namespace TestSuite
             }
 
             return new CapletVarianceCurve( todaysDate, dates,
-                                            capletVols, new ActualActual());
+                                            capletVols, new ActualActual(), settings);
         }
 
         LiborForwardModelProcess makeProcess(SavedSettings settings)

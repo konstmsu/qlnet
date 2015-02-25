@@ -99,7 +99,7 @@ namespace QLNet
 
         protected override SmileSection smileSectionImpl(double optionTime, double time) {
             double atmVol = volatility_.link.value();
-            return new FlatSmileSection(optionTime, atmVol, dayCounter());
+            return new FlatSmileSection(optionTime, atmVol, dayCounter(), _settings);
         }
 
         protected new double volatilityImpl(Date date, Period period, double rate){

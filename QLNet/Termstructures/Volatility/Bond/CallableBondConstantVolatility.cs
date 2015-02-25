@@ -27,38 +27,42 @@ namespace QLNet
    //! Constant callable-bond volatility, no time-strike dependence
    public class CallableBondConstantVolatility : CallableBondVolatilityStructure
    {
-      public CallableBondConstantVolatility(Date referenceDate, double volatility, DayCounter dayCounter)
+      public CallableBondConstantVolatility(Date referenceDate, double volatility, DayCounter dayCounter, SavedSettings settings)
          :base(referenceDate)
       {
          volatility_ = new Handle<Quote>(new SimpleQuote(volatility));
          dayCounter_ = dayCounter;
          maxBondTenor_ = new Period(100,TimeUnit.Years);
+          _settings = settings;
       }
 
-      public CallableBondConstantVolatility(Date referenceDate, Handle<Quote> volatility, DayCounter dayCounter)
+      public CallableBondConstantVolatility(Date referenceDate, Handle<Quote> volatility, DayCounter dayCounter, SavedSettings settings)
          :base(referenceDate)
       {
          volatility_ = volatility;
          dayCounter_ = dayCounter;
          maxBondTenor_ = new Period(100,TimeUnit.Years);
          volatility_.registerWith(update);
+          _settings = settings;
       }
 
-      public CallableBondConstantVolatility(int settlementDays, Calendar calendar, double volatility, DayCounter dayCounter)
+      public CallableBondConstantVolatility(int settlementDays, Calendar calendar, double volatility, DayCounter dayCounter, SavedSettings settings)
          :base(settlementDays, calendar)
       {
          volatility_ = new Handle<Quote>(new SimpleQuote(volatility));
          dayCounter_ = dayCounter;
          maxBondTenor_ = new Period(100,TimeUnit.Years);
+          _settings = settings;
       }
 
-      public CallableBondConstantVolatility(int settlementDays, Calendar calendar, Handle<Quote> volatility,DayCounter dayCounter)
+      public CallableBondConstantVolatility(int settlementDays, Calendar calendar, Handle<Quote> volatility, DayCounter dayCounter, SavedSettings settings)
           :base(settlementDays, calendar)
       {
          volatility_ = volatility;
          dayCounter_ = dayCounter;
          maxBondTenor_ = new Period(100,TimeUnit.Years);
          volatility_.registerWith(update);
+          _settings = settings;
       }
 
       //! \name TermStructure interface
@@ -80,7 +84,7 @@ namespace QLNet
       protected override SmileSection smileSectionImpl(double optionTime, double bondLength)
       {
          double atmVol = volatility_.link.value();
-         return new FlatSmileSection(optionTime, atmVol, dayCounter_);
+         return new FlatSmileSection(optionTime, atmVol, dayCounter_, _settings);
       }
       protected override double volatilityImpl( Date d , Period p, double d1)
       {
@@ -90,5 +94,6 @@ namespace QLNet
       private Handle<Quote> volatility_;
       private DayCounter dayCounter_;
       private Period maxBondTenor_;
+       SavedSettings _settings;
    }
 }

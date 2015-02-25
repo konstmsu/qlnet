@@ -29,7 +29,7 @@ namespace QLNet
       public OISRateHelper(int settlementDays, Period tenor, Handle<Quote> fixedRate, OvernightIndex overnightIndex, SavedSettings settings
 // swap maturity
           )
-         : base(fixedRate)
+         : base(fixedRate, settings)
       {
          settlementDays_ = settlementDays;
          tenor_ = tenor;

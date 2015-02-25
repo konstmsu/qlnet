@@ -37,10 +37,12 @@ namespace QLNet
       protected InitializedList<double> payer_;
       protected List<double> notionals_;
       protected InitializedList<double?> legNPV_;
+       readonly SavedSettings settings_;
 
-      public Loan(int legs)
+       public Loan(int legs, SavedSettings settings)
       {
-          legs_ = new InitializedList<List<CashFlow>>(legs);
+           settings_ = settings;
+           legs_ = new InitializedList<List<CashFlow>>(legs);
           payer_ = new InitializedList<double>(legs);
           notionals_ = new List<double>();
           legNPV_ = new InitializedList<double?>(legs);
@@ -50,7 +52,7 @@ namespace QLNet
       // Instrument interface
       public override bool isExpired()
       {
-         Date today = Settings.evaluationDate();
+         Date today = settings_.evaluationDate();
          return !legs_.Any<List<CashFlow>>(leg => leg.Any<CashFlow>(cf => !cf.hasOccurred(today)));
       }
 
@@ -127,10 +129,8 @@ namespace QLNet
       private Schedule principalSchedule_;
       private BusinessDayConvention paymentConvention_;
 
-      public FixedLoan(Type type, double nominal,
-                       Schedule fixedSchedule, double fixedRate, DayCounter fixedDayCount,
-                       Schedule principalSchedule, BusinessDayConvention? paymentConvention) :
-         base(2) 
+      public FixedLoan(Type type, double nominal, Schedule fixedSchedule, double fixedRate, DayCounter fixedDayCount, Schedule principalSchedule, BusinessDayConvention? paymentConvention, SavedSettings settings) :
+         base(2, settings) 
       {
 
          type_ = type;
@@ -193,7 +193,7 @@ namespace QLNet
       private IborIndex iborIndex_;
 
       public FloatingLoan(Type type, double nominal, Schedule floatingSchedule, double floatingSpread, DayCounter floatingDayCount, Schedule principalSchedule, BusinessDayConvention? paymentConvention, IborIndex index, SavedSettings settings) :
-         base(2)
+         base(2, settings)
       {
 
          type_ = type;
@@ -256,10 +256,8 @@ namespace QLNet
       private Schedule principalSchedule_;
       private BusinessDayConvention paymentConvention_;
 
-      public CommercialPaper(Type type, double nominal,
-                             Schedule fixedSchedule, double fixedRate, DayCounter fixedDayCount,
-                             Schedule principalSchedule, BusinessDayConvention? paymentConvention) :
-         base(2)
+      public CommercialPaper(Type type, double nominal, Schedule fixedSchedule, double fixedRate, DayCounter fixedDayCount, Schedule principalSchedule, BusinessDayConvention? paymentConvention, SavedSettings settings) :
+         base(2, settings)
       {
 
          type_ = type;
@@ -335,9 +333,8 @@ namespace QLNet
       private Schedule principalSchedule_;
       private BusinessDayConvention paymentConvention_;
 
-      public Cash(Type type, double nominal,
-                  Schedule principalSchedule, BusinessDayConvention? paymentConvention) :
-         base(1)
+      public Cash(Type type, double nominal, Schedule principalSchedule, BusinessDayConvention? paymentConvention, SavedSettings settings) :
+         base(1, settings)
       {
 
          type_ = type;

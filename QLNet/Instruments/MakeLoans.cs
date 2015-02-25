@@ -124,7 +124,7 @@ namespace QLNet
                                   calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
          FixedLoan fl = new FixedLoan(type_, nominal_, fixedSchedule, fixedRate_, dayCounter_,
-                                     principalSchedule, convention_);
+                                     principalSchedule, convention_, _settings);
          return fl;
 
       }
@@ -346,7 +346,7 @@ namespace QLNet
                                   calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
          CommercialPaper fl = new CommercialPaper(type_, nominal_, fixedSchedule, fixedRate_, dayCounter_,
-                                     principalSchedule, convention_);
+                                     principalSchedule, convention_, _settings);
          return fl;
 
       }
@@ -441,7 +441,7 @@ namespace QLNet
          Schedule principalSchedule = new Schedule(startDate_, endDate_, principalPeriod,
                                   calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
-         Cash c = new Cash(type_, nominal_, principalSchedule, convention_);
+         Cash c = new Cash(type_, nominal_, principalSchedule, convention_, _settings);
          return c;
 
       }

@@ -77,13 +77,9 @@ namespace QLNet {
         //@{
 		//Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
 		//Handle<YieldTermStructure> incomeDiscountCurve = Handle<YieldTermStructure>());
-		public FixedRateBondForward(Date valueDate, Date maturityDate, Position.Type type, double strike, int settlementDays,
-									DayCounter dayCounter, Calendar calendar, BusinessDayConvention businessDayConvention,
-									FixedRateBond fixedCouponBond,
-									Handle<YieldTermStructure> discountCurve,
-									Handle<YieldTermStructure> incomeDiscountCurve) 
+		public FixedRateBondForward(Date valueDate, Date maturityDate, Position.Type type, double strike, int settlementDays, DayCounter dayCounter, Calendar calendar, BusinessDayConvention businessDayConvention, FixedRateBond fixedCouponBond, Handle<YieldTermStructure> discountCurve, Handle<YieldTermStructure> incomeDiscountCurve, SavedSettings settings) 
 			: base(dayCounter, calendar, businessDayConvention, settlementDays, new ForwardTypePayoff(type, strike),
-				   valueDate, maturityDate, discountCurve) {
+				   valueDate, maturityDate, discountCurve, settings) {
 			fixedCouponBond_ = fixedCouponBond;
 	        incomeDiscountCurve_ = incomeDiscountCurve;
 			incomeDiscountCurve_.registerWith(update);

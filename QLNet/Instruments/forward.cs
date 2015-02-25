@@ -60,14 +60,13 @@ namespace QLNet {
 		protected Handle<YieldTermStructure> discountCurve_;
         /*! must set this in derived classes, based on particular underlying */
 		protected Handle<YieldTermStructure> incomeDiscountCurve_;
+	    readonly SavedSettings settings_;
 
 
-		//protected Forward(DayCounter dayCounter, Calendar calendar, BusinessDayConvention businessDayConvention,
+	    //protected Forward(DayCounter dayCounter, Calendar calendar, BusinessDayConvention businessDayConvention,
 		//                  int settlementDays, Payoff payoff, Date valueDate, Date maturityDate,
 		//                  Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>()) {
-		protected Forward(DayCounter dayCounter, Calendar calendar, BusinessDayConvention businessDayConvention,
-						  int settlementDays, Payoff payoff, Date valueDate, Date maturityDate,
-						  Handle<YieldTermStructure> discountCurve) {
+		protected Forward(DayCounter dayCounter, Calendar calendar, BusinessDayConvention businessDayConvention, int settlementDays, Payoff payoff, Date valueDate, Date maturityDate, Handle<YieldTermStructure> discountCurve, SavedSettings settings) {
 			dayCounter_ = dayCounter;
 			calendar_ = calendar;
 			businessDayConvention_ = businessDayConvention;
@@ -76,15 +75,16 @@ namespace QLNet {
 			valueDate_ = valueDate;
 			maturityDate_ = maturityDate;
 			discountCurve_ = discountCurve;
+		    settings_ = settings;
 
-			maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
+		    maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
 
 			Settings.registerWith(update);
 			discountCurve_.registerWith(update);
 		}
 
 		public virtual Date settlementDate() {
-			Date d = calendar_.advance(Settings.evaluationDate(), settlementDays_, TimeUnit.Days);
+			Date d = calendar_.advance(settings_.evaluationDate(), settlementDays_, TimeUnit.Days);
 			return Date.Max(d,valueDate_);
 		}
 

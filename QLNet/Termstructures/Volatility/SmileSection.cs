@@ -35,16 +35,21 @@ namespace QLNet {
         public Date exerciseDate() { return exerciseDate_; }
 
         private double exerciseTime_;
+        SavedSettings settings_;
         public double exerciseTime() { return exerciseTime_; }
 
         #region ctors
-		public SmileSection() {}
+		public SmileSection(SavedSettings settings)
+		{
+		    settings_ = settings;
+		}
 
         // public SmileSection(Date d, DayCounter dc = DayCounter(), Date referenceDate = Date())
         public SmileSection(Date d, DayCounter dc, SavedSettings settings) : this(d, dc, null, settings) { }
         public SmileSection(Date d, DayCounter dc, Date referenceDate, SavedSettings settings) {
             exerciseDate_ = d;
             dc_ = dc;
+            settings_ = settings;
 
             isFloating_ = referenceDate == null;
             
@@ -57,10 +62,11 @@ namespace QLNet {
             initializeExerciseTime();
         }
 
-        public SmileSection(double exerciseTime) : this(exerciseTime, new DayCounter()) { }
-        public SmileSection(double exerciseTime, DayCounter dc) {
+        public SmileSection(double exerciseTime, SavedSettings settings) : this(exerciseTime, new DayCounter(), settings) { }
+        public SmileSection(double exerciseTime, DayCounter dc, SavedSettings settings) {
             isFloating_ = false;
             dc_ = dc;
+            settings_ = settings;
             exerciseTime_ = exerciseTime;
 
             if (!(exerciseTime_>=0.0))
@@ -113,7 +119,7 @@ namespace QLNet {
         // observer
         public virtual void update() {
             if (isFloating_) {
-                referenceDate_ = Settings.evaluationDate();
+                referenceDate_ = settings_.evaluationDate();
                 initializeExerciseTime();
             }
             //LazyObject::update();
@@ -124,8 +130,8 @@ namespace QLNet {
     public class SabrSmileSection : SmileSection {
         private double alpha_, beta_, nu_, rho_, forward_;
 
-        public SabrSmileSection(double timeToExpiry, double forward, List<double> sabrParams)
-            : base(timeToExpiry) {
+        public SabrSmileSection(double timeToExpiry, double forward, List<double> sabrParams, SavedSettings settings)
+            : base(timeToExpiry, settings) {
             forward_ = forward;
 
             alpha_ = sabrParams[0];

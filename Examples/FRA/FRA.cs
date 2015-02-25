@@ -173,7 +173,7 @@ namespace FRA {
                 ForwardRateAgreement myFRA = new ForwardRateAgreement(fraValueDate, fraMaturityDate,
                                            fraFwdType,fraStrikeRate,
                                            fraNotional, euribor3m,
-                                           discountingTermStructure);
+                                           discountingTermStructure, settings);
 
                 Console.WriteLine("3m Term FRA, Months to Start: " + monthsToStart[i]);
 
@@ -225,7 +225,7 @@ namespace FRA {
                 ForwardRateAgreement myFRA = new ForwardRateAgreement(fraValueDate, fraMaturityDate,
                                            fraFwdType, fraStrikeRate,
                                            fraNotional, euribor3m,
-                                           discountingTermStructure);
+                                           discountingTermStructure, settings);
 
                 Console.WriteLine("3m Term FRA, 100 notional, Months to Start: " + monthsToStart[i]);
                 Console.WriteLine("strike FRA rate: {0:0.00%}", fraStrikeRate);

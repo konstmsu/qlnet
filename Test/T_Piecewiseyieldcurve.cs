@@ -711,7 +711,7 @@ namespace TestSuite {
                                                  euribor3m.endOfMonth());
 
                 ForwardRateAgreement fra = new ForwardRateAgreement(start, end, Position.Type.Long, vars.fraData[i].rate / 100,
-                                                                    100.0, euribor3m, curveHandle);
+                                                                    100.0, euribor3m, curveHandle, settings);
                 double expectedRate = vars.fraData[i].rate / 100,
                        estimatedRate = fra.forwardRate().rate();
                 if (Math.Abs(expectedRate - estimatedRate) > tolerance) {

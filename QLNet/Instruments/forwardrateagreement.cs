@@ -75,19 +75,20 @@ namespace QLNet {
       protected InterestRate strikeForwardRate_;
       protected double notionalAmount_;
       protected IborIndex index_;
+       readonly SavedSettings settings_;
 
 
-      // Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
-      public ForwardRateAgreement(Date valueDate, Date maturityDate, Position.Type type, double strikeForwardRate,
-                                  double notionalAmount, IborIndex index, Handle<YieldTermStructure> discountCurve)
+       // Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
+      public ForwardRateAgreement(Date valueDate, Date maturityDate, Position.Type type, double strikeForwardRate, double notionalAmount, IborIndex index, Handle<YieldTermStructure> discountCurve, SavedSettings settings)
          : base(index.dayCounter(), index.fixingCalendar(), index.businessDayConvention(), index.fixingDays(), new Payoff(),
-                 valueDate, maturityDate, discountCurve) {
+                 valueDate, maturityDate, discountCurve, settings) {
 
          fraType_ = type;
          notionalAmount_ = notionalAmount;
          index_ = index;
+          settings_ = settings;
 
-         if (notionalAmount <= 0.0)
+          if (notionalAmount <= 0.0)
             throw new ApplicationException("notional Amount must be positive");
 
          // do I adjust this ?
@@ -108,7 +109,7 @@ namespace QLNet {
         //! \name Calculations
         //@{
         public override Date settlementDate() {
-            return calendar_.advance(Settings.evaluationDate(), settlementDays_, TimeUnit.Days);
+            return calendar_.advance(settings_.evaluationDate(), settlementDays_, TimeUnit.Days);
         }
 
         /*! A FRA expires/settles on the valueDate */

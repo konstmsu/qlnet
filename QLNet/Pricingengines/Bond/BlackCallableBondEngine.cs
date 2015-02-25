@@ -42,7 +42,7 @@ namespace QLNet
       {
          volatility_ = new Handle<CallableBondVolatilityStructure>( new CallableBondConstantVolatility(0, new NullCalendar(),
                                                                                                fwdYieldVol,
-                                                                                               new Actual365Fixed()));
+                                                                                               new Actual365Fixed(), settings));
          discountCurve_ = discountCurve;
           settings_ = settings;
 

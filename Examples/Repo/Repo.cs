@@ -123,7 +123,7 @@ namespace Repo {
 										 bondBusinessDayConvention,
 										 bond,
 										 repoCurve,
-										 repoCurve);
+										 repoCurve, settings);
 
 
 			Console.WriteLine("Underlying bond clean price: " + bond.cleanPrice());

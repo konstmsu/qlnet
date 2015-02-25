@@ -49,6 +49,7 @@ namespace QLNet
             new BilinearInterpolation(swapLengths_, swapLengths_.Count,
             optionTimes_, optionTimes_.Count,
             volatilities_);
+            _settings = settings;
         }
         
         //! fixed reference date, floating market data
@@ -62,6 +63,7 @@ namespace QLNet
             interpolation_ =new BilinearInterpolation(swapLengths_, swapLengths_.Count,
                                                         optionTimes_, optionTimes_.Count,
                                                         volatilities_);
+            _settings = settings;
         }
         
         //! floating reference date, fixed market data
@@ -86,6 +88,7 @@ namespace QLNet
             new BilinearInterpolation(swapLengths_, swapLengths_.Count,
             optionTimes_, optionTimes_.Count,
             volatilities_);
+            _settings = settings;
         }
         
         //! fixed reference date, fixed market data
@@ -110,6 +113,7 @@ namespace QLNet
             new BilinearInterpolation(swapLengths_, swapLengths_.Count,
             optionTimes_, optionTimes_.Count,
             volatilities_);
+            _settings = settings;
         }
 
         // fixed reference date and fixed market data, option dates
@@ -133,6 +137,7 @@ namespace QLNet
             new BilinearInterpolation(swapLengths_, swapLengths_.Count,
             optionTimes_, optionTimes_.Count,
             volatilities_);
+            _settings = settings;
         }
 
         //! \name LazyObject interface
@@ -195,7 +200,7 @@ namespace QLNet
         protected override SmileSection smileSectionImpl(double optionTime, double swapLength) 
         {
             double atmVol = volatilityImpl(optionTime, swapLength, 0.05);
-            return (SmileSection) new FlatSmileSection(optionTime, atmVol, dayCounter());
+            return (SmileSection) new FlatSmileSection(optionTime, atmVol, dayCounter(), _settings);
 
         } 
 
@@ -230,6 +235,8 @@ namespace QLNet
         private List<List<Handle<Quote>>> volHandles_;
         private Matrix volatilities_;
         private Interpolation2D interpolation_;
+        SavedSettings _settings;
+
         #endregion
     }
 

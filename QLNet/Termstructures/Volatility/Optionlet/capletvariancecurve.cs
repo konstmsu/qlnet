@@ -26,15 +26,14 @@ namespace QLNet
     public class CapletVarianceCurve :  OptionletVolatilityStructure {
      
        private BlackVarianceCurve blackCurve_;
+        SavedSettings _settings;
 
-       public CapletVarianceCurve( Date referenceDate,
-                            List<Date> dates,
-                            List<double> capletVolCurve,
-                            DayCounter dayCounter)
+        public CapletVarianceCurve(Date referenceDate, List<Date> dates, List<double> capletVolCurve, DayCounter dayCounter, SavedSettings settings)
            : base(referenceDate, new Calendar(), BusinessDayConvention.Following, new DayCounter())
-       {
-           blackCurve_=new BlackVarianceCurve(referenceDate, dates, capletVolCurve, dayCounter, false);
-       }
+        {
+            blackCurve_=new BlackVarianceCurve(referenceDate, dates, capletVolCurve, dayCounter, false);
+            _settings = settings;
+        }
 
         //@{
         public override DayCounter dayCounter() {
@@ -57,7 +56,7 @@ namespace QLNet
         protected override SmileSection smileSectionImpl(double t) {   
             // dummy strike
             double atmVol = blackCurve_.blackVol(t, 0.05, true);
-            return new FlatSmileSection(t,atmVol,dayCounter());
+            return new FlatSmileSection(t,atmVol,dayCounter(), _settings);
         }
 
         protected override double volatilityImpl(double t,double r){

@@ -111,25 +111,29 @@ namespace QLNet {
     // This class takes care of rebuilding the date schedule when the global evaluation date changes
     public abstract class RelativeDateRateHelper : RateHelper {
         protected Date evaluationDate_;
+        readonly SavedSettings settings_;
 
         ///////////////////////////////////////////
         // constructors
-        public RelativeDateRateHelper(Handle<Quote> quote) : base(quote) {
+        public RelativeDateRateHelper(Handle<Quote> quote, SavedSettings settings) : base(quote) {
+            settings_ = settings;
             Settings.registerWith(update);
-            evaluationDate_ = Settings.evaluationDate();
+            evaluationDate_ = settings.evaluationDate();
         }
 
-        public RelativeDateRateHelper(double quote) : base(quote) {
+        public RelativeDateRateHelper(double quote, SavedSettings settings) : base(quote) {
+            settings_ = settings;
             Settings.registerWith(update);
-            evaluationDate_ = Settings.evaluationDate();
+            evaluationDate_ = settings.evaluationDate();
         }
 
 
         //////////////////////////////////////
         //! Observer interface
         public override void update() {
-            if (evaluationDate_ != Settings.evaluationDate()) {
-                evaluationDate_ = Settings.evaluationDate();
+            if (evaluationDate_ != settings_.evaluationDate())
+            {
+                evaluationDate_ = settings_.evaluationDate();
                 initializeDates();
             }
             base.update();
@@ -149,14 +153,14 @@ namespace QLNet {
         ///////////////////////////////////////////
         // constructors
         public DepositRateHelper(Handle<Quote> rate, Period tenor, int fixingDays, Calendar calendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, SavedSettings settings) :
-            base(rate) {
+            base(rate, settings) {
             iborIndex_ = new IborIndex("no-fix", tenor, fixingDays, new Currency(), calendar, convention,
                                        endOfMonth, dayCounter, termStructureHandle_, settings);
             initializeDates();
         }
 
         public DepositRateHelper(double rate, Period tenor, int fixingDays, Calendar calendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, SavedSettings settings) :
-            base(rate)
+            base(rate, settings)
         {
             iborIndex_ = new IborIndex("no-fix", tenor, fixingDays, new Currency(), calendar, convention,
                                        endOfMonth, dayCounter, termStructureHandle_, settings);
@@ -164,7 +168,7 @@ namespace QLNet {
         }
 
         public DepositRateHelper(Handle<Quote> rate, IborIndex i, SavedSettings settings)
-                : base(rate) {
+                : base(rate, settings) {
             iborIndex_ = new IborIndex("no-fix", // never take fixing into account
                                       i.tenor(), i.fixingDays(), new Currency(),
                                       i.fixingCalendar(), i.businessDayConvention(),
@@ -172,7 +176,7 @@ namespace QLNet {
             initializeDates();
         }
         public DepositRateHelper(double rate, IborIndex i, SavedSettings settings)
-            : base(rate) {
+            : base(rate, settings) {
             iborIndex_ = new IborIndex("no-fix", // never take fixing into account
                       i.tenor(), i.fixingDays(), new Currency(),
                       i.fixingCalendar(), i.businessDayConvention(),
@@ -211,7 +215,7 @@ namespace QLNet {
 
 
         public FraRateHelper(Handle<Quote> rate, int monthsToStart, int monthsToEnd, int fixingDays, Calendar calendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, SavedSettings settings) :
-            base(rate) {
+            base(rate, settings) {
             periodToStart_ = new Period(monthsToStart, TimeUnit.Months);
 
             if (!(monthsToEnd>monthsToStart)) throw new ArgumentException("monthsToEnd must be grater than monthsToStart");
@@ -221,7 +225,7 @@ namespace QLNet {
         }
 
         public FraRateHelper(double rate, int monthsToStart, int monthsToEnd, int fixingDays, Calendar calendar, BusinessDayConvention convention, bool endOfMonth, DayCounter dayCounter, SavedSettings settings)
-            : base(rate) {
+            : base(rate, settings) {
             periodToStart_ = new Period(monthsToStart, TimeUnit.Months);
 
             if (!(monthsToEnd>monthsToStart)) throw new ArgumentException("monthsToEnd must be grater than monthsToStart");
@@ -230,7 +234,7 @@ namespace QLNet {
             initializeDates();
         }
 
-        public FraRateHelper(Handle<Quote> rate, int monthsToStart, IborIndex i, SavedSettings settings) : base(rate) {
+        public FraRateHelper(Handle<Quote> rate, int monthsToStart, IborIndex i, SavedSettings settings) : base(rate, settings) {
             periodToStart_ = new Period(monthsToStart, TimeUnit.Months);
 
             iborIndex_ = new IborIndex("no-fix",  // never take fixing into account
@@ -241,7 +245,7 @@ namespace QLNet {
             initializeDates();
         }
 
-        public FraRateHelper(double rate, int monthsToStart, IborIndex i, SavedSettings settings) : base(rate) {
+        public FraRateHelper(double rate, int monthsToStart, IborIndex i, SavedSettings settings) : base(rate, settings) {
             periodToStart_ = new Period(monthsToStart, TimeUnit.Months);
 
             iborIndex_ = new IborIndex("no-fix",  // never take fixing into account
@@ -297,7 +301,7 @@ namespace QLNet {
         //public SwapRateHelper(Quote rate, SwapIndex swapIndex, Quote spread) :
         //    this(rate, swapIndex, spread, new Period(0, TimeUnit.Days)) { }
         public SwapRateHelper(Handle<Quote> rate, SwapIndex swapIndex, Handle<Quote> spread, Period fwdStart, SavedSettings settings)
-            : base(rate) {
+            : base(rate, settings) {
             tenor_ = swapIndex.tenor();
             calendar_ = swapIndex.fixingCalendar();
             fixedConvention_ = swapIndex.fixedLegConvention();
@@ -337,7 +341,7 @@ namespace QLNet {
                        Frequency fixedFrequency, BusinessDayConvention fixedConvention, DayCounter fixedDayCount,
             // floating leg
                        IborIndex iborIndex, Handle<Quote> spread, Period fwdStart, SavedSettings settings)
-            : base(rate) {
+            : base(rate, settings) {
             tenor_ = tenor;
             calendar_ = calendar;
             fixedConvention_ = fixedConvention;
@@ -371,7 +375,7 @@ namespace QLNet {
                        Frequency fixedFrequency, BusinessDayConvention fixedConvention, DayCounter fixedDayCount,
             // floating leg
                        IborIndex iborIndex, Handle<Quote> spread, Period fwdStart, SavedSettings settings)
-            : base(rate) {
+            : base(rate, settings) {
             tenor_ = tenor;
             calendar_ = calendar;
             fixedConvention_ = fixedConvention;
@@ -394,7 +398,7 @@ namespace QLNet {
         //public SwapRateHelper(double rate, SwapIndex swapIndex, Quote spread)
         //    : this(rate, swapIndex, spread, new Period(0, TimeUnit.Days)) { }
         public SwapRateHelper(double rate, SwapIndex swapIndex, Handle<Quote> spread, Period fwdStart, SavedSettings settings)
-            : base(rate) {
+            : base(rate, settings) {
             tenor_ = swapIndex.tenor();
             calendar_ = swapIndex.fixingCalendar();
             fixedConvention_ = swapIndex.fixedLegConvention();
@@ -489,7 +493,7 @@ namespace QLNet {
 // bma leg
             // ibor leg
             )    
-            : base(liborFraction) {
+            : base(liborFraction, settings) {
             tenor_ = tenor;
             settlementDays_ = settlementDays;
             calendar_ = calendar;

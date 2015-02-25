@@ -78,7 +78,7 @@ namespace TestSuite
             }
 
             return new CapletVarianceCurve(todaysDate, dates,
-                                           capletVols,new Actual360());
+                                           capletVols,new Actual360(), settings);
         }
         
         [TestMethod()]

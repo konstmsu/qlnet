@@ -42,7 +42,7 @@ namespace QLNet {
                      the bond after creating the helper, so that the
                      helper has sole ownership of it.
         */
-        public BondHelper(Handle<Quote> price, Bond bond, SavedSettings settings, bool useCleanPrice = true) : base(price) {
+        public BondHelper(Handle<Quote> price, Bond bond, SavedSettings settings, bool useCleanPrice = true) : base(price, settings) {
             bond_ = bond;
 
             latestDate_ = bond_.maturityDate();

@@ -36,9 +36,9 @@ namespace QLNet {
             atmLevel_ = atmLevel;
         }
 
-        public FlatSmileSection(double exerciseTime, double vol, DayCounter dc) : this(exerciseTime, vol, dc, 0) { }
-        public FlatSmileSection(double exerciseTime, double vol, DayCounter dc, double atmLevel)
-            : base(exerciseTime, dc) {
+        public FlatSmileSection(double exerciseTime, double vol, DayCounter dc, SavedSettings settings) : this(exerciseTime, vol, dc, 0, settings) { }
+        public FlatSmileSection(double exerciseTime, double vol, DayCounter dc, double atmLevel, SavedSettings settings)
+            : base(exerciseTime, dc, settings) {
             vol_ = vol;
             atmLevel_ = atmLevel;
         }
