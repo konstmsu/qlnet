@@ -209,14 +209,7 @@ namespace QLNet {
         }
 
         
-         public static List<CashFlow> OvernightLeg(List<double> nominals,
-                                                   Schedule schedule,
-                                                   BusinessDayConvention paymentAdjustment,
-                                                   OvernightIndex overnightIndex,
-                                                   List<double> gearings,
-                                                   List<double> spreads,
-                                                   DayCounter paymentDayCounter      
-                                                  )
+         public static List<CashFlow> OvernightLeg(List<double> nominals, Schedule schedule, BusinessDayConvention paymentAdjustment, OvernightIndex overnightIndex, List<double> gearings, List<double> spreads, DayCounter paymentDayCounter, SavedSettings settings)
         
        
          {
@@ -246,11 +239,10 @@ namespace QLNet {
                leg.Add( new OvernightIndexedCoupon(paymentDate,
                                                    Utils.Get(nominals, i),
                                                    start, end,
-                                                   overnightIndex,
-                                                   Utils.Get(gearings, i, 1.0),
-                                                   Utils.Get(spreads, i, 0.0),
-                                                   refStart, refEnd,
-                                                   paymentDayCounter));
+                                                   overnightIndex, settings, gearing: Utils.Get(gearings, i, 1.0),
+                                                   spread: Utils.Get(spreads, i, 0.0),
+                                                   refPeriodStart: refStart, refPeriodEnd: refEnd,
+                                                   dayCounter: paymentDayCounter));
            }
            return leg;
         }

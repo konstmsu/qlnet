@@ -56,7 +56,7 @@ namespace QLNet
             .withCouponRates(fixedRate_, fixedDC_)
             .withNotionals(nominal_);
 
-        legs_[1] = new OvernightLeg(schedule, overnightIndex_)
+        legs_[1] = new OvernightLeg(schedule, overnightIndex_, settings)
             .withNotionals(nominal_)
             .withSpreads(spread_);
 

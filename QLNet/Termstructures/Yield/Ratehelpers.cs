@@ -531,14 +531,14 @@ namespace QLNet {
             // dummy BMA index with curve/swap arguments
             BMAIndex clonedIndex = new BMAIndex(termStructureHandle_, _settings);
 
-            Schedule bmaSchedule = new MakeSchedule().from(earliestDate_).to(maturity)
+            Schedule bmaSchedule = new MakeSchedule(_settings).from(earliestDate_).to(maturity)
                           .withTenor(bmaPeriod_)
                           .withCalendar(bmaIndex_.fixingCalendar())
                           .withConvention(bmaConvention_)
                           .backwards()
                           .value();
 
-            Schedule liborSchedule = new MakeSchedule().from(earliestDate_).to(maturity)
+            Schedule liborSchedule = new MakeSchedule(_settings).from(earliestDate_).to(maturity)
                           .withTenor(iborIndex_.tenor())
                           .withCalendar(iborIndex_.fixingCalendar())
                           .withConvention(iborIndex_.businessDayConvention())

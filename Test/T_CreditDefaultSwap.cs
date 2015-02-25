@@ -55,7 +55,7 @@ namespace TestSuite
 			BusinessDayConvention convention = BusinessDayConvention.ModifiedFollowing;
 
 			Schedule schedule = new Schedule(issueDate, maturity, new Period(frequency), calendar,
-									convention, convention, DateGeneration.Rule.Forward, false);
+									convention, convention, DateGeneration.Rule.Forward, false, backup);
 
 			// Build the CDS
 			double fixedRate = 0.0120;
@@ -229,7 +229,7 @@ namespace TestSuite
 
 			Schedule schedule = new Schedule(issueDate, maturity, new Period(cdsFrequency), calendar,
 									               cdsConvention, cdsConvention,
-									               DateGeneration.Rule.Forward, false);
+									               DateGeneration.Rule.Forward, false, backup);
 
 			// Build the CDS
 			double recoveryRate = 0.25;
@@ -312,7 +312,7 @@ namespace TestSuite
 				Date maturity = calendar.advance(issueDate, n, TimeUnit.Years);
 				Schedule schedule = new Schedule(issueDate, maturity, new Period(frequency), calendar,
 										convention, convention,
-										DateGeneration.Rule.Forward, false);
+										DateGeneration.Rule.Forward, false, backup);
 
 				CreditDefaultSwap cds = new CreditDefaultSwap(Protection.Side.Seller, notional, fixedRate,
 											schedule, convention, cdsDayCount, backup, settlesAccrual: true, paysAtDefaultTime: true);
@@ -385,7 +385,7 @@ namespace TestSuite
 			BusinessDayConvention convention = BusinessDayConvention.Following;
 
 			Schedule schedule =
-				new MakeSchedule().from(issueDate)
+				new MakeSchedule(backup).from(issueDate)
 									.to(maturity)
 									.withFrequency(Frequency.Quarterly)
 									.withCalendar(calendar)
@@ -447,7 +447,7 @@ namespace TestSuite
 			BusinessDayConvention convention = BusinessDayConvention.Following;
 
 			Schedule schedule =
-				new MakeSchedule().from(issueDate)
+				new MakeSchedule(settings).from(issueDate)
 									   .to(maturity)
 									   .withFrequency(Frequency.Quarterly)
 									   .withCalendar(calendar)

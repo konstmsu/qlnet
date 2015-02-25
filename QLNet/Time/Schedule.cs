@@ -62,9 +62,7 @@ namespace QLNet {
       }
 
 
-      public Schedule( Date effectiveDate, Date terminationDate, Period tenor, Calendar calendar,
-                       BusinessDayConvention convention, BusinessDayConvention terminationDateConvention,
-                       DateGeneration.Rule rule, bool endOfMonth, Date firstDate = null, Date nextToLastDate = null)
+      public Schedule(Date effectiveDate, Date terminationDate, Period tenor, Calendar calendar, BusinessDayConvention convention, BusinessDayConvention terminationDateConvention, DateGeneration.Rule rule, bool endOfMonth, SavedSettings settings, Date firstDate = null, Date nextToLastDate = null)
       {
          // first save the properties
          fullInterface_ = true;
@@ -95,7 +93,7 @@ namespace QLNet {
          // really necessary. In these cases a decent placeholder is enough
          if ( effectiveDate == null && firstDate == null && rule== DateGeneration.Rule.Backward) 
          {
-            Date evalDate = Settings.evaluationDate();
+            Date evalDate = settings.evaluationDate();
             Utils.QL_REQUIRE( evalDate < terminationDate, () => "null effective date" );
             int y;
             if (nextToLastDate != null) 
@@ -541,8 +539,11 @@ namespace QLNet {
         private DateGeneration.Rule rule_;
         private bool endOfMonth_;
         private Date firstDate_, nextToLastDate_;
+        SavedSettings _settings;
 
-        public MakeSchedule() { rule_ = DateGeneration.Rule.Backward; endOfMonth_ = false; }
+        public MakeSchedule(SavedSettings settings) { rule_ = DateGeneration.Rule.Backward; endOfMonth_ = false;
+            _settings = settings;
+        }
 
         public MakeSchedule from(Date effectiveDate)
         {
@@ -688,7 +689,7 @@ namespace QLNet {
 
             return new Schedule(effectiveDate_, terminationDate_, tenor_, calendar_,
                                 convention, terminationDateConvention,
-                                rule_, endOfMonth_, firstDate_, nextToLastDate_);
+                                rule_, endOfMonth_, _settings, firstDate: firstDate_, nextToLastDate: nextToLastDate_);
         }
     }
 }

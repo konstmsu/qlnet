@@ -78,7 +78,7 @@ namespace TestSuite
             //      fixing data
             Date from = new Date(1, Month.January, 2005);
             Date to = new Date(13, Month.August, 2007);
-            Schedule rpiSchedule = new MakeSchedule().from(from).to(to)
+            Schedule rpiSchedule = new MakeSchedule(settings_).from(from).to(to)
             .withTenor(new Period(1,TimeUnit.Months))
             .withCalendar(new UnitedKingdom())
             .withConvention(BusinessDayConvention.ModifiedFollowing).value();
@@ -147,7 +147,7 @@ namespace TestSuite
             Schedule schedule = new Schedule(startDate, endDate, new Period(frequency), calendar,
                               BusinessDayConvention.Unadjusted,
                               BusinessDayConvention.Unadjusted,// ref periods & acc periods
-                              DateGeneration.Rule.Forward, false);
+                              DateGeneration.Rule.Forward, false, settings_);
 
             InitializedList<double> gearingVector = new InitializedList<double>(length, gearing);
             InitializedList<double> spreadVector = new InitializedList<double>(length, spread);
@@ -165,7 +165,7 @@ namespace TestSuite
             Date endDate = calendar.advance(startDate, length, TimeUnit.Years, convention);
             Schedule schedule = new Schedule(startDate, endDate, new Period(frequency), calendar,
                               convention, convention,
-                              DateGeneration.Rule.Forward, false);
+                              DateGeneration.Rule.Forward, false, settings_);
             InitializedList<double> coupons = new InitializedList<double>(length, 0.0);
             return new FixedRateLeg(schedule)
             .withCouponRates(coupons, dc)
@@ -217,7 +217,7 @@ namespace TestSuite
             Schedule schedule = new Schedule(startDate, endDate, new Period(frequency), calendar,
                               BusinessDayConvention.Unadjusted,
                               BusinessDayConvention.Unadjusted,// ref periods & acc periods
-                              DateGeneration.Rule.Forward, false);
+                              DateGeneration.Rule.Forward, false, settings_);
 
             List<CashFlow> yoyLeg =  new yoyInflationLeg(schedule, calendar, ii, observationLag)
             .withPaymentDayCounter(dc)
@@ -661,7 +661,7 @@ namespace TestSuite
 
                         Date from = vars.nominalTS.link.referenceDate();
                         Date to = from+new Period(lengths[i],TimeUnit.Years);
-                        Schedule yoySchedule = new MakeSchedule().from(from).to(to)
+                        Schedule yoySchedule = new MakeSchedule(settings).from(from).to(to)
                         .withTenor(new Period(1,TimeUnit.Years))
                         .withCalendar(new UnitedKingdom())
                         .withConvention(BusinessDayConvention.Unadjusted)

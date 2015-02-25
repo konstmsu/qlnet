@@ -38,12 +38,7 @@ namespace QLNet
         protected Date evaluationDate_;
 
 
-        public SwaptionVolatilityDiscrete(List<Period> optionTenors,
-                                   List<Period> swapTenors,
-                                   int settlementDays,
-                                   Calendar cal,
-                                   BusinessDayConvention bdc,
-                                   DayCounter dc)
+        public SwaptionVolatilityDiscrete(List<Period> optionTenors, List<Period> swapTenors, int settlementDays, Calendar cal, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
             : base(settlementDays, cal, bdc, dc)
         {
             nOptionTenors_ = optionTenors.Count;
@@ -66,7 +61,7 @@ namespace QLNet
                                             optionDatesAsReal_);
             optionInterpolator_.update();
             optionInterpolator_.enableExtrapolation();        
-            evaluationDate_ = Settings.evaluationDate();
+            evaluationDate_ = settings.evaluationDate();
             Settings.registerWith(update);
         }
 

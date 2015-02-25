@@ -195,9 +195,9 @@ namespace QLNet
 
         // always works because tenor is always 1 year so
         // no problem with different days-in-month
-        Date from = Settings.evaluationDate();
+        Date from = _settings.evaluationDate();
         Date to = maturity_;
-        Schedule fixedSchedule = new MakeSchedule().from(from).to(to)
+        Schedule fixedSchedule = new MakeSchedule(_settings).from(from).to(to)
                                     .withTenor(new Period(1,TimeUnit.Years))
                                     .withConvention(BusinessDayConvention.Unadjusted)
                                     .withCalendar(calendar_)// fixed leg gets cal from sched

@@ -106,7 +106,7 @@ namespace TestSuite
             //SavedSettings backup;
 
             // setup
-            public CommonVars() 
+            public CommonVars(SavedSettings settings) 
             {
                 conventions = new SwaptionMarketConventions();
                 conventions.setConventions();
@@ -118,7 +118,7 @@ namespace TestSuite
                                              atm.tenors.options,
                                              atm.tenors.swaps,
                                              atm.volsHandle,
-                                             conventions.dayCounter));
+                                             conventions.dayCounter, settings));
                 termStructure=new RelinkableHandle<YieldTermStructure>(); 
                 termStructure.linkTo((new FlatForward(0, conventions.calendar,
                                                       0.05, new Actual365Fixed())));
@@ -313,8 +313,8 @@ namespace TestSuite
 
             //"Testing swaption volatility matrix...");
 
-            CommonVars vars = new CommonVars();
             SavedSettings settings = new SavedSettings();
+            CommonVars vars = new CommonVars(settings);
 
             SwaptionVolatilityMatrix vol;
             string description;
@@ -326,7 +326,7 @@ namespace TestSuite
                                                 vars.atm.tenors.options,
                                                 vars.atm.tenors.swaps,
                                                 vars.atm.volsHandle,
-                                                vars.conventions.dayCounter);
+                                                vars.conventions.dayCounter, settings);
 
             vars.makeCoherenceTest(description, vol, settings);
 
@@ -349,7 +349,7 @@ namespace TestSuite
                                                 vars.atm.tenors.options,
                                                 vars.atm.tenors.swaps,
                                                 vars.atm.volsHandle,
-                                                vars.conventions.dayCounter);
+                                                vars.conventions.dayCounter, settings);
 
             vars.makeCoherenceTest(description, vol, settings);
 
@@ -370,8 +370,8 @@ namespace TestSuite
         public void testSwaptionVolMatrixObservability()
         {
             //"Testing swaption volatility matrix observability...");
-
-            CommonVars vars=new CommonVars();
+            SavedSettings settings = new SavedSettings();
+            CommonVars vars=new CommonVars(settings);
 
             SwaptionVolatilityMatrix vol;
             string description;
@@ -383,7 +383,7 @@ namespace TestSuite
                                                 vars.atm.tenors.options,
                                                 vars.atm.tenors.swaps,
                                                 vars.atm.volsHandle,
-                                                vars.conventions.dayCounter);
+                                                vars.conventions.dayCounter, settings);
             
             vars.makeObservabilityTest(description, vol, true, true);
 
@@ -405,7 +405,7 @@ namespace TestSuite
                                                 vars.atm.tenors.options,
                                                 vars.atm.tenors.swaps,
                                                 vars.atm.volsHandle,
-                                                vars.conventions.dayCounter);
+                                                vars.conventions.dayCounter, settings);
             vars.makeObservabilityTest(description, vol, false, true);
 
             // fixed reference date, fixed market data

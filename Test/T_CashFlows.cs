@@ -201,9 +201,10 @@ namespace TestSuite
 		public void testDefaultSettlementDate() 
 		{
 			// Testing default evaluation date in cashflows methods...
-			Date today = Settings.evaluationDate();
+            SavedSettings settings = new SavedSettings();
+            Date today = Settings.evaluationDate();
 			Schedule schedule = new
-				MakeSchedule()
+				MakeSchedule(settings)
 				.from(today-new Period(2,TimeUnit.Months)).to(today+new Period(4,TimeUnit.Months))
 				.withFrequency(Frequency.Semiannual)
 				.withCalendar(new TARGET())
@@ -216,7 +217,6 @@ namespace TestSuite
 						.withNotionals(100.0)
 						.withPaymentAdjustment(BusinessDayConvention.Following);
 
-            SavedSettings settings = new SavedSettings();
             double accruedPeriod = CashFlows.accruedPeriod(leg, false, settings);
 			if (accruedPeriod == 0.0)
 				Assert.Fail("null accrued period with default settlement date");
@@ -237,7 +237,7 @@ namespace TestSuite
             // Testing ibor leg construction with null fixing days...
 			Date today = Settings.evaluationDate();
 			Schedule schedule = new
-				MakeSchedule()
+				MakeSchedule(settings)
 				.from(today-new Period(2,TimeUnit.Months)).to(today+new Period(4,TimeUnit.Months))
 				.withFrequency(Frequency.Semiannual)
 				.withCalendar(new TARGET())

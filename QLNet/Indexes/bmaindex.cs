@@ -32,15 +32,21 @@ namespace QLNet {
     */
     public class BMAIndex : InterestRateIndex {
         protected Handle<YieldTermStructure> termStructure_;
+        SavedSettings _settings;
         public Handle<YieldTermStructure> forwardingTermStructure() { return termStructure_; }
 
-        public BMAIndex(SavedSettings settings) : this(new Handle<YieldTermStructure>(), settings) { }
+        public BMAIndex(SavedSettings settings) : this(new Handle<YieldTermStructure>(), settings)
+        {
+            _settings = settings;
+        }
+
         public BMAIndex(Handle<YieldTermStructure> h, SavedSettings settings)
             : base("BMA", new Period(1, TimeUnit.Weeks), 1, new USDCurrency(),
                    new UnitedStates(UnitedStates.Market.NYSE), new ActualActual(ActualActual.Convention.ISDA), settings) {
             termStructure_ = h;
             h.registerWith(update);
-        }
+            _settings = settings;
+                   }
 
         //! \name Index interface
         public override string name() { return "BMA"; }
@@ -67,7 +73,7 @@ namespace QLNet {
         //! \name Date calculations
         /*! This method returns a schedule of fixing dates between start and end. */
         public Schedule fixingSchedule(Date start, Date end) {
-           return new MakeSchedule().from(Utils.previousWednesday(start))
+           return new MakeSchedule(_settings).from(Utils.previousWednesday(start))
                              .to(Utils.nextWednesday(end))
                              .withFrequency(Frequency.Weekly)
                              .withCalendar(fixingCalendar_)

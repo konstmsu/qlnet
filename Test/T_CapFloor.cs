@@ -62,7 +62,7 @@ namespace TestSuite {
                 Date endDate = calendar.advance(startDate, new Period(length, TimeUnit.Years), convention);
                 Schedule schedule = new Schedule(startDate, endDate, new Period(frequency), calendar,
                                                  convention, convention, DateGeneration.Rule.Forward,
-                                                 false);
+                                                 false, settings_);
                 return new IborLeg(schedule, index, settings_)
                     .withPaymentDayCounter(index.dayCounter())
                     .withFixingDays(fixingDays)
@@ -285,7 +285,7 @@ namespace TestSuite {
                         Schedule schedule = new Schedule(startDate, maturity,
                                                          new Period(vars.frequency), vars.calendar,
                                                          vars.convention, vars.convention,
-                                                         DateGeneration.Rule.Forward, false);
+                                                         DateGeneration.Rule.Forward, false, settings);
                         VanillaSwap swap = new VanillaSwap(VanillaSwap.Type.Payer, vars.nominals[0],
                                                            schedule, strikes[j], vars.index.dayCounter(),
                                                            schedule, vars.index, 0.0,
@@ -324,7 +324,7 @@ namespace TestSuite {
                 Schedule schedule = new Schedule(startDate, maturity,
                                                  new Period(vars.frequency), vars.calendar,
                                                  vars.convention, vars.convention,
-                                                 DateGeneration.Rule.Forward, false);
+                                                 DateGeneration.Rule.Forward, false, settings);
 
                 for (int j = 0; j < strikes.Length; j++) {
                     for (int k = 0; k < vols.Length; k++) {

@@ -224,14 +224,12 @@ namespace QLNet {
             Schedule fixedSchedule = new Schedule(startDate, endDate,
                                    fixedTenor_, fixedCalendar_,
                                    fixedConvention_, fixedTerminationDateConvention_,
-                                   fixedRule_, fixedEndOfMonth_,
-                                   fixedFirstDate_, fixedNextToLastDate_);
+                                   fixedRule_, fixedEndOfMonth_, _settings, firstDate: fixedFirstDate_, nextToLastDate: fixedNextToLastDate_);
 
             Schedule floatSchedule = new Schedule(startDate, endDate,
                                    floatTenor_, floatCalendar_,
                                    floatConvention_, floatTerminationDateConvention_,
-                                   floatRule_, floatEndOfMonth_,
-                                   floatFirstDate_, floatNextToLastDate_);
+                                   floatRule_, floatEndOfMonth_, _settings, firstDate: floatFirstDate_, nextToLastDate: floatNextToLastDate_);
 
             double? usedFixedRate = fixedRate_;
             if (fixedRate_ == null) {       // calculate a fair fixed rate if no fixed rate is provided

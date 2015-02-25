@@ -103,8 +103,7 @@ namespace QLNet
 
          Schedule schedule = new Schedule(startDate, maturityDate_, tenor,
                                           calendar, accrualConvention, accrualConvention,
-                                          rule, endOfMonth,
-                                          firstDate, nextToLastDate);
+                                          rule, endOfMonth, settings, firstDate: firstDate, nextToLastDate: nextToLastDate);
 
             
          cashflows_ = new FixedRateLeg(schedule)

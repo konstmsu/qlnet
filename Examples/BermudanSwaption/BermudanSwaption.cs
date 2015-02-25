@@ -94,10 +94,10 @@ namespace BermudanSwaption
                                              floatingLegConvention);
             Schedule fixedSchedule = new Schedule(startDate, maturity, new Period(fixedLegFrequency),
                                                     calendar, fixedLegConvention, fixedLegConvention,
-                                                    DateGeneration.Rule.Forward, false);
+                                                    DateGeneration.Rule.Forward, false, settings);
             Schedule floatSchedule = new Schedule(startDate, maturity, new Period(floatingLegFrequency),
                                                     calendar, floatingLegConvention, floatingLegConvention,
-                                                    DateGeneration.Rule.Forward, false);
+                                                    DateGeneration.Rule.Forward, false, settings);
 
             VanillaSwap swap = new VanillaSwap(
                 type, 1000.0,

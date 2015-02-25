@@ -124,7 +124,7 @@ namespace TestSuite
          // fixing data
          Date from = new Date(1, Month.January, 2005);
          Date to = new Date(13, Month.August, 2007);
-         Schedule rpiSchedule = new MakeSchedule().from(from).to(to)
+         Schedule rpiSchedule = new MakeSchedule(settings).from(from).to(to)
                                 .withTenor(new Period(1, TimeUnit.Months))
                                 .withCalendar(new UnitedKingdom())
                                 .withConvention(BusinessDayConvention.ModifiedFollowing)
@@ -187,7 +187,7 @@ namespace TestSuite
 			// fixing data
 			Date from = new Date( 1, Month.January, 2005 );
 			Date to = new Date( 13, Month.August, 2007 );
-			Schedule rpiSchedule = new MakeSchedule().from( from ).to( to )
+			Schedule rpiSchedule = new MakeSchedule(backup).from( from ).to( to )
 										  .withTenor( new Period( 1, TimeUnit.Months ) )
 										  .withCalendar( new UnitedKingdom() )
 										  .withConvention( BusinessDayConvention.ModifiedFollowing )
@@ -272,7 +272,7 @@ namespace TestSuite
 			hz.linkTo( pZITS );
 			from = hz.link.baseDate();
 			to = hz.link.maxDate() - new Period( 1, TimeUnit.Months ); // a bit of margin for adjustments
-			Schedule testIndex = new MakeSchedule().from( from ).to( to )
+			Schedule testIndex = new MakeSchedule(backup).from( from ).to( to )
 											.withTenor( new Period( 1, TimeUnit.Months ) )
 											.withCalendar( new UnitedKingdom() )
 											.withConvention( BusinessDayConvention.ModifiedFollowing ).value();
@@ -552,7 +552,7 @@ namespace TestSuite
 			hz.linkTo( pZITSyes );
 			from = hz.link.baseDate() + new Period( 1, TimeUnit.Months ); // to avoid historical linear bit for rest of base month
 			to = hz.link.maxDate() - new Period( 1, TimeUnit.Months ); // a bit of margin for adjustments
-			testIndex = new MakeSchedule().from( from ).to( to )
+			testIndex = new MakeSchedule(backup).from( from ).to( to )
 			.withTenor( new Period( 1, TimeUnit.Months ) )
 			.withCalendar( new UnitedKingdom() )
 			.withConvention( BusinessDayConvention.ModifiedFollowing ).value();
@@ -700,7 +700,7 @@ namespace TestSuite
 			// fixing data
 			Date from = new Date( 1, Month.January, 2005 );
 			Date to = new Date( 13, Month.August, 2007 );
-			Schedule rpiSchedule = new MakeSchedule().from( from ).to( to )
+			Schedule rpiSchedule = new MakeSchedule(backup).from( from ).to( to )
 			.withTenor( new Period( 1, TimeUnit.Months ) )
 			.withCalendar( new UnitedKingdom() )
 			.withConvention( BusinessDayConvention.ModifiedFollowing ).value();
@@ -791,7 +791,7 @@ namespace TestSuite
 			// fixing data
 			Date from = new Date(1, Month.January, 2005);
 			Date to = new Date(13, Month.August, 2007);
-			Schedule rpiSchedule = new MakeSchedule().from(from).to(to)
+			Schedule rpiSchedule = new MakeSchedule(backup).from(from).to(to)
 			.withTenor(new Period(1,TimeUnit.Months))
 			.withCalendar(new UnitedKingdom())
 			.withConvention(BusinessDayConvention.ModifiedFollowing).value();
@@ -861,7 +861,7 @@ namespace TestSuite
 
 				from = nominalTS.referenceDate();
 				to = yyData[j].date;
-				Schedule yoySchedule = new MakeSchedule().from(from).to(to)
+				Schedule yoySchedule = new MakeSchedule(backup).from(from).to(to)
 				.withConvention(BusinessDayConvention.Unadjusted) // fixed leg gets calendar from
 				.withCalendar(calendar)     // schedule
 				.withTenor(new Period(1,TimeUnit.Years)).value(); // .back
@@ -898,7 +898,7 @@ namespace TestSuite
 			{
 				from = nominalTS.referenceDate() - new Period(k,TimeUnit.Months);
 				to = yyData[jj].date - new Period(k,TimeUnit.Months);
-				Schedule yoySchedule = new MakeSchedule().from(from).to(to)
+				Schedule yoySchedule = new MakeSchedule(backup).from(from).to(to)
 				.withConvention(BusinessDayConvention.Unadjusted) // fixed leg gets calendar from
 				.withCalendar(calendar)     // schedule
 				.withTenor(new Period(1,TimeUnit.Years))

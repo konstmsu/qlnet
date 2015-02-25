@@ -125,17 +125,7 @@ namespace QLNet
 
    public class OvernightIndexedCoupon : FloatingRateCoupon
    {
-      public OvernightIndexedCoupon(
-               Date paymentDate,
-               double nominal,
-               Date startDate,
-               Date endDate,
-               OvernightIndex overnightIndex,
-               double gearing = 1.0,
-               double spread = 0.0,
-               Date refPeriodStart = null,
-               Date refPeriodEnd = null,
-               DayCounter dayCounter = null)
+      public OvernightIndexedCoupon(Date paymentDate, double nominal, Date startDate, Date endDate, OvernightIndex overnightIndex, SavedSettings settings, double gearing = 1.0, double spread = 0.0, Date refPeriodStart = null, Date refPeriodEnd = null, DayCounter dayCounter = null)
          : base(nominal, paymentDate,startDate, endDate,
                          overnightIndex.fixingDays(), overnightIndex,
                          gearing, spread,
@@ -143,7 +133,7 @@ namespace QLNet
                          dayCounter, false) 
       {
          // value dates
-         Schedule sch = new MakeSchedule()
+         Schedule sch = new MakeSchedule(settings)
                       .from(startDate)
                       .to(endDate)
                       .withTenor(new Period(1,TimeUnit.Days))
@@ -204,11 +194,12 @@ namespace QLNet
     //! helper class building a sequence of overnight coupons
    public class OvernightLeg : RateLegBase
     {
-       public OvernightLeg(Schedule schedule,OvernightIndex overnightIndex)
+       public OvernightLeg(Schedule schedule, OvernightIndex overnightIndex, SavedSettings settings)
        {
           schedule_ = schedule;
           overnightIndex_ = overnightIndex;
           paymentAdjustment_ = BusinessDayConvention.Following;
+           _settings = settings;
        }
        public new OvernightLeg withNotionals(double notional)
        {
@@ -253,7 +244,7 @@ namespace QLNet
 
        public override List<CashFlow> value()
        {
-          return CashFlowVectors.OvernightLeg(notionals_, schedule_, paymentAdjustment_, overnightIndex_, gearings_, spreads_, paymentDayCounter_);
+          return CashFlowVectors.OvernightLeg(notionals_, schedule_, paymentAdjustment_, overnightIndex_, gearings_, spreads_, paymentDayCounter_, _settings);
        }
 
        //private Schedule schedule_;
@@ -263,6 +254,7 @@ namespace QLNet
        //private BusinessDayConvention paymentAdjustment_;
        private List<double> gearings_;
        private List<double> spreads_;
+       SavedSettings _settings;
     };
 
 }

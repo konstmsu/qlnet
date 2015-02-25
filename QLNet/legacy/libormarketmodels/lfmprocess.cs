@@ -198,11 +198,11 @@ namespace QLNet
             
             Schedule schedule = new Schedule(refDate,
                               refDate + new Period(index_.tenor().length() * size_,
-                                               index_.tenor().units()),
+                                  index_.tenor().units()),
                               index_.tenor(), index_.fixingCalendar(),
                               index_.businessDayConvention(),
                               index_.businessDayConvention(),
-                              DateGeneration.Rule.Forward, false);
+                              DateGeneration.Rule.Forward, false, _settings);
 
             IborLeg cashflows = (IborLeg) new IborLeg(schedule, index_, _settings)
                                               .withFixingDays(index_.fixingDays())

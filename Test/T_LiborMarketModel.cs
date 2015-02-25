@@ -380,7 +380,7 @@ namespace TestSuite
                     Date fwdMaturity = fwdStart + new Period(6*j, TimeUnit.Months);
 
                     Schedule schedule =new Schedule(fwdStart, fwdMaturity, index.tenor(), calendar,
-                                       convention, convention, DateGeneration.Rule.Forward, false);
+                                       convention, convention, DateGeneration.Rule.Forward, false, settings);
 
                     double swapRate  = 0.0404;
                     VanillaSwap forwardSwap = new VanillaSwap(VanillaSwap.Type.Receiver, 1.0,

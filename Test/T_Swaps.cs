@@ -52,9 +52,9 @@ namespace TestSuite
          {
             Date maturity = calendar.advance(settlement, length, TimeUnit.Years, floatingConvention);
             Schedule fixedSchedule = new Schedule(settlement, maturity, new Period(fixedFrequency),
-                                     calendar, fixedConvention, fixedConvention, DateGeneration.Rule.Forward, false);
+                                     calendar, fixedConvention, fixedConvention, DateGeneration.Rule.Forward, false, settings);
             Schedule floatSchedule = new Schedule(settlement, maturity, new Period(floatingFrequency),
-                                     calendar, floatingConvention, floatingConvention, DateGeneration.Rule.Forward, false);
+                                     calendar, floatingConvention, floatingConvention, DateGeneration.Rule.Forward, false, settings);
             VanillaSwap swap = new VanillaSwap(type, nominal, fixedSchedule, fixedRate, fixedDayCount,
                                                floatSchedule, index, floatingSpread, index.dayCounter(), settings);
             swap.setPricingEngine(new DiscountingSwapEngine(termStructure));
@@ -235,7 +235,7 @@ namespace TestSuite
          Calendar calendar = new NullCalendar();
          Schedule schedule = new Schedule(vars.today, maturity, new Period(Frequency.Annual), calendar,
                                           BusinessDayConvention.Following, BusinessDayConvention.Following,
-                                          DateGeneration.Rule.Forward, false);
+                                          DateGeneration.Rule.Forward, false, settings);
          DayCounter dayCounter = new SimpleDayCounter();
 
          List<double> nominals = new List<double>() { 100000000.0 };

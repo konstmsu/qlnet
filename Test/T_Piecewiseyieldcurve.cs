@@ -215,7 +215,7 @@ namespace TestSuite {
                     Date issue = calendar.advance(maturity, -bondData[i].length, TimeUnit.Years);
                     List<double> coupons = new List<double>() { bondData[i].coupon / 100.0 };
                     schedules.Add(new Schedule(issue, maturity, new Period(bondData[i].frequency), calendar,
-                                               bondConvention, bondConvention, DateGeneration.Rule.Backward, false));
+                                               bondConvention, bondConvention, DateGeneration.Rule.Backward, false, settings));
                     bondHelpers.Add(new FixedRateBondHelper(p, bondSettlementDays, bondRedemption, schedules[i],
                                                 coupons, bondDayCounter, bondConvention, bondRedemption, issue, settings));
                 }
@@ -778,7 +778,7 @@ namespace TestSuite {
             for (int i = 0; i < vars.bmas; i++) {
                 Period tenor = new Period(vars.bmaData[i].n, vars.bmaData[i].units);
 
-                Schedule bmaSchedule = new MakeSchedule().from(vars.settlement)
+                Schedule bmaSchedule = new MakeSchedule(settings).from(vars.settlement)
                               .to(vars.settlement + tenor)
                               .withFrequency(vars.bmaFrequency)
                               .withCalendar(bma.fixingCalendar())
@@ -786,7 +786,7 @@ namespace TestSuite {
                               .backwards()
                               .value();
 
-                Schedule liborSchedule = new MakeSchedule().from(vars.settlement)
+                Schedule liborSchedule = new MakeSchedule(settings).from(vars.settlement)
                                .to(vars.settlement + tenor)
                                .withTenor(libor3m.tenor())
                                .withCalendar(libor3m.fixingCalendar())

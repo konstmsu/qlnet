@@ -50,9 +50,10 @@ namespace TestSuite
       {
          // Testing schedule with daily frequency
 
-         Date startDate = new Date(17,Month.January,2012);
+          SavedSettings settings = new SavedSettings();
+          Date startDate = new Date(17, Month.January, 2012);
 
-         Schedule s = new MakeSchedule().from(startDate).to(startDate + 7)
+         Schedule s = new MakeSchedule(settings).from(startDate).to(startDate + 7)
                       .withCalendar(new TARGET())
                       .withConvention(BusinessDayConvention.Preceding)
                       .withFrequency(Frequency.Daily).value();
@@ -75,8 +76,9 @@ namespace TestSuite
       public void testEndDateWithEomAdjustment()
       {
          // Testing end date for schedule with end-of-month adjustment
+          SavedSettings settings = new SavedSettings();
 
-         Schedule s = new MakeSchedule().from(new Date(30, Month.September, 2009))
+         Schedule s = new MakeSchedule(settings).from(new Date(30, Month.September, 2009))
                       .to(new Date(15, Month.June, 2012))
                       .withCalendar(new Japan())
                       .withTenor(new Period(6, TimeUnit.Months))
@@ -99,7 +101,7 @@ namespace TestSuite
          check_dates(s, expected);
 
          // now with unadjusted termination date...
-         s = new MakeSchedule().from(new Date(30, Month.September, 2009))
+         s = new MakeSchedule(settings).from(new Date(30, Month.September, 2009))
                            .to(new Date(15, Month.June, 2012))
                            .withCalendar(new Japan())
                            .withTenor(new Period(6 , TimeUnit.Months))
@@ -116,8 +118,9 @@ namespace TestSuite
       [TestMethod()]
       public void testDatesPastEndDateWithEomAdjustment() 
       {
+          SavedSettings settings = new SavedSettings();
 
-         Schedule s = new MakeSchedule().from(new Date(28,Month.March,2013))
+         Schedule s = new MakeSchedule(settings).from(new Date(28,Month.March,2013))
                            .to(new Date(30,Month.March,2015))
                            .withCalendar(new TARGET())
                            .withTenor(new Period(1,TimeUnit.Years))

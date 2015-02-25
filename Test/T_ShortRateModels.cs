@@ -208,10 +208,10 @@ namespace TestSuite
                     Date maturity = calendar.advance(startDate, length[i], TimeUnit.Years);
                     Schedule fixedSchedule = new Schedule(startDate, maturity, new Period(Frequency.Annual),
                                            calendar, BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                           DateGeneration.Rule.Forward, false);
+                                           DateGeneration.Rule.Forward, false, settings);
                     Schedule floatSchedule = new Schedule(startDate, maturity, new Period(Frequency.Semiannual),
                                            calendar, BusinessDayConvention.Following, BusinessDayConvention.Following,
-                                           DateGeneration.Rule.Forward, false);
+                                           DateGeneration.Rule.Forward, false, settings);
                     for (int k=0; k<rates.Length; k++) {
 
                         VanillaSwap swap = new VanillaSwap(VanillaSwap.Type.Payer, 1000000.0,

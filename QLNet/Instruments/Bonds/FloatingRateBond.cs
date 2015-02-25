@@ -94,7 +94,7 @@ namespace QLNet {
             }
 
             Schedule schedule = new Schedule(startDate, maturityDate_, new Period(couponFrequency), calendar_,
-                                             accrualConvention, accrualConvention, rule, endOfMonth, firstDate, nextToLastDate);
+                                             accrualConvention, accrualConvention, rule, endOfMonth, settings, firstDate: firstDate, nextToLastDate: nextToLastDate);
 
             cashflows_ = new IborLeg(schedule, index, settings)
                             .withPaymentDayCounter(accrualDayCounter)

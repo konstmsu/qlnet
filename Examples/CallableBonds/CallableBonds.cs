@@ -43,7 +43,8 @@ namespace CallableBonds
       {
          // boost::timer timer;
 
-         Date today = new Date(16,Month.October,2007);
+          SavedSettings settings = new SavedSettings();
+          Date today = new Date(16, Month.October, 2007);
          Settings.setEvaluationDate(today);
 
          Console.WriteLine();
@@ -115,7 +116,7 @@ namespace CallableBonds
 
          Schedule sch = new Schedule( dated, maturity, new Period(frequency), bondCalendar,
                                       accrualConvention, accrualConvention,
-                                      DateGeneration.Rule.Backward, false);
+                                      DateGeneration.Rule.Backward, false, settings);
 
          int maxIterations = 1000;
          double accuracy = 1e-8;
@@ -130,7 +131,6 @@ namespace CallableBonds
 
          IPricingEngine engine0 = new TreeCallableFixedRateBondEngine(hw0, gridIntervals, termStructure);
 
-          SavedSettings settings = new SavedSettings();
           CallableFixedRateBond callableBond = new CallableFixedRateBond( settlementDays, faceAmount, sch,
                                                                          new InitializedList<double>(1, coupon),
                                                                          bondDayCounter, settings, paymentConvention,

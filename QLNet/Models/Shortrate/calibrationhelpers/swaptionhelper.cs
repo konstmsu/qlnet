@@ -168,11 +168,11 @@ namespace QLNet
         Schedule fixedSchedule = new Schedule(startDate, endDate, fixedLegTenor_, calendar,
                                index_.businessDayConvention(),
                                index_.businessDayConvention(),
-                               DateGeneration.Rule.Forward, false);
+                               DateGeneration.Rule.Forward, false, settings_);
         Schedule floatSchedule = new Schedule(startDate, endDate, index_.tenor(), calendar,
                                index_.businessDayConvention(),
                                index_.businessDayConvention(),
-                               DateGeneration.Rule.Forward, false);
+                               DateGeneration.Rule.Forward, false, settings_);
 
         IPricingEngine swapEngine = new DiscountingSwapEngine(termStructure_, false);
 

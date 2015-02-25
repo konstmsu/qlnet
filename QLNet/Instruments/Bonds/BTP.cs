@@ -37,7 +37,7 @@ namespace QLNet
                        new Schedule(startDate,
                            maturityDate, new Period(6,TimeUnit.Months),
                            new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                           DateGeneration.Rule.Backward, true),
+                           DateGeneration.Rule.Backward, true, settings),
                        new Euribor6M(fwdCurve != null ? fwdCurve : new Handle<YieldTermStructure>(), settings),
                        new Actual360(),
                        BusinessDayConvention.Following,
@@ -74,7 +74,7 @@ namespace QLNet
          :base(3, 100.0,new Schedule(startDate,
              maturityDate, new Period(6,TimeUnit.Months),
              new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-             DateGeneration.Rule.Backward, true),
+             DateGeneration.Rule.Backward, true, settings),
                     new List<double>{fixedRate},
                     new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing, redemption: 100.0, issueDate: issueDate, paymentCalendar: new TARGET()) { }
 
@@ -85,7 +85,7 @@ namespace QLNet
       :base(3, 100.0, new Schedule(startDate,
           maturityDate, new Period(6,TimeUnit.Months),
           new NullCalendar(), BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-          DateGeneration.Rule.Backward, true),
+          DateGeneration.Rule.Backward, true, settings),
                     new List<double>{fixedRate},
                     new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing, redemption: redemption, issueDate: issueDate, paymentCalendar: new TARGET()) { }
       #region Bond interface

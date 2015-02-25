@@ -57,7 +57,8 @@ namespace TestSuite
 
          //"Testing consistency of bond price/yield calculation...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          double tolerance = 1.0e-7;
          int maxEvaluations = 100;
@@ -91,9 +92,8 @@ namespace TestSuite
                         Date maturity = vars.calendar.advance(issue, lengths[j], TimeUnit.Years);
 
                         Schedule sch = new Schedule(dated, maturity, new Period(frequencies[l]), vars.calendar,
-                                                    accrualConvention, accrualConvention, DateGeneration.Rule.Backward, false);
+                                                    accrualConvention, accrualConvention, DateGeneration.Rule.Backward, false, settings);
 
-                         SavedSettings settings=new SavedSettings();
                          FixedRateBond bond = new FixedRateBond(settlementDays, vars.faceAmount, sch,
                                                                new List<double>() { coupons[k] },
                                                                bondDayCount, settings, paymentConvention: paymentConvention,
@@ -135,7 +135,7 @@ namespace TestSuite
       public void testTheoretical()
       {
          // "Testing theoretical bond price/yield calculation...");
-
+          SavedSettings settings = new SavedSettings();
          CommonVars vars = new CommonVars();
 
          double tolerance = 1.0e-7;
@@ -167,9 +167,8 @@ namespace TestSuite
                   var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(vars.today, rate, bondDayCount));
 
                   Schedule sch = new Schedule(dated, maturity, new Period(frequencies[l]), vars.calendar,
-                                              accrualConvention, accrualConvention, DateGeneration.Rule.Backward, false);
+                                              accrualConvention, accrualConvention, DateGeneration.Rule.Backward, false, settings);
 
-                   SavedSettings settings=new SavedSettings();
                    FixedRateBond bond = new FixedRateBond(settlementDays, vars.faceAmount, sch, new List<double>() { coupons[k] },
                                                          bondDayCount, settings, paymentConvention: paymentConvention, redemption: redemption, issueDate: issue);
 
@@ -220,7 +219,8 @@ namespace TestSuite
       {
          // ("Testing bond price/yield calculation against cached values...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          // with implicit settlement calculation:
          Date today = new Date(22, Month.November, 2004);
@@ -236,9 +236,8 @@ namespace TestSuite
          Frequency freq = Frequency.Semiannual;
          Schedule sch1 = new Schedule(new Date(31, Month.October, 2004), new Date(31, Month.October, 2006), new Period(freq),
                                       bondCalendar, BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                      DateGeneration.Rule.Backward, false);
+                                      DateGeneration.Rule.Backward, false, settings);
 
-          SavedSettings settings=new SavedSettings();
           FixedRateBond bond1 = new FixedRateBond(settlementDays, vars.faceAmount, sch1, new List<double>() { 0.025 },
                                  bondDayCount, settings, paymentConvention: BusinessDayConvention.ModifiedFollowing, redemption: 100.0, issueDate: new Date(1, Month.November, 2004));
 
@@ -250,7 +249,7 @@ namespace TestSuite
 
          Schedule sch2 = new Schedule(new Date(15, Month.November, 2004), new Date(15, Month.November, 2009), new Period(freq),
                                       bondCalendar, BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                      DateGeneration.Rule.Backward, false);
+                                      DateGeneration.Rule.Backward, false, settings);
 
          FixedRateBond bond2 = new FixedRateBond(settlementDays, vars.faceAmount, sch2, new List<double>() { 0.035 },
                                       bondDayCount, settings, paymentConvention: BusinessDayConvention.ModifiedFollowing,
@@ -376,7 +375,7 @@ namespace TestSuite
          // with explicit settlement date:
          Schedule sch3 = new Schedule(new Date(30, Month.November, 2004), new Date(30, Month.November, 2006), new Period(freq),
                                       new UnitedStates(UnitedStates.Market.GovernmentBond), BusinessDayConvention.Unadjusted,
-                                      BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false);
+                                      BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false, settings);
 
          FixedRateBond bond3 = new FixedRateBond(settlementDays, vars.faceAmount, sch3, new List<double>() { 0.02875 },
                              new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing, redemption: 100.0, issueDate: new Date(30, Month.November, 2004));
@@ -485,7 +484,8 @@ namespace TestSuite
       {
          // "Testing fixed-coupon bond prices against cached values...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          Date today = new Date(22, Month.November, 2004);
          Settings.setEvaluationDate(today);
@@ -500,9 +500,8 @@ namespace TestSuite
          Schedule sch = new Schedule(new Date(30, Month.November, 2004),
                       new Date(30, Month.November, 2008), new Period(Frequency.Semiannual),
                       new UnitedStates(UnitedStates.Market.GovernmentBond),
-                      BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false);
+                      BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false, settings);
 
-          SavedSettings settings=new SavedSettings();
           FixedRateBond bond1 = new FixedRateBond(settlementDays, vars.faceAmount, sch, new List<double>() { 0.02875 },
                              new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing,
                              redemption: 100.0, issueDate: new Date(30, Month.November, 2004));
@@ -549,8 +548,7 @@ namespace TestSuite
          Schedule sch3 = new Schedule(new Date(30, Month.November, 2004),
                        new Date(30, Month.March, 2009), new Period(Frequency.Semiannual),
                        new UnitedStates(UnitedStates.Market.GovernmentBond),
-                       BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false,
-                       null, new Date(30, Month.November, 2008));
+                       BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false, settings, firstDate: null, nextToLastDate: new Date(30, Month.November, 2008));
 
          FixedRateBond bond3 = new FixedRateBond(settlementDays, vars.faceAmount, sch3,
                                couponRates, new ActualActual(ActualActual.Convention.ISMA), settings, paymentConvention: BusinessDayConvention.ModifiedFollowing,
@@ -596,7 +594,7 @@ namespace TestSuite
          Schedule sch = new Schedule(new Date(30, Month.November, 2004), new Date(30, Month.November, 2008),
                                      new Period(Frequency.Semiannual), new UnitedStates(UnitedStates.Market.GovernmentBond),
                                      BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
-                                     DateGeneration.Rule.Backward, false);
+                                     DateGeneration.Rule.Backward, false, settings);
 
           FloatingRateBond bond1 = new FloatingRateBond(settlementDays, vars.faceAmount, sch,
                                 index, new ActualActual(ActualActual.Convention.ISMA),
@@ -695,7 +693,8 @@ namespace TestSuite
       {
          //("Testing Brazilian public bond prices against cached values...");
 
-         CommonVars vars = new CommonVars();
+          SavedSettings settings = new SavedSettings();
+          CommonVars vars = new CommonVars();
 
          double faceAmount = 1000.0;
          double redemption = 100.0;
@@ -751,10 +750,9 @@ namespace TestSuite
                               maturityDates[bondIndex], new Period(Frequency.Semiannual),
                               new Brazil(Brazil.Market.Settlement),
                               BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                              DateGeneration.Rule.Backward, false);
+                              DateGeneration.Rule.Backward, false, settings);
 
 
-             SavedSettings settings=new SavedSettings();
              FixedRateBond bond = new FixedRateBond(settlementDays,
                                                    faceAmount,
                                                    schedule,

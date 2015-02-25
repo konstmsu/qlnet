@@ -143,7 +143,7 @@ namespace Bonds {
                 Schedule schedule = new Schedule(issueDates[i], maturities[i], new Period(Frequency.Semiannual), 
                                                  new UnitedStates(UnitedStates.Market.GovernmentBond),
                                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, 
-                                                 DateGeneration.Rule.Backward, false);
+                                                 DateGeneration.Rule.Backward, false, settings);
 
                 FixedRateBondHelper bondHelper = new FixedRateBondHelper(quoteHandle[i],
                                                                          settlementDays,
@@ -363,7 +363,7 @@ namespace Bonds {
              Schedule fixedBondSchedule = new Schedule(new Date(15, Month.May, 2007),
                      new Date(15,Month.May,2017), new Period(Frequency.Semiannual),
                      new UnitedStates(UnitedStates.Market.GovernmentBond),
-                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false);
+                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false, settings);
 
              FixedRateBond fixedRateBond = new FixedRateBond(
                      settlementDays,
@@ -387,7 +387,7 @@ namespace Bonds {
              Schedule floatingBondSchedule = new Schedule(new Date(21, Month.October, 2005),
                      new Date(21, Month.October, 2010), new Period(Frequency.Quarterly),
                      new UnitedStates(UnitedStates.Market.NYSE),
-                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, true);
+                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, true, settings);
 
              FloatingRateBond floatingRateBond = new FloatingRateBond(
                      settlementDays,

@@ -32,6 +32,7 @@ namespace TestSuite
       [TestMethod()]
       public void testCashedValues()
       {
+          SavedSettings settings = new SavedSettings();
 
          Date startDate = new Date(01, 03, 2007);
          Period period = new Period(360, TimeUnit.Months);
@@ -41,7 +42,7 @@ namespace TestSuite
          Schedule schedule = new Schedule( startDate, endDate, new Period(1,TimeUnit.Months), calendar,
                                            BusinessDayConvention.Unadjusted,
                                            BusinessDayConvention.Unadjusted,
-                                           DateGeneration.Rule.Backward, false);
+                                           DateGeneration.Rule.Backward, false, settings);
 
          // PSA 100%
          PSACurve psa100 = new PSACurve(startDate);

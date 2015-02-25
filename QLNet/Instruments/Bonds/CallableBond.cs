@@ -326,7 +326,7 @@ namespace QLNet
                                                        paymentConvention,
                                                        paymentConvention,
                                                        DateGeneration.Rule.Backward,
-                                                       false), 
+                                                       false, settings), 
                new List<double>(){0.0}, dayCounter, settings, paymentConvention, redemption, issueDate, putCallSchedule)
       {
          if (putCallSchedule == null)

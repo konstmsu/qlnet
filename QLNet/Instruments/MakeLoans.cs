@@ -37,8 +37,9 @@ namespace QLNet
       private Loan.Amortising amortising_;
       private DateGeneration.Rule rule_;
       private bool endOfMonth_;
+       SavedSettings _settings;
 
-      public MakeFixedLoan(Date startDate, Date endDate, double fixedRate,Frequency frequency)
+       public MakeFixedLoan(Date startDate, Date endDate, double fixedRate, Frequency frequency, SavedSettings settings)
       {
          startDate_ = startDate;
          endDate_ = endDate;
@@ -55,6 +56,7 @@ namespace QLNet
          endOfMonth_ = false;
 
          //engine_ = new DiscountingSwapEngine(index.termStructure());
+           _settings = settings;
       }
 
       public MakeFixedLoan withType(Loan.Type type)
@@ -112,14 +114,14 @@ namespace QLNet
       {
 
          Schedule fixedSchedule = new Schedule(startDate_, endDate_, new Period(frequency_),
-                                  calendar_, convention_, convention_, rule_, endOfMonth_);
+                                  calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
          Period principalPeriod = amortising_ == Loan.Amortising.Bullet ? 
                                   new Period(Frequency.Once) : 
                                   new Period(frequency_);
 
          Schedule principalSchedule = new Schedule(startDate_, endDate_, principalPeriod,
-                                  calendar_, convention_, convention_, rule_, endOfMonth_);
+                                  calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
          FixedLoan fl = new FixedLoan(type_, nominal_, fixedSchedule, fixedRate_, dayCounter_,
                                      principalSchedule, convention_);
@@ -227,14 +229,14 @@ namespace QLNet
       {
 
          Schedule floatingSchedule = new Schedule(startDate_, endDate_, new Period(frequency_),
-                                  calendar_, convention_, convention_, rule_, endOfMonth_);
+                                  calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
          Period principalPeriod = amortising_ == Loan.Amortising.Bullet ?
                                   new Period(Frequency.Once) :
                                   new Period(frequency_);
 
          Schedule principalSchedule = new Schedule(startDate_, endDate_, principalPeriod,
-                                  calendar_, convention_, convention_, rule_, endOfMonth_);
+                                  calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
          FloatingLoan fl = new FloatingLoan(type_, nominal_, floatingSchedule, spread_, dayCounter_,
                                      principalSchedule, convention_,index_, _settings);
@@ -257,8 +259,9 @@ namespace QLNet
       private Loan.Amortising amortising_;
       private DateGeneration.Rule rule_;
       private bool endOfMonth_;
+       SavedSettings _settings;
 
-      public MakeCommercialPaper(Date startDate, Date endDate, double fixedRate, Frequency frequency)
+       public MakeCommercialPaper(Date startDate, Date endDate, double fixedRate, Frequency frequency, SavedSettings settings)
       {
          startDate_ = startDate;
          endDate_ = endDate;
@@ -275,6 +278,7 @@ namespace QLNet
          endOfMonth_ = false;
 
          //engine_ = new DiscountingSwapEngine(index.termStructure());
+           _settings = settings;
       }
 
       public MakeCommercialPaper withType(Loan.Type type)
@@ -332,14 +336,14 @@ namespace QLNet
       {
 
          Schedule fixedSchedule = new Schedule(startDate_, endDate_, new Period(frequency_),
-                                  calendar_, convention_, convention_, rule_, endOfMonth_);
+                                  calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
          Period principalPeriod = amortising_ == Loan.Amortising.Bullet ?
                                   new Period(Frequency.Once) :
                                   new Period(frequency_);
 
          Schedule principalSchedule = new Schedule(startDate_, endDate_, principalPeriod,
-                                  calendar_, convention_, convention_, rule_, endOfMonth_);
+                                  calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
          CommercialPaper fl = new CommercialPaper(type_, nominal_, fixedSchedule, fixedRate_, dayCounter_,
                                      principalSchedule, convention_);
@@ -361,8 +365,9 @@ namespace QLNet
       private Loan.Amortising amortising_;
       private DateGeneration.Rule rule_;
       private bool endOfMonth_;
+       SavedSettings _settings;
 
-      public MakeCash(Date startDate, Date endDate, double nominal)
+       public MakeCash(Date startDate, Date endDate, double nominal, SavedSettings settings)
       {
          startDate_ = startDate;
          endDate_ = endDate;
@@ -378,6 +383,7 @@ namespace QLNet
          endOfMonth_ = false;
 
          //engine_ = new DiscountingSwapEngine(index.termStructure());
+           _settings = settings;
       }
 
       public MakeCash withType(Loan.Type type)
@@ -433,7 +439,7 @@ namespace QLNet
                                   new Period(frequency_);
 
          Schedule principalSchedule = new Schedule(startDate_, endDate_, principalPeriod,
-                                  calendar_, convention_, convention_, rule_, endOfMonth_);
+                                  calendar_, convention_, convention_, rule_, endOfMonth_, _settings);
 
          Cash c = new Cash(type_, nominal_, principalSchedule, convention_);
          return c;

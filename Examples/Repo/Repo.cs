@@ -25,7 +25,8 @@ using QLNet;
 namespace Repo {
 	public class Repo {
 		static void Main(string[] args) {
-			DateTime timer = DateTime.Now;
+            SavedSettings settings = new SavedSettings();
+            DateTime timer = DateTime.Now;
 
 			Date repoSettlementDate = new Date(14,Month.February,2000);;
 			Date repoDeliveryDate = new Date(15,Month.August,2000);
@@ -82,8 +83,7 @@ namespace Repo {
 								  new Period(bondCouponFrequency),
 								  bondCalendar,bondBusinessDayConvention,
 								  bondBusinessDayConvention,
-								  DateGeneration.Rule.Backward,false);
-		    SavedSettings settings=new SavedSettings();
+								  DateGeneration.Rule.Backward,false, settings);
 		    FixedRateBond bond = new FixedRateBond(bondSettlementDays,
 											 faceAmount,
 											 bondSchedule,

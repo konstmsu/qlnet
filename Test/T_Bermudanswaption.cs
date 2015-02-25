@@ -82,13 +82,13 @@ namespace TestSuite
                                        calendar,
                                        fixedConvention,
                                        fixedConvention,
-                                       DateGeneration.Rule.Forward, false);
+                                       DateGeneration.Rule.Forward, false, _settings);
                 Schedule floatSchedule = new Schedule(start, maturity,
                                        new Period(floatingFrequency),
                                        calendar,
                                        floatingConvention,
                                        floatingConvention,
-                                       DateGeneration.Rule.Forward, false);
+                                       DateGeneration.Rule.Forward, false, _settings);
                 VanillaSwap swap =
                           new VanillaSwap(type, nominal,
                                           fixedSchedule, fixedRate, fixedDayCount,

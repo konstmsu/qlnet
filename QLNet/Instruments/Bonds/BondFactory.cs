@@ -53,9 +53,9 @@ namespace QLNet
          Date endDate = calendar.advance(startDate,bondLength);
 
          Schedule schedule = new Schedule(startDate,endDate,bondLength,calendar,BusinessDayConvention.Unadjusted,
-                                          BusinessDayConvention.Unadjusted,DateGeneration.Rule.Backward,false);
+                                          BusinessDayConvention.Unadjusted,DateGeneration.Rule.Backward,false, settings);
 
-         bond = new AmortizingFixedRateBond(0, calendar, amount, startDate, bondLength, payFrequency, rate, dCounter, settings);
+         bond = new AmortizingFixedRateBond(0, calendar, amount, startDate, bondLength, payFrequency, rate, dCounter, settings, settings);
 
          return bond;
 
@@ -73,7 +73,7 @@ namespace QLNet
          Date endDate = calendar.advance(startDate, bondLength);
 
          Schedule schedule = new Schedule(startDate, endDate, bondLength, calendar, BusinessDayConvention.Unadjusted,
-                                          BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false);
+                                          BusinessDayConvention.Unadjusted, DateGeneration.Rule.Backward, false, settings);
 
          bond = new MBSFixedRateBond(0, calendar, amount, startDate, bondLength, originalLength , payFrequency, WACrate, PassThroughRate, dCounter, psaCurve, settings);
 

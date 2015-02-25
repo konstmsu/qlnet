@@ -33,6 +33,8 @@ namespace TestSuite
       {
          // ("Testing IMM dates...");
 
+          var settings = new SavedSettings();
+
          string[] IMMcodes = new string[] {
                 "F0", "G0", "H0", "J0", "K0", "M0", "N0", "Q0", "U0", "V0", "X0", "Z0",
                 "F1", "G1", "H1", "J1", "K1", "M1", "N1", "Q1", "U1", "V1", "X1", "Z1",
@@ -53,7 +55,7 @@ namespace TestSuite
 
          while (counter <= last)
          {
-            imm = IMM.nextDate(counter, false);
+            imm = IMM.nextDate(counter, false, settings);
 
             // check that imm is greater than counter
             if (imm <= counter)
@@ -68,10 +70,10 @@ namespace TestSuite
                           + counter.DayOfWeek + " " + counter + ")");
 
             // check that imm is <= to the next IMM date in the main cycle
-            if (imm > IMM.nextDate(counter, true))
+            if (imm > IMM.nextDate(counter, true, settings))
                Assert.Fail(imm.DayOfWeek + " " + imm
                           + " is not less than or equal to the next future in the main cycle "
-                          + IMM.nextDate(counter, true));
+                          + IMM.nextDate(counter, true, settings));
 
             //// check that if counter is an IMM date, then imm==counter
             //if (IMM::isIMMdate(counter, false) && (imm!=counter))
@@ -81,7 +83,7 @@ namespace TestSuite
             //               << imm.weekday() << " " << imm);
 
             // check that for every date IMMdate is the inverse of IMMcode
-            if (IMM.date(IMM.code(imm), counter) != imm)
+            if (IMM.date(IMM.code(imm), counter, settings) != imm)
                Assert.Fail(IMM.code(imm)
                           + " at calendar day " + counter
                           + " is not the IMM code matching " + imm);
@@ -89,8 +91,8 @@ namespace TestSuite
             // check that for every date the 120 IMM codes refer to future dates
             for (int i = 0; i < 40; ++i)
             {
-               if (IMM.date(IMMcodes[i], counter) < counter)
-                  Assert.Fail(IMM.date(IMMcodes[i], counter)
+               if (IMM.date(IMMcodes[i], counter, settings) < counter)
+                  Assert.Fail(IMM.date(IMMcodes[i], counter, settings)
                          + " is wrong for " + IMMcodes[i]
                          + " at reference date " + counter);
             }

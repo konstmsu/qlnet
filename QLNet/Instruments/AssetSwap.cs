@@ -56,7 +56,7 @@ namespace QLNet
                                     iborIndex.businessDayConvention(),
                                     iborIndex.businessDayConvention(),
                                     DateGeneration.Rule.Backward,
-                                    false); // endOfMonth
+                                    false, settings); // endOfMonth
 
          // the following might become an input parameter
          BusinessDayConvention paymentAdjustment = BusinessDayConvention.Following;
@@ -163,7 +163,7 @@ namespace QLNet
                                          iborIndex.businessDayConvention(),
                                          iborIndex.businessDayConvention(),
                                          DateGeneration.Rule.Backward,
-                                         false); // endOfMonth
+                                         false, settings); // endOfMonth
 
          if (dealMaturity == null)
             dealMaturity = bond_.maturityDate();

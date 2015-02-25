@@ -153,36 +153,36 @@ namespace Swap {
             // setup futures
             // Handle<Quote> convexityAdjustment = new Handle<Quote>(new SimpleQuote(0.0));
             int futMonths = 3;
-            Date imm = IMM.nextDate(settlementDate);
+            Date imm = IMM.nextDate(settlementDate, settings);
 
             RateHelper fut1 = new FuturesRateHelper(new Handle<Quote>(fut1Price), imm, futMonths, calendar,
                     BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
 
-            imm = IMM.nextDate(imm + 1);
+            imm = IMM.nextDate(imm + 1, settings);
             RateHelper fut2 = new FuturesRateHelper(new Handle<Quote>(fut2Price), imm, futMonths, calendar,
                     BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
 
-            imm = IMM.nextDate(imm + 1);
+            imm = IMM.nextDate(imm + 1, settings);
             RateHelper fut3 = new FuturesRateHelper(new Handle<Quote>(fut3Price), imm, futMonths, calendar,
                     BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
 
-            imm = IMM.nextDate(imm + 1);
+            imm = IMM.nextDate(imm + 1, settings);
             RateHelper fut4 = new FuturesRateHelper(new Handle<Quote>(fut4Price), imm, futMonths, calendar,
                     BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
 
-            imm = IMM.nextDate(imm + 1);
+            imm = IMM.nextDate(imm + 1, settings);
             RateHelper fut5 = new FuturesRateHelper(new Handle<Quote>(fut5Price), imm, futMonths, calendar,
                     BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
 
-            imm = IMM.nextDate(imm + 1);
+            imm = IMM.nextDate(imm + 1, settings);
             RateHelper fut6 = new FuturesRateHelper(new Handle<Quote>(fut6Price), imm, futMonths, calendar,
                     BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
 
-            imm = IMM.nextDate(imm + 1);
+            imm = IMM.nextDate(imm + 1, settings);
             RateHelper fut7 = new FuturesRateHelper(new Handle<Quote>(fut7Price), imm, futMonths, calendar,
                     BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
 
-            imm = IMM.nextDate(imm + 1);
+            imm = IMM.nextDate(imm + 1, settings);
             RateHelper fut8 = new FuturesRateHelper(new Handle<Quote>(fut8Price), imm, futMonths, calendar,
                     BusinessDayConvention.ModifiedFollowing, true, depositDayCounter);
 
@@ -301,18 +301,18 @@ namespace Swap {
 
             Date maturity = settlementDate + new Period(lenghtInYears, TimeUnit.Years);
             Schedule fixedSchedule = new Schedule(settlementDate, maturity, new Period(fixedLegFrequency),
-                                     calendar, fixedLegConvention, fixedLegConvention, DateGeneration.Rule.Forward, false);
+                                     calendar, fixedLegConvention, fixedLegConvention, DateGeneration.Rule.Forward, false, settings);
             Schedule floatSchedule = new Schedule(settlementDate, maturity, new Period(floatingLegFrequency),
-                                     calendar, floatingLegConvention, floatingLegConvention, DateGeneration.Rule.Forward, false);
+                                     calendar, floatingLegConvention, floatingLegConvention, DateGeneration.Rule.Forward, false, settings);
             VanillaSwap spot5YearSwap = new VanillaSwap(swapType, nominal, fixedSchedule, fixedRate, fixedLegDayCounter,
                                         floatSchedule, euriborIndex, spread, floatingLegDayCounter, settings);
 
             Date fwdStart = calendar.advance(settlementDate, 1, TimeUnit.Years);
             Date fwdMaturity = fwdStart + new Period(lenghtInYears, TimeUnit.Years);
             Schedule fwdFixedSchedule = new Schedule(fwdStart, fwdMaturity, new Period(fixedLegFrequency), 
-                                        calendar, fixedLegConvention, fixedLegConvention, DateGeneration.Rule.Forward, false);
+                                        calendar, fixedLegConvention, fixedLegConvention, DateGeneration.Rule.Forward, false, settings);
             Schedule fwdFloatSchedule = new Schedule(fwdStart, fwdMaturity, new Period(floatingLegFrequency),
-                                        calendar, floatingLegConvention, floatingLegConvention, DateGeneration.Rule.Forward, false);
+                                        calendar, floatingLegConvention, floatingLegConvention, DateGeneration.Rule.Forward, false, settings);
             VanillaSwap oneYearForward5YearSwap = new VanillaSwap(swapType, nominal, fwdFixedSchedule, fixedRate, fixedLegDayCounter,
                                         fwdFloatSchedule, euriborIndex, spread, floatingLegDayCounter, settings);
 

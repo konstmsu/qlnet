@@ -96,7 +96,7 @@ namespace TestSuite
                                               new Date(4, Month.January, 2037),
                                               new Period(Frequency.Annual), bondCalendar,
                                               BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                              DateGeneration.Rule.Backward, false);
+                                              DateGeneration.Rule.Backward, false, settings);
           Bond bond = new FixedRateBond(settlementDays, vars.faceAmount,
                                        bondSchedule, new List<double>() { 0.04 },
                                        new ActualActual(ActualActual.Convention.ISDA), settings, paymentConvention: BusinessDayConvention.Following,
@@ -410,7 +410,7 @@ namespace TestSuite
                                                      new Date(4,Month.January,2037),
                                                      new Period(Frequency.Annual), bondCalendar,
                                                      BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                                     DateGeneration.Rule.Backward, false);
+                                                     DateGeneration.Rule.Backward, false, settings);
          Bond fixedBond1 = new FixedRateBond(settlementDays, vars.faceAmount,
                                                 fixedBondSchedule1,
                                                 new List<double>(){0.04},
@@ -443,7 +443,7 @@ namespace TestSuite
                                                      new Date(5,Month.February,2019),
                                                      new Period(Frequency.Annual), bondCalendar,
                                                      BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                                     DateGeneration.Rule.Backward, false);
+                                                     DateGeneration.Rule.Backward, false, settings);
          Bond fixedBond2 = new FixedRateBond(settlementDays, vars.faceAmount,
                                              fixedBondSchedule2,
                                              new List<double>(){0.05},
@@ -473,7 +473,7 @@ namespace TestSuite
                                                         new Date(29,Month.September,2013),
                                                         new Period(Frequency.Semiannual), bondCalendar,
                                                         BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                                        DateGeneration.Rule.Backward, false);
+                                                        DateGeneration.Rule.Backward, false, settings);
 
           Bond floatingBond1 = new FloatingRateBond(settlementDays, vars.faceAmount,
                                                    floatingBondSchedule1,
@@ -511,7 +511,7 @@ namespace TestSuite
                                                         new Date(24,Month.September,2018),
                                                         new Period(Frequency.Semiannual), bondCalendar,
                                                         BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
-                                                        DateGeneration.Rule.Backward, false);
+                                                        DateGeneration.Rule.Backward, false, settings);
          Bond floatingBond2 = new FloatingRateBond( settlementDays, vars.faceAmount,
                                                     floatingBondSchedule2,
                                                     vars.iborIndex, new Actual360(),
@@ -561,7 +561,7 @@ namespace TestSuite
                                  new Date(22,Month.August,2020),
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          Bond cmsBond1 = new CmsRateBond(settlementDays, vars.faceAmount,
                                              cmsBondSchedule1,
                                              vars.swapIndex, new Thirty360(),settings,
@@ -598,7 +598,7 @@ namespace TestSuite
                                                    new Date(06,Month.May,2015),
                                                    new Period(Frequency.Annual), bondCalendar,
                                                    BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                                   DateGeneration.Rule.Backward, false);
+                                                   DateGeneration.Rule.Backward, false, settings);
         Bond cmsBond2 = new CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
                         vars.swapIndex, new Thirty360(),settings,
                         BusinessDayConvention.Following, fixingDays,
@@ -697,7 +697,7 @@ namespace TestSuite
                                     new Date(4,Month.January,2037),
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          Bond fixedBond1 = new FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
                            new List<double>{0.04},
                            new ActualActual(ActualActual.Convention.ISDA), settings, paymentConvention: BusinessDayConvention.Following,
@@ -742,7 +742,7 @@ namespace TestSuite
                                     new Date(5,Month.February,2019),
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          Bond fixedBond2 = new FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
                            new List<double>{ 0.05},
                            new Thirty360(Thirty360.Thirty360Convention.BondBasis), settings, paymentConvention: BusinessDayConvention.Following,
@@ -784,7 +784,7 @@ namespace TestSuite
                                        new Date(29,Month.September,2013),
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
 
          Bond floatingBond1 = new FloatingRateBond(settlementDays, vars.faceAmount,
                               floatingBondSchedule1,
@@ -834,7 +834,7 @@ namespace TestSuite
                                        new Date(24,Month.September,2018),
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          Bond floatingBond2 = new FloatingRateBond(settlementDays, vars.faceAmount,
                               floatingBondSchedule2,
                               vars.iborIndex, new Actual360(),
@@ -883,7 +883,7 @@ namespace TestSuite
                                  new Date(22,Month.August,2020),
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          Bond cmsBond1 = new CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
                         vars.swapIndex, new Thirty360(),settings,
                         BusinessDayConvention.Following, fixingDays,
@@ -930,7 +930,7 @@ namespace TestSuite
                                  new Date(06,Month.May,2015),
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          Bond cmsBond2 = new CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
                         vars.swapIndex, new Thirty360(),settings,
                         BusinessDayConvention.Following, fixingDays,
@@ -1067,7 +1067,7 @@ namespace TestSuite
                                     new Date(4,Month.January,2037),
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          Bond fixedBond1 = new FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
                            new List<double>{0.04},
                            new ActualActual(ActualActual.Convention.ISDA), settings, paymentConvention: BusinessDayConvention.Following,
@@ -1100,7 +1100,7 @@ namespace TestSuite
                                     new Date(5,Month.February,2019),
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          Bond fixedBond2 = new FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
                            new List<double>{0.05},
                            new Thirty360(Thirty360.Thirty360Convention.BondBasis), settings, paymentConvention: BusinessDayConvention.Following,
@@ -1131,7 +1131,7 @@ namespace TestSuite
                                        new Date(29,Month.September,2013),
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
 
          Bond floatingBond1 = new FloatingRateBond(settlementDays, vars.faceAmount,
                               floatingBondSchedule1,
@@ -1168,7 +1168,7 @@ namespace TestSuite
                                        new Date(24,Month.September,2018),
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          Bond floatingBond2 = new FloatingRateBond(settlementDays, vars.faceAmount,
                               floatingBondSchedule2,
                               vars.iborIndex, new Actual360(),
@@ -1204,7 +1204,7 @@ namespace TestSuite
                                  new Date(22,Month.August,2020),
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          Bond cmsBond1 = new CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
                         vars.swapIndex, new Thirty360(),settings,
                         BusinessDayConvention.Following, fixingDays,
@@ -1239,7 +1239,7 @@ namespace TestSuite
                                  new Date(06,Month.May,2015),
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          Bond cmsBond2 = new  CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
                         vars.swapIndex, new Thirty360(),settings,
                         BusinessDayConvention.Following, fixingDays,
@@ -1344,7 +1344,7 @@ namespace TestSuite
                                     fixedBondMaturityDate1,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg1 = new FixedRateLeg(fixedBondSchedule1)
             .withCouponRates(0.04, new ActualActual(ActualActual.Convention.ISDA))
             .withNotionals(vars.faceAmount);
@@ -1384,7 +1384,7 @@ namespace TestSuite
                                     fixedBondMaturityDate2,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg2 = new FixedRateLeg(fixedBondSchedule2)
             .withCouponRates(0.05, new Thirty360(Thirty360.Thirty360Convention.BondBasis))
             .withNotionals(vars.faceAmount);
@@ -1420,7 +1420,7 @@ namespace TestSuite
                                        floatingBondMaturityDate1,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
@@ -1463,7 +1463,7 @@ namespace TestSuite
                                        floatingBondMaturityDate2,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
@@ -1520,7 +1520,7 @@ namespace TestSuite
                                  cmsBondMaturityDate1,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg1 = new CmsLeg(cmsBondSchedule1, vars.swapIndex)
             .withFixingDays(fixingDays)
             .withPaymentDayCounter(new Thirty360())
@@ -1562,7 +1562,7 @@ namespace TestSuite
                                  cmsBondMaturityDate2,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg2 = new CmsLeg(cmsBondSchedule2, vars.swapIndex)
             .withFixingDays(fixingDays)
             .withGearings(0.84)
@@ -1677,7 +1677,7 @@ namespace TestSuite
                                     fixedBondMaturityDate1,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg1 = new FixedRateLeg(fixedBondSchedule1)
             .withCouponRates(0.04, new ActualActual(ActualActual.Convention.ISDA))
             .withNotionals(vars.faceAmount);
@@ -1727,7 +1727,7 @@ namespace TestSuite
                                     fixedBondMaturityDate2,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg2 = new FixedRateLeg(fixedBondSchedule2)
             .withCouponRates(0.05, new Thirty360(Thirty360.Thirty360Convention.BondBasis))
             .withNotionals(vars.faceAmount);
@@ -1772,7 +1772,7 @@ namespace TestSuite
                                        floatingBondMaturityDate1,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
@@ -1827,7 +1827,7 @@ namespace TestSuite
                                        floatingBondMaturityDate2,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withFixingDays(fixingDays)
             .withSpreads(0.0025)
@@ -1883,7 +1883,7 @@ namespace TestSuite
                                  cmsBondMaturityDate1,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg1 = new CmsLeg(cmsBondSchedule1, vars.swapIndex)
             .withPaymentDayCounter(new Thirty360())
             .withFixingDays(fixingDays)
@@ -1935,7 +1935,7 @@ namespace TestSuite
                                  cmsBondMaturityDate2,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg2 = new CmsLeg(cmsBondSchedule2, vars.swapIndex)
             .withPaymentDayCounter(new Thirty360())
             .withFixingDays(fixingDays)
@@ -2083,7 +2083,7 @@ namespace TestSuite
                                     fixedBondMaturityDate1,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg1 = new FixedRateLeg(fixedBondSchedule1)
             .withCouponRates(0.04, new ActualActual(ActualActual.Convention.ISDA))
             .withNotionals(vars.faceAmount);
@@ -2121,7 +2121,7 @@ namespace TestSuite
                                     fixedBondMaturityDate2,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg2 = new FixedRateLeg(fixedBondSchedule2)
             .withCouponRates(0.05, new Thirty360(Thirty360.Thirty360Convention.BondBasis))
             .withNotionals(vars.faceAmount);
@@ -2157,7 +2157,7 @@ namespace TestSuite
                                        floatingBondMaturityDate1,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
@@ -2198,7 +2198,7 @@ namespace TestSuite
                                        floatingBondMaturityDate2,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withFixingDays(fixingDays)
             .withSpreads(0.0025)
@@ -2238,7 +2238,7 @@ namespace TestSuite
                                  cmsBondMaturityDate1,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg1 = new CmsLeg(cmsBondSchedule1, vars.swapIndex)
             .withPaymentDayCounter(new Thirty360())
             .withFixingDays(fixingDays)
@@ -2278,7 +2278,7 @@ namespace TestSuite
                                  cmsBondMaturityDate2,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg2 = new CmsLeg(cmsBondSchedule2, vars.swapIndex)
             .withPaymentDayCounter(new Thirty360())
             .withFixingDays(fixingDays)
@@ -2393,7 +2393,7 @@ namespace TestSuite
                                     fixedBondMaturityDate1,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg1 = new FixedRateLeg(fixedBondSchedule1)
             .withCouponRates(0.04, new ActualActual(ActualActual.Convention.ISDA))
             .withNotionals(vars.faceAmount);
@@ -2448,7 +2448,7 @@ namespace TestSuite
                                     fixedBondMaturityDate2,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg2 = new FixedRateLeg(fixedBondSchedule2)
             .withCouponRates(0.05, new Thirty360(Thirty360.Thirty360Convention.BondBasis))
             .withNotionals(vars.faceAmount);
@@ -2504,7 +2504,7 @@ namespace TestSuite
                                        floatingBondMaturityDate1,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
@@ -2573,7 +2573,7 @@ namespace TestSuite
                                        floatingBondMaturityDate2,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
@@ -2647,7 +2647,7 @@ namespace TestSuite
                                  cmsBondMaturityDate1,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg1 = new CmsLeg(cmsBondSchedule1, vars.swapIndex)
             .withPaymentDayCounter(new Thirty360())
             .withFixingDays(fixingDays)
@@ -2709,7 +2709,7 @@ namespace TestSuite
                                  cmsBondMaturityDate2,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg2 = new CmsLeg(cmsBondSchedule2, vars.swapIndex)
             .withPaymentDayCounter(new Thirty360())
             .withFixingDays(fixingDays)
@@ -2889,7 +2889,7 @@ namespace TestSuite
                                     fixedBondMaturityDate1,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg1 = new FixedRateLeg(fixedBondSchedule1)
             .withCouponRates(0.04, new ActualActual(ActualActual.Convention.ISDA))
             .withNotionals(vars.faceAmount);
@@ -2977,7 +2977,7 @@ namespace TestSuite
                                     fixedBondMaturityDate2,
                                     new Period(Frequency.Annual), bondCalendar,
                                     BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                    DateGeneration.Rule.Backward, false);
+                                    DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> fixedBondLeg2 = new FixedRateLeg(fixedBondSchedule2)
             .withCouponRates(0.05, new Thirty360(Thirty360.Thirty360Convention.BondBasis))
             .withNotionals(vars.faceAmount);
@@ -3062,7 +3062,7 @@ namespace TestSuite
                                        floatingBondMaturityDate1,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg1 = new IborLeg(floatingBondSchedule1, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
@@ -3159,7 +3159,7 @@ namespace TestSuite
                                        floatingBondMaturityDate2,
                                        new Period(Frequency.Semiannual), bondCalendar,
                                        BusinessDayConvention.ModifiedFollowing, BusinessDayConvention.ModifiedFollowing,
-                                       DateGeneration.Rule.Backward, false);
+                                       DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> floatingBondLeg2 = new IborLeg(floatingBondSchedule2, vars.iborIndex, settings)
             .withPaymentDayCounter(new Actual360())
             .withFixingDays(fixingDays)
@@ -3259,7 +3259,7 @@ namespace TestSuite
                                  cmsBondMaturityDate1,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg1 = new CmsLeg(cmsBondSchedule1, vars.swapIndex)
             .withPaymentDayCounter(new Thirty360())
             .withFixingDays(fixingDays)
@@ -3350,7 +3350,7 @@ namespace TestSuite
                                  cmsBondMaturityDate2,
                                  new Period(Frequency.Annual), bondCalendar,
                                  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                 DateGeneration.Rule.Backward, false);
+                                 DateGeneration.Rule.Backward, false, settings);
          List<CashFlow> cmsBondLeg2 = new CmsLeg(cmsBondSchedule2, vars.swapIndex)
             .withPaymentDayCounter(new Thirty360())
             .withFixingDays(fixingDays)

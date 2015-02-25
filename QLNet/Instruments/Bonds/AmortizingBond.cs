@@ -80,7 +80,7 @@ namespace QLNet
          // Amortizing Schedule
          Schedule schedule = new Schedule(_tradeDate, _maturityDate, new Period(_payFrequency),
                                            _calendar, BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                           DateGeneration.Rule.Backward, false);
+                                           DateGeneration.Rule.Backward, false, _settings);
          double currentNominal = _marketValue;
          Date prevDate = _tradeDate;
          Date actualDate = _tradeDate;
@@ -181,7 +181,7 @@ namespace QLNet
          // to calculate effective rate ( the rate that discount _marketValue )
          Schedule schedule = new Schedule(_issueDate, _maturityDate, new Period(_payFrequency),
                                            _calendar, BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
-                                           DateGeneration.Rule.Backward, false);
+                                           DateGeneration.Rule.Backward, false, _settings);
 
 
          List<CashFlow> cashflows = new FixedRateLeg(schedule)

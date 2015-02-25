@@ -200,7 +200,7 @@ namespace QLNet
                           BusinessDayConvention.ModifiedFollowing,
                           BusinessDayConvention.ModifiedFollowing,
                           rule_,
-                          endOfMonth_);
+                          endOfMonth_, _settings);
 
         double? usedFixedRate = fixedRate_;
         if (fixedRate_ == null) 

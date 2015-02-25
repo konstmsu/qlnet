@@ -252,14 +252,12 @@ namespace QLNet
          Schedule float1Schedule = new Schedule(startDate, endDate,
                                 float1Tenor_, float1Calendar_,
                                 float1Convention_, float1TerminationDateConvention_,
-                                float1Rule_, float1EndOfMonth_,
-                                float1FirstDate_, float1NextToLastDate_);
+                                float1Rule_, float1EndOfMonth_, _settings, firstDate: float1FirstDate_, nextToLastDate: float1NextToLastDate_);
 
          Schedule float2Schedule = new Schedule(startDate, endDate,
                                 float2Tenor_, float2Calendar_,
                                 float2Convention_, float2TerminationDateConvention_,
-                                float2Rule_, float2EndOfMonth_,
-                                float2FirstDate_, float2NextToLastDate_);
+                                float2Rule_, float2EndOfMonth_, _settings, firstDate: float2FirstDate_, nextToLastDate: float2NextToLastDate_);
 
 
          BasisSwap swap = new BasisSwap(type_, nominal_, 

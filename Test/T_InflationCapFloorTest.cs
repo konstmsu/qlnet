@@ -73,7 +73,7 @@ namespace TestSuite
 				//      fixing data
 				Date from = new Date(1, Month.January, 2005);
 				Date to = new Date(13, Month.August, 2007);
-				Schedule rpiSchedule = new MakeSchedule().from(from).to(to)
+				Schedule rpiSchedule = new MakeSchedule(settings_).from(from).to(to)
 				.withConvention(BusinessDayConvention.ModifiedFollowing)
 				.withCalendar(new UnitedKingdom())
 				.withTenor(new Period(1,TimeUnit.Months)).value();
@@ -143,7 +143,7 @@ namespace TestSuite
 				Schedule schedule = new Schedule(startDate, endDate, new Period(frequency), calendar,
 										BusinessDayConvention.Unadjusted,
 										BusinessDayConvention.Unadjusted,// ref periods & acc periods
-										DateGeneration.Rule.Forward, false);
+										DateGeneration.Rule.Forward, false, settings_);
             return new yoyInflationLeg( schedule, calendar, ii, observationLag )
 				.withPaymentDayCounter(dc)
 				.withNotionals(nominals)
@@ -392,7 +392,7 @@ namespace TestSuite
 
 								  Date from = vars.nominalTS.link.referenceDate();
 								  Date to = from+new Period(lengths[i],TimeUnit.Years);
-								  Schedule yoySchedule = new MakeSchedule().from(from).to(to)
+								  Schedule yoySchedule = new MakeSchedule(settings).from(from).to(to)
 								  .withTenor(new Period(1,TimeUnit.Years))
 								  .withConvention(BusinessDayConvention.Unadjusted)
 								  .withCalendar(new UnitedKingdom()).backwards().value();
