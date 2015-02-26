@@ -37,12 +37,7 @@ namespace QLNet
    */
    public class IndexedCashFlow : CashFlow
    {
-      public IndexedCashFlow(double notional,
-                             Index index,
-                             Date baseDate,
-                             Date fixingDate,
-                             Date paymentDate,
-                             bool growthOnly = false)
+      public IndexedCashFlow(double notional, Index index, Date baseDate, Date fixingDate, Date paymentDate, SavedSettings settings, bool growthOnly = false) : base(settings)
       {
          notional_ = notional;
          index_=index;

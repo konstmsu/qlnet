@@ -31,7 +31,7 @@ namespace QLNet
       //! \name Event interface
       public override Date date() { return date_; }
 
-      public Dividend(Date date)
+      public Dividend(Date date, SavedSettings settings) : base(settings)
       {
          date_ = date;
       }
@@ -47,8 +47,8 @@ namespace QLNet
       public override double amount() { return amount_; }
       public override double amount(double d) { return amount_; }
 
-      public FixedDividend(double amount, Date date)
-         : base(date)
+      public FixedDividend(double amount, Date date, SavedSettings settings)
+         : base(date, settings)
       {
          amount_ = amount;
       }
@@ -64,15 +64,15 @@ namespace QLNet
       protected double? nominal_;
       public double? nominal() { return nominal_; }
 
-      public FractionalDividend(double rate, Date date)
-         : base(date)
+      public FractionalDividend(double rate, Date date, SavedSettings settings)
+         : base(date, settings)
       {
          rate_ = rate;
          nominal_ = null;
       }
 
-      public FractionalDividend(double rate, double nominal, Date date)
-         : base(date)
+      public FractionalDividend(double rate, double nominal, Date date, SavedSettings settings)
+         : base(date, settings)
       {
          rate_ = rate;
          nominal_ = nominal;
@@ -94,7 +94,7 @@ namespace QLNet
    public static partial class Utils
    {
       //! helper function building a sequence of fixed dividends
-      public static List<Dividend> DividendVector(List<Date> dividendDates, List<double> dividends)
+      public static List<Dividend> DividendVector(List<Date> dividendDates, List<double> dividends, SavedSettings settings)
       {
 
          if (dividendDates.Count != dividends.Count)
@@ -102,7 +102,7 @@ namespace QLNet
 
          List<Dividend> items = new List<Dividend>(dividendDates.Count);
          for (int i = 0; i < dividendDates.Count; i++)
-            items.Add(new FixedDividend(dividends[i], dividendDates[i]));
+            items.Add(new FixedDividend(dividends[i], dividendDates[i], settings));
          return items;
       }
    }

@@ -275,7 +275,7 @@ namespace QLNet
       {
 
         // !!! notional forcibly set to 100
-        cashflows_ = new FixedRateLeg(schedule)
+        cashflows_ = new FixedRateLeg(schedule, settings)
                            .withCouponRates(coupons, dayCounter)
                            .withNotionals(100.0)
                            .withPaymentAdjustment(schedule.businessDayConvention());

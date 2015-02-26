@@ -62,12 +62,12 @@ namespace QLNet
 			paymentConvention_ = paymentConvention;
 
 			// N.B. fixed leg gets its calendar from the schedule!
-			List<CashFlow> fixedLeg = new FixedRateLeg( fixedSchedule_ )
+			List<CashFlow> fixedLeg = new FixedRateLeg( fixedSchedule_, settings)
 			.withCouponRates( fixedRate_, fixedDayCount_ ) // Simple compounding by default
 			.withNotionals( nominal_ )
 			.withPaymentAdjustment( paymentConvention_ );
 
-			List<CashFlow> yoyLeg = new yoyInflationLeg( yoySchedule_, paymentCalendar_, yoyIndex_, observationLag_ )
+			List<CashFlow> yoyLeg = new yoyInflationLeg( yoySchedule_, paymentCalendar_, yoyIndex_, observationLag_, settings)
 			.withSpreads( spread_ )
 			.withPaymentDayCounter( yoyDayCount_ )
 			.withNotionals( nominal_ )

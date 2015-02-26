@@ -50,7 +50,7 @@ namespace TestSuite
         }
 
 
-		void testFdGreeks<Engine>(Date today, Exercise exercise) where Engine : IFDEngine, new()
+		void testFdGreeks<Engine>(Date today, Exercise exercise, SavedSettings settings) where Engine : IFDEngine, new()
 		{
 			Dictionary<string, double> calculated = new Dictionary<string, double>(),
 											  expected = new Dictionary<string, double>(),
@@ -96,7 +96,7 @@ namespace TestSuite
 																												  qTS, rTS, volTS);
 
 					IPricingEngine engine = new Engine().factory(stochProcess);
-					DividendVanillaOption option = new DividendVanillaOption(payoff, exercise, dividendDates, dividends);
+					DividendVanillaOption option = new DividendVanillaOption(payoff, exercise, dividendDates, dividends, settings);
 					option.setPricingEngine(engine);
 
 					for (int l = 0; l < underlyings.Length; l++)
@@ -170,7 +170,7 @@ namespace TestSuite
 			}
 		}
 			
-      void testFdDegenerate<Engine>(Date today,Exercise exercise) where Engine : IFDEngine, new()
+      void testFdDegenerate<Engine>(Date today, Exercise exercise, SavedSettings settings) where Engine : IFDEngine, new()
 		{
 			DayCounter dc = new Actual360();
 			SimpleQuote spot = new SimpleQuote(54.625);
@@ -193,7 +193,7 @@ namespace TestSuite
 			List<double> dividends = new List<double>();
 			List<Date> dividendDates = new List<Date>();
 
-			DividendVanillaOption option1 = new DividendVanillaOption(payoff, exercise,dividendDates, dividends);
+			DividendVanillaOption option1 = new DividendVanillaOption(payoff, exercise,dividendDates, dividends, settings);
 			option1.setPricingEngine(engine);
 
 			// FLOATING_POINT_EXCEPTION
@@ -204,7 +204,7 @@ namespace TestSuite
 				dividends.Add(0.0);
 				dividendDates.Add(today+i);
 
-				DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,	dividendDates, dividends);
+				DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,	dividendDates, dividends, settings);
 				option.setPricingEngine(engine);
 				double value = option.NPV();
 
@@ -276,7 +276,7 @@ namespace TestSuite
 
 						IPricingEngine engine = new AnalyticDividendEuropeanEngine(stochProcess);
 
-						DividendVanillaOption option = new DividendVanillaOption(payoff, exercise, dividendDates, dividends);
+						DividendVanillaOption option = new DividendVanillaOption(payoff, exercise, dividendDates, dividends, backup);
 						option.setPricingEngine(engine);
 
 						VanillaOption ref_option = new VanillaOption(payoff, exercise);
@@ -361,7 +361,7 @@ namespace TestSuite
 
 			IPricingEngine engine = new AnalyticDividendEuropeanEngine(stochProcess);
 
-			DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,	dividendDates, dividends);
+			DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,	dividendDates, dividends, backup);
 			option.setPricingEngine(engine);
 
 			double u = 40.0;
@@ -438,7 +438,7 @@ namespace TestSuite
 
 						IPricingEngine ref_engine = new AnalyticEuropeanEngine(stochProcess);
 
-						DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,dividendDates, dividends);
+						DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,dividendDates, dividends, backup);
 						option.setPricingEngine(engine);
 
 						VanillaOption ref_option = new VanillaOption(payoff, exercise);
@@ -546,7 +546,7 @@ namespace TestSuite
 						IPricingEngine engine = new AnalyticDividendEuropeanEngine(stochProcess);
 
 						DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,dividendDates, 
-							                                                      dividends);
+							                                                      dividends, backup);
 						option.setPricingEngine(engine);
 
 						for (int l=0; l<underlyings.Length; l++) 
@@ -700,10 +700,10 @@ namespace TestSuite
 
 						IPricingEngine ref_engine = new AnalyticDividendEuropeanEngine(stochProcess);
 
-						DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,dividendDates, dividends);
+						DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,dividendDates, dividends, backup);
 						option.setPricingEngine(engine);
 
-						DividendVanillaOption ref_option = new DividendVanillaOption(payoff, exercise, dividendDates, dividends);
+						DividendVanillaOption ref_option = new DividendVanillaOption(payoff, exercise, dividendDates, dividends, backup);
 						ref_option.setPricingEngine(ref_engine);
 
 						for (int l=0; l<underlyings.Length; l++) 
@@ -760,7 +760,7 @@ namespace TestSuite
 			{
 				Date exDate = today + new Period(lengths[i],TimeUnit.Years);
 				Exercise exercise = new EuropeanExercise(exDate);
-				testFdGreeks<FDDividendEuropeanEngine>(today,exercise);
+				testFdGreeks<FDDividendEuropeanEngine>(today,exercise, backup);
 			}
 		}
 
@@ -779,7 +779,7 @@ namespace TestSuite
 			{
 				Date exDate = today + new Period(lengths[i],TimeUnit.Years);
 				Exercise exercise = new AmericanExercise(exDate);
-				testFdGreeks<FDDividendAmericanEngine>(today, exercise);
+				testFdGreeks<FDDividendAmericanEngine>(today, exercise, backup);
 			}
 	
 		}
@@ -797,7 +797,7 @@ namespace TestSuite
 
 			Exercise exercise = new EuropeanExercise(exDate);
 
-			testFdDegenerate<FDDividendEuropeanEngine>(today,exercise);
+			testFdDegenerate<FDDividendEuropeanEngine>(today,exercise, backup);
 		}
 
 		[TestMethod()]
@@ -813,7 +813,7 @@ namespace TestSuite
 
 			Exercise exercise = new AmericanExercise	(exDate);
 
-			testFdDegenerate<FDDividendAmericanEngine>(today, exercise);
+			testFdDegenerate<FDDividendAmericanEngine>(today, exercise, backup);
 		}
 	}
 }

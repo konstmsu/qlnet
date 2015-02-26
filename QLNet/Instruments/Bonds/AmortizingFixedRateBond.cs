@@ -29,9 +29,8 @@ namespace QLNet
       protected Frequency frequency_;
       protected DayCounter dayCounter_;
       protected Schedule schedule_;
-       SavedSettings _settings1;
 
-       public AmortizingFixedRateBond(int settlementDays, List<double> notionals, Schedule schedule, List<double> coupons, DayCounter accrualDayCounter, SavedSettings settings, SavedSettings settings1, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, Date issueDate = null)
+       public AmortizingFixedRateBond(int settlementDays, List<double> notionals, Schedule schedule, List<double> coupons, DayCounter accrualDayCounter, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, Date issueDate = null)
          :base(settlementDays, schedule.calendar(), settings, issueDate)
       {
          frequency_ = schedule.tenor().frequency();
@@ -40,7 +39,7 @@ namespace QLNet
 
          maturityDate_ = schedule.endDate();
 
-         cashflows_ = new FixedRateLeg(schedule)
+         cashflows_ = new FixedRateLeg(schedule, settings)
              .withCouponRates(coupons, accrualDayCounter)
              .withNotionals(notionals)
              .withPaymentAdjustment(paymentConvention).value();
@@ -50,10 +49,9 @@ namespace QLNet
 
          if ( cashflows().empty())
             throw new ApplicationException("bond with no cashflows!");
-           _settings1 = settings1;
       }
 
-      public AmortizingFixedRateBond(int settlementDays, Calendar calendar, double faceAmount, Date startDate, Period bondTenor, Frequency sinkingFrequency, double coupon, DayCounter accrualDayCounter, SavedSettings settings, SavedSettings settings1, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, Date issueDate = null)
+      public AmortizingFixedRateBond(int settlementDays, Calendar calendar, double faceAmount, Date startDate, Period bondTenor, Frequency sinkingFrequency, double coupon, DayCounter accrualDayCounter, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, Date issueDate = null)
          :base(settlementDays, calendar, settings, issueDate)
       {
          frequency_ = sinkingFrequency;
@@ -61,14 +59,12 @@ namespace QLNet
 
          maturityDate_ = startDate + bondTenor;
          schedule_ = sinkingSchedule(startDate, bondTenor, sinkingFrequency, calendar);
-         cashflows_ = new FixedRateLeg(schedule_)
+         cashflows_ = new FixedRateLeg(schedule_, settings)
                         .withCouponRates(coupon, accrualDayCounter)
                         .withNotionals(sinkingNotionals(bondTenor, sinkingFrequency, coupon, faceAmount))        
                         .withPaymentAdjustment(paymentConvention).value();
 
          addRedemptionsToCashflows();
-
-          _settings1 = settings1;
       }
 
       Frequency frequency() { return frequency_; }
@@ -83,7 +79,7 @@ namespace QLNet
             Date maturityDate = new Date(startDate + maturityTenor);
             Schedule retVal = new Schedule(startDate, maturityDate, freqPeriod,
                             paymentCalendar,BusinessDayConvention.Unadjusted,BusinessDayConvention.Unadjusted,
-                            DateGeneration.Rule.Backward, false, _settings1);
+                            DateGeneration.Rule.Backward, false, _settings);
             return retVal;
       }
 

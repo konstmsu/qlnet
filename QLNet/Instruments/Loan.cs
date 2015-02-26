@@ -145,7 +145,7 @@ namespace QLNet
          else
             paymentConvention_ = fixedSchedule_.businessDayConvention();
 
-         List<CashFlow> principalLeg = new PricipalLeg(principalSchedule, fixedDayCount)
+         List<CashFlow> principalLeg = new PricipalLeg(principalSchedule, fixedDayCount, settings)
                                      .withNotionals(nominal)
                                      .withPaymentAdjustment(paymentConvention_)
                                      .withSign(type == Type.Loan ? -1 : 1 );
@@ -157,7 +157,7 @@ namespace QLNet
             notionals_.Add(p.nominal());
          }
 
-         List<CashFlow> fixedLeg = new FixedRateLeg(fixedSchedule)
+         List<CashFlow> fixedLeg = new FixedRateLeg(fixedSchedule, settings)
                                      .withCouponRates(fixedRate, fixedDayCount)
                                      .withPaymentAdjustment(paymentConvention_)
                                      .withNotionals(notionals_);
@@ -209,7 +209,7 @@ namespace QLNet
          else
             paymentConvention_ = floatingSchedule_.businessDayConvention();
 
-         List<CashFlow> principalLeg = new PricipalLeg(principalSchedule, floatingDayCount)
+         List<CashFlow> principalLeg = new PricipalLeg(principalSchedule, floatingDayCount, settings)
                                      .withNotionals(nominal)
                                      .withPaymentAdjustment(paymentConvention_)
                                      .withSign(type == Type.Loan ? -1 : 1);
@@ -272,7 +272,7 @@ namespace QLNet
          else
             paymentConvention_ = fixedSchedule_.businessDayConvention();
 
-         List<CashFlow> principalLeg = new PricipalLeg(principalSchedule, fixedDayCount)
+         List<CashFlow> principalLeg = new PricipalLeg(principalSchedule, fixedDayCount, settings)
                                      .withNotionals(nominal)
                                      .withPaymentAdjustment(paymentConvention_)
                                      .withSign(type == Type.Loan ? -1 : 1);
@@ -284,7 +284,7 @@ namespace QLNet
             notionals_.Add(p.nominal());
          }
 
-         List<CashFlow> fixedLeg = new FixedRateLeg(fixedSchedule)
+         List<CashFlow> fixedLeg = new FixedRateLeg(fixedSchedule, settings)
                                      .withCouponRates(fixedRate, fixedDayCount)
                                      .withPaymentAdjustment(paymentConvention_)
                                      .withNotionals(notionals_);
@@ -300,7 +300,7 @@ namespace QLNet
          }
 
          // New Leg
-         List<CashFlow> discountedFixedLeg = new FixedRateLeg(fixedSchedule)
+         List<CashFlow> discountedFixedLeg = new FixedRateLeg(fixedSchedule, settings)
                                               .withCouponRates(fixedRate, fixedDayCount)
                                               .withPaymentAdjustment(paymentConvention_)
                                               .withNotionals(notionals_);
@@ -342,7 +342,7 @@ namespace QLNet
          principalSchedule_ = principalSchedule;
          paymentConvention_ = paymentConvention.Value;
 
-         List<CashFlow> principalLeg = new PricipalLeg(principalSchedule,new Actual365Fixed())
+         List<CashFlow> principalLeg = new PricipalLeg(principalSchedule,new Actual365Fixed(), settings)
                                      .withNotionals(nominal)
                                      .withPaymentAdjustment(paymentConvention_)
                                      .withSign(type == Type.Loan ? -1 : 1);

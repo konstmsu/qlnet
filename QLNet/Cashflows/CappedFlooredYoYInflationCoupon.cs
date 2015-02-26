@@ -62,9 +62,7 @@ namespace QLNet
    public class CappedFlooredYoYInflationCoupon : YoYInflationCoupon
    {
       // we may watch an underlying coupon ...
-      public CappedFlooredYoYInflationCoupon(YoYInflationCoupon underlying,
-                                             double? cap = null,
-                                             double? floor = null)
+      public CappedFlooredYoYInflationCoupon(YoYInflationCoupon underlying, SavedSettings settings, double? cap = null, double? floor = null)
          :base(underlying.date(),
                underlying.nominal(),
                underlying.accrualStartDate(),
@@ -72,11 +70,10 @@ namespace QLNet
                underlying.fixingDays(),
                underlying.yoyIndex(),
                underlying.observationLag(),
-               underlying.dayCounter(),
-               underlying.gearing(),
-               underlying.spread(),
-               underlying.refPeriodStart,
-               underlying.refPeriodEnd)
+               underlying.dayCounter(), settings, gearing: underlying.gearing(),
+               spread: underlying.spread(),
+               refPeriodStart: underlying.refPeriodStart,
+               refPeriodEnd: underlying.refPeriodEnd)
    
       {
          underlying_ = underlying;
@@ -88,23 +85,9 @@ namespace QLNet
 
       
       // ... or not
-      public CappedFlooredYoYInflationCoupon(Date paymentDate,
-                                             double nominal,
-                                             Date startDate,
-                                             Date endDate,
-                                             int fixingDays,
-                                             YoYInflationIndex index,
-                                             Period observationLag,
-                                             DayCounter dayCounter,
-                                             double gearing = 1.0,
-                                             double spread = 0.0,
-                                             double? cap = null,
-                                             double? floor = null,
-                                             Date refPeriodStart = null,
-                                             Date refPeriodEnd = null)
+      public CappedFlooredYoYInflationCoupon(Date paymentDate, double nominal, Date startDate, Date endDate, int fixingDays, YoYInflationIndex index, Period observationLag, DayCounter dayCounter, SavedSettings settings, double gearing = 1.0, double spread = 0.0, double? cap = null, double? floor = null, Date refPeriodStart = null, Date refPeriodEnd = null)
         : base(paymentDate, nominal, startDate, endDate,
-               fixingDays, index, observationLag,  dayCounter,
-               gearing, spread, refPeriodStart, refPeriodEnd)
+               fixingDays, index, observationLag,  dayCounter, settings, gearing: gearing, spread: spread, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd)
       {
          isFloored_ = false;
          isCapped_ = false; 

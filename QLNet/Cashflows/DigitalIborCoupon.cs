@@ -29,26 +29,12 @@ namespace QLNet
    public class DigitalIborCoupon : DigitalCoupon
    {
       // need by CashFlowVectors
-      public DigitalIborCoupon() { }
+      public DigitalIborCoupon(SavedSettings settings) : base(settings, settings)
+      { }
 
-      public DigitalIborCoupon(IborCoupon underlying, 
-                               double? callStrike = null, 
-                               Position.Type callPosition = Position.Type.Long, 
-                               bool isCallATMIncluded = false, 
-                               double? callDigitalPayoff = null, 
-                               double? putStrike = null, 
-                               Position.Type putPosition = Position.Type.Long, 
-                               bool isPutATMIncluded = false, 
-                               double? putDigitalPayoff = null, 
-                               DigitalReplication replication = null)
-         : base(underlying, callStrike, callPosition, isCallATMIncluded, callDigitalPayoff, putStrike, putPosition, isPutATMIncluded, putDigitalPayoff, replication)
+      public DigitalIborCoupon(IborCoupon underlying, SavedSettings settings, double? callStrike = null, Position.Type callPosition = Position.Type.Long, bool isCallATMIncluded = false, double? callDigitalPayoff = null, double? putStrike = null, Position.Type putPosition = Position.Type.Long, bool isPutATMIncluded = false, double? putDigitalPayoff = null, DigitalReplication replication = null)
+         : base(underlying, settings, callStrike: callStrike, callPosition: callPosition, isCallATMIncluded: isCallATMIncluded, callDigitalPayoff: callDigitalPayoff, putStrike: putStrike, putPosition: putPosition, isPutATMIncluded: isPutATMIncluded, putDigitalPayoff: putDigitalPayoff, replication: replication)
       {
-      }
-
-      // Factory - for Leg generators
-      public virtual CashFlow factory(IborCoupon underlying, double? callStrike, Position.Type callPosition, bool isCallATMIncluded, double? callDigitalPayoff, double? putStrike, Position.Type putPosition, bool isPutATMIncluded, double? putDigitalPayoff, DigitalReplication replication)
-      {
-         return new DigitalIborCoupon(underlying, callStrike, callPosition, isCallATMIncluded, callDigitalPayoff, putStrike, putPosition, isPutATMIncluded, putDigitalPayoff, replication);
       }
 
       //! \name Visitability
@@ -68,7 +54,7 @@ namespace QLNet
    //! helper class building a sequence of digital ibor-rate coupons
    public class DigitalIborLeg
    {
-      public DigitalIborLeg(Schedule schedule, IborIndex index)
+      public DigitalIborLeg(Schedule schedule, IborIndex index, SavedSettings settings)
       {
          schedule_ = schedule;
          index_ = index;
@@ -78,6 +64,7 @@ namespace QLNet
          callATM_ = false;
          longPutOption_ = Position.Type.Long;
          putATM_ = false;
+          _settings = settings;
       }
       public DigitalIborLeg withNotionals(double notional)
       {
@@ -217,10 +204,17 @@ namespace QLNet
       }
       public List<CashFlow> value()
       {
-         return CashFlowVectors.FloatingDigitalLeg<IborIndex, IborCoupon, DigitalIborCoupon>(notionals_, schedule_, index_, paymentDayCounter_, paymentAdjustment_, fixingDays_, gearings_, spreads_, inArrears_, callStrikes_, longCallOption_, callATM_, callPayoffs_, putStrikes_, longPutOption_, putATM_, putPayoffs_, replication_);
+          Func<double, Date, Date, Date, int, IborIndex, double, double, Date, Date, DayCounter, bool, SavedSettings, IborCoupon> floatingRateCouponFactory = (nominal, paymentDate, startDate, endDate, fixingDays, index, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears, settings) => 
+              new IborCoupon(nominal, paymentDate, startDate, endDate, fixingDays, index, settings, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears);
+
+          Func<IborCoupon, double?, Position.Type, bool, double?, double?, Position.Type, bool, double?, DigitalReplication, SavedSettings, DigitalIborCoupon> digitalCouponFactory =
+              (underlying, callStrike, callPosition, isCallAtmIncluded, callDigitalPayoff, putStrike, putPosition, isPutAtmIncluded, putDigitalPayoff, digitalReplication, settings) => new DigitalIborCoupon(underlying, settings, callStrike, callPosition, isCallAtmIncluded, callDigitalPayoff, putStrike, putPosition, isPutAtmIncluded, putDigitalPayoff, digitalReplication);
+
+          return CashFlowVectors.FloatingDigitalLeg(floatingRateCouponFactory, digitalCouponFactory,
+             notionals_, schedule_, index_, paymentDayCounter_, paymentAdjustment_, fixingDays_, gearings_, spreads_, inArrears_, callStrikes_, longCallOption_, callATM_, callPayoffs_, putStrikes_, longPutOption_, putATM_, putPayoffs_, replication_, _settings);
       }
 
-      private Schedule schedule_;
+       private Schedule schedule_;
       private IborIndex index_;
       private List<double> notionals_;
       private DayCounter paymentDayCounter_;
@@ -238,6 +232,7 @@ namespace QLNet
       private Position.Type longPutOption_;
       private bool putATM_;
       private DigitalReplication replication_;
+       SavedSettings _settings;
    }
 
 }

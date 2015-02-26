@@ -19,7 +19,7 @@ namespace QLNet
       //}
 
       public MBSFixedRateBond(int settlementDays, Calendar calendar, double faceAmount, Date startDate, Period bondTenor, Period originalLength, Frequency sinkingFrequency, double WACRate, double PassThroughRate, DayCounter accrualDayCounter, PSACurve psaCurve, SavedSettings settings, BusinessDayConvention paymentConvention = BusinessDayConvention.Following, Date issueDate = null)
-         : base(settlementDays, calendar, faceAmount, startDate, bondTenor, sinkingFrequency, WACRate, accrualDayCounter, settings, settings, paymentConvention, issueDate)
+         : base(settlementDays, calendar, faceAmount, startDate, bondTenor, sinkingFrequency, WACRate, accrualDayCounter, settings, paymentConvention, issueDate)
       {
          psaCurve_ = psaCurve;
          originalLength_ = originalLength;
@@ -27,7 +27,6 @@ namespace QLNet
          WACRate_ = WACRate;
          PassThroughRate_ = PassThroughRate;
          dCounter_ = accrualDayCounter;
-
       }
 
       //public List<CashFlow> interestCashflows()
@@ -58,9 +57,9 @@ namespace QLNet
             notionals[i + 1] = currentNotional - actualamort - prepay;
 
             // ADD
-            CashFlow c1 = new VoluntaryPrepay(prepay, schedule_[i + 1]);
-            CashFlow c2 = new AmortizingPayment(actualamort, schedule_[i + 1]);
-            CashFlow c3 = new FixedRateCoupon(currentNotional, schedule_[i + 1], new InterestRate(PassThroughRate_, dCounter_, Compounding.Simple,Frequency.Annual), schedule_[i], schedule_[i + 1]);
+            CashFlow c1 = new VoluntaryPrepay(prepay, schedule_[i + 1], _settings);
+            CashFlow c2 = new AmortizingPayment(actualamort, schedule_[i + 1], _settings);
+            CashFlow c3 = new FixedRateCoupon(currentNotional, schedule_[i + 1], new InterestRate(PassThroughRate_, dCounter_, Compounding.Simple,Frequency.Annual), schedule_[i], schedule_[i + 1], _settings);
             expectedcashflows.Add(c1);
             expectedcashflows.Add(c2);
             expectedcashflows.Add(c3);
@@ -116,7 +115,6 @@ namespace QLNet
       protected double WACRate_;
       protected double PassThroughRate_;
       protected DayCounter dCounter_;
-     
    }
 
    public class MonthlyYieldFinder : ISolver1d

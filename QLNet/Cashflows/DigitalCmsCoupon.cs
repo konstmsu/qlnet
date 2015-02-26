@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 namespace QLNet
@@ -28,28 +29,18 @@ namespace QLNet
    //! Cms-rate coupon with digital digital call/put option
    public class DigitalCmsCoupon : DigitalCoupon
    {
-      // need by CashFlowVectors
-      public DigitalCmsCoupon() { }
-
-      public DigitalCmsCoupon(CmsCoupon underlying, 
-                              double? callStrike = null,
-                              Position.Type callPosition = Position.Type.Long, 
-                              bool isCallATMIncluded = false, 
-                              double? callDigitalPayoff = null, 
-                              double? putStrike = null,
-                              Position.Type putPosition = Position.Type.Long, 
-                              bool isPutATMIncluded = false, 
-                              double? putDigitalPayoff = null, 
-                              DigitalReplication replication = null )
-         : base(underlying, callStrike, callPosition, isCallATMIncluded, callDigitalPayoff, putStrike, putPosition, isPutATMIncluded, putDigitalPayoff, replication)
+       SavedSettings _settings;
+       // need by CashFlowVectors
+      public DigitalCmsCoupon(SavedSettings settings) : base(settings, settings)
       {
+          _settings = settings;
       }
 
-      // Factory - for Leg generators
-      public virtual CashFlow factory(CmsCoupon underlying, double? callStrike, Position.Type callPosition, bool isCallATMIncluded, double? callDigitalPayoff, double? putStrike, Position.Type putPosition, bool isPutATMIncluded, double? putDigitalPayoff, DigitalReplication replication)
-      {
-         return new DigitalCmsCoupon(underlying, callStrike, callPosition, isCallATMIncluded, callDigitalPayoff, putStrike, putPosition, isPutATMIncluded, putDigitalPayoff, replication);
-      }
+       public DigitalCmsCoupon(CmsCoupon underlying, SavedSettings settings, double? callStrike = null, Position.Type callPosition = Position.Type.Long, bool isCallATMIncluded = false, double? callDigitalPayoff = null, double? putStrike = null, Position.Type putPosition = Position.Type.Long, bool isPutATMIncluded = false, double? putDigitalPayoff = null, DigitalReplication replication = null)
+         : base(underlying, settings, callStrike: callStrike, callPosition: callPosition, isCallATMIncluded: isCallATMIncluded, callDigitalPayoff: callDigitalPayoff, putStrike: putStrike, putPosition: putPosition, isPutATMIncluded: isPutATMIncluded, putDigitalPayoff: putDigitalPayoff, replication: replication)
+       {
+           _settings = settings;
+       }
 
       //! \name Visitability
       //@{
@@ -68,7 +59,7 @@ namespace QLNet
    //! helper class building a sequence of digital ibor-rate coupons
    public class DigitalCmsLeg
    {
-      public DigitalCmsLeg(Schedule schedule, SwapIndex index)
+      public DigitalCmsLeg(Schedule schedule, SwapIndex index, SavedSettings settings)
       {
          schedule_ = schedule;
          index_ = index;
@@ -78,6 +69,7 @@ namespace QLNet
          callATM_ = false;
          longPutOption_ = Position.Type.Long;
          putATM_ = false;
+          _settings = settings;
       }
       public DigitalCmsLeg withNotionals(double notional)
       {
@@ -217,10 +209,16 @@ namespace QLNet
       }
       public List<CashFlow> value()
       {
-         return CashFlowVectors.FloatingDigitalLeg<SwapIndex, CmsCoupon, DigitalCmsCoupon>(notionals_, schedule_, index_, paymentDayCounter_, paymentAdjustment_, fixingDays_, gearings_, spreads_, inArrears_, callStrikes_, longCallOption_, callATM_, callPayoffs_, putStrikes_, longPutOption_, putATM_, putPayoffs_, replication_);
+          Func<double, Date, Date, Date, int, SwapIndex, double, double, Date, Date, DayCounter, bool, SavedSettings, CmsCoupon> floatingRateCouponFactory = (nominal, date, startDate, endDate, days, index, gearing, spread, start, end, counter, arrears, settings) =>
+              new CmsCoupon(nominal, date, startDate, endDate, days, index, settings, gearing, spread, start, end, counter, arrears);
+
+          Func<CmsCoupon, double?, Position.Type, bool, double?, double?, Position.Type, bool, double?, DigitalReplication, SavedSettings, DigitalCmsCoupon> digitalCouponFactory = (underlying, callStrike, callPosition, isCallAtmIncluded, callDigitalPayoff, putStrike, putPosition, isPutAtmIncluded, putDigitalPayoff, digitalReplication, settings) => 
+              new DigitalCmsCoupon(underlying, settings, callStrike, callPosition, isCallAtmIncluded, callDigitalPayoff, putStrike, putPosition, isPutAtmIncluded, putDigitalPayoff, digitalReplication);
+
+          return CashFlowVectors.FloatingDigitalLeg(floatingRateCouponFactory, digitalCouponFactory, notionals_, schedule_, index_, paymentDayCounter_, paymentAdjustment_, fixingDays_, gearings_, spreads_, inArrears_, callStrikes_, longCallOption_, callATM_, callPayoffs_, putStrikes_, longPutOption_, putATM_, putPayoffs_, replication_, _settings);
       }
 
-      private Schedule schedule_;
+       private Schedule schedule_;
       private SwapIndex index_;
       private List<double> notionals_;
       private DayCounter paymentDayCounter_;
@@ -238,6 +236,7 @@ namespace QLNet
       private Position.Type longPutOption_;
       private bool putATM_;
       private DigitalReplication replication_;
+       SavedSettings _settings;
    }
 
 }

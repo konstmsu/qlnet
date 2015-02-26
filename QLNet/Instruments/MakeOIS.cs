@@ -61,7 +61,8 @@ namespace QLNet
 
        public MakeOIS(Period swapTenor, OvernightIndex overnightIndex, double? fixedRate, Period fwdStart, SavedSettings settings)
       {
-         swapTenor_=swapTenor;
+          _settings = settings;
+          swapTenor_ = swapTenor;
          overnightIndex_ = overnightIndex;
          fixedRate_= fixedRate;
          forwardStart_= fwdStart;
@@ -74,8 +75,6 @@ namespace QLNet
          overnightSpread_ = 0.0;
          fixedDayCount_ = overnightIndex.dayCounter();
          engine_ = new DiscountingSwapEngine(overnightIndex_.forwardingTermStructure());
-
-           _settings = settings;
       }
 
       public MakeOIS receiveFixed(bool flag) 

@@ -33,19 +33,8 @@ namespace QLNet
       protected FloatingRateCouponPricer pricer_;
 
       // constructors
-      public FloatingRateCoupon(double nominal, 
-                                Date paymentDate, 
-                                Date startDate, 
-                                Date endDate, 
-                                int fixingDays, 
-                                InterestRateIndex index,
-                                double gearing = 1.0, 
-                                double spread = 0.0, 
-                                Date refPeriodStart = null, 
-                                Date refPeriodEnd = null, 
-                                DayCounter dayCounter = null, 
-                                bool isInArrears = false) 
-         : base(nominal, paymentDate, startDate, endDate, refPeriodStart, refPeriodEnd)
+      public FloatingRateCoupon(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, InterestRateIndex index, SavedSettings settings, double gearing = 1.0, double spread = 0.0, Date refPeriodStart = null, Date refPeriodEnd = null, DayCounter dayCounter = null, bool isInArrears = false) 
+         : base(nominal, paymentDate, startDate, endDate, settings, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd)
       {
          index_ = index;
          dayCounter_ = dayCounter == null ? new DayCounter() : dayCounter ;
@@ -65,7 +54,8 @@ namespace QLNet
       }
 
       // need by CashFlowVectors
-      public FloatingRateCoupon() { }
+      public FloatingRateCoupon(SavedSettings settings) : base(settings)
+      { }
 
       public virtual void setPricer(FloatingRateCouponPricer pricer)
       {
@@ -161,12 +151,10 @@ namespace QLNet
 
 
       // Factory - for Leg generators
-      public virtual CashFlow factory(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays,
-                     InterestRateIndex index, double gearing, double spread,
-                     Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter, bool isInArrears)
-      {
-         return new FloatingRateCoupon(nominal, paymentDate, startDate, endDate, fixingDays,
-                    index, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears);
-      }
+       public static FloatingRateCouponFactory factory = (nominal, paymentDate, startDate, endDate, fixingDays, index, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears, settings) =>
+           new FloatingRateCoupon(nominal, paymentDate, startDate, endDate, fixingDays, index, settings, gearing: gearing, spread: spread,
+               refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, dayCounter: dayCounter, isInArrears: isInArrears);
    }
+
+    public delegate FloatingRateCoupon FloatingRateCouponFactory(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, InterestRateIndex index, double gearing, double spread, Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter, bool isInArrears, SavedSettings settings);
 }

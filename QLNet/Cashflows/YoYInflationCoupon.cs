@@ -27,21 +27,10 @@ namespace QLNet
    //! %Coupon paying a YoY-inflation type index
    public class YoYInflationCoupon : InflationCoupon
    {
-      public YoYInflationCoupon(Date paymentDate,
-                                double nominal,
-                                Date startDate,
-                                Date endDate,
-                                int fixingDays,
-                                YoYInflationIndex yoyIndex,
-                                Period observationLag,
-                                DayCounter dayCounter,
-                                double gearing = 1.0,
-                                double spread = 0.0,
-                                Date refPeriodStart = null,
-                                Date refPeriodEnd = null )
+      public YoYInflationCoupon(Date paymentDate, double nominal, Date startDate, Date endDate, int fixingDays, YoYInflationIndex yoyIndex, Period observationLag, DayCounter dayCounter, SavedSettings settings, double gearing = 1.0, double spread = 0.0, Date refPeriodStart = null, Date refPeriodEnd = null)
          :base(paymentDate, nominal, startDate, endDate,
                fixingDays, yoyIndex, observationLag,
-               dayCounter, refPeriodStart, refPeriodEnd)
+               dayCounter, settings, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd)
       {
          yoyIndex_ = yoyIndex; 
          gearing_ = gearing;
@@ -73,15 +62,16 @@ namespace QLNet
    //! payoff is: spread + gearing x index
    public class yoyInflationLeg : yoyInflationLegBase
    {
-      public yoyInflationLeg(Schedule schedule,Calendar cal,
-                             YoYInflationIndex index,
-                             Period observationLag)
+       SavedSettings _settings;
+
+       public yoyInflationLeg(Schedule schedule, Calendar cal, YoYInflationIndex index, Period observationLag, SavedSettings settings)
       {
          schedule_ = schedule;
          index_ = index;
          observationLag_ = observationLag;
          paymentAdjustment_ = BusinessDayConvention.ModifiedFollowing;
          paymentCalendar_ = cal;
+           _settings = settings;
       }
 
 
@@ -98,7 +88,7 @@ namespace QLNet
                                                 floors_ ,
                                                 paymentCalendar_,
                                                 fixingDays_,
-                                                observationLag_);
+                                                observationLag_, _settings);
       }
 
     };

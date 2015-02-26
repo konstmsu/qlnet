@@ -129,9 +129,9 @@ namespace QLNet
          // N.B. the -1.0 is because swaps only exchange growth, not notionals as well
          double fixedAmount = nominal * ( Math.Pow(1.0 + fixedRate, T) - 1.0 );
 
-         legs_[0].Add(new SimpleCashFlow(fixedAmount, fixedPayDate));
+         legs_[0].Add(new SimpleCashFlow(fixedAmount, fixedPayDate, settings));
          bool growthOnly = true;
-         legs_[1].Add(new IndexedCashFlow(nominal,infIndex,baseDate_,obsDate_,infPayDate,growthOnly));
+         legs_[1].Add(new IndexedCashFlow(nominal,infIndex,baseDate_,obsDate_,infPayDate, settings, growthOnly));
 
          for (int j=0; j<2; ++j) 
          {

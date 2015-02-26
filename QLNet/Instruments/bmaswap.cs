@@ -59,7 +59,7 @@ namespace QLNet {
                         .withNotionals(nominal)
                         .withPaymentAdjustment(convention);
 
-            legs_[1] = new AverageBMALeg(bmaSchedule, bmaIndex)
+            legs_[1] = new AverageBMALeg(bmaSchedule, bmaIndex, settings)
                         .withPaymentDayCounter(bmaDayCount)
                         .withNotionals(nominal)
                         .withPaymentAdjustment(bmaSchedule.businessDayConvention());

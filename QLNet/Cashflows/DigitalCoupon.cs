@@ -71,22 +71,16 @@ namespace QLNet
    public class DigitalCoupon : FloatingRateCoupon
    {
       // need by CashFlowVectors
-      public DigitalCoupon() { }
+      public DigitalCoupon(SavedSettings settings, SavedSettings settings1) : base(settings)
+      {
+          _settings = settings;
+      }
 
-      //! \name Constructors
+       //! \name Constructors
       //@{
       //! general constructor
-      public DigitalCoupon(FloatingRateCoupon underlying, 
-                           double? callStrike = null,
-                           Position.Type callPosition = Position.Type.Long, 
-                           bool isCallATMIncluded = false, 
-                           double? callDigitalPayoff = null, 
-                           double? putStrike = null,
-                           Position.Type putPosition = Position.Type.Long, 
-                           bool isPutATMIncluded = false, 
-                           double? putDigitalPayoff = null, 
-                           DigitalReplication replication = null)
-         : base(underlying.nominal(), underlying.date(), underlying.accrualStartDate(), underlying.accrualEndDate(), underlying.fixingDays, underlying.index(), underlying.gearing(), underlying.spread(), underlying.refPeriodStart, underlying.refPeriodEnd, underlying.dayCounter(), underlying.isInArrears())
+      public DigitalCoupon(FloatingRateCoupon underlying, SavedSettings settings, double? callStrike = null, Position.Type callPosition = Position.Type.Long, bool isCallATMIncluded = false, double? callDigitalPayoff = null, double? putStrike = null, Position.Type putPosition = Position.Type.Long, bool isPutATMIncluded = false, double? putDigitalPayoff = null, DigitalReplication replication = null)
+         : base(underlying.nominal(), underlying.date(), underlying.accrualStartDate(), underlying.accrualEndDate(), underlying.fixingDays, underlying.index(), settings, gearing: underlying.gearing(), spread: underlying.spread(), refPeriodStart: underlying.refPeriodStart, refPeriodEnd: underlying.refPeriodEnd, dayCounter: underlying.dayCounter(), isInArrears: underlying.isInArrears())
       {
          if (replication == null) replication = new DigitalReplication();
 
@@ -246,6 +240,7 @@ namespace QLNet
          }
 
          underlying.registerWith(update);
+          _settings = settings;
       }
 
       //@}
@@ -354,13 +349,13 @@ namespace QLNet
          {
             // Step function
             callOptionRate = isCallCashOrNothing_ ? callDigitalPayoff_ : callStrike_;
-            CappedFlooredCoupon next = new CappedFlooredCoupon(underlying_, callStrike_ + callRightEps_);
-            CappedFlooredCoupon previous = new CappedFlooredCoupon(underlying_, callStrike_ - callLeftEps_);
+            CappedFlooredCoupon next = new CappedFlooredCoupon(underlying_, _settings, cap: callStrike_ + callRightEps_);
+            CappedFlooredCoupon previous = new CappedFlooredCoupon(underlying_, _settings, cap: callStrike_ - callLeftEps_);
             callOptionRate *= (next.rate() - previous.rate()) / (callLeftEps_ + callRightEps_);
             if (!isCallCashOrNothing_)
             {
                // Call
-               CappedFlooredCoupon atStrike = new CappedFlooredCoupon(underlying_, callStrike_);
+               CappedFlooredCoupon atStrike = new CappedFlooredCoupon(underlying_, _settings, cap: callStrike_);
                double call = underlying_.rate() - atStrike.rate();
                // Sum up
                callOptionRate += call;
@@ -379,13 +374,13 @@ namespace QLNet
          {
             // Step function
             putOptionRate = isPutCashOrNothing_ ? putDigitalPayoff_ : putStrike_;
-            CappedFlooredCoupon next = new CappedFlooredCoupon(underlying_, null, putStrike_ + putRightEps_);
-            CappedFlooredCoupon previous = new CappedFlooredCoupon(underlying_, null, putStrike_ - putLeftEps_);
+            CappedFlooredCoupon next = new CappedFlooredCoupon(underlying_, _settings, cap: null, floor: putStrike_ + putRightEps_);
+            CappedFlooredCoupon previous = new CappedFlooredCoupon(underlying_, _settings, cap: null, floor: putStrike_ - putLeftEps_);
             putOptionRate *= (next.rate() - previous.rate()) / (putLeftEps_ + putRightEps_);
             if (!isPutCashOrNothing_)
             {
                // Put
-               CappedFlooredCoupon atStrike = new CappedFlooredCoupon(underlying_, null, putStrike_);
+               CappedFlooredCoupon atStrike = new CappedFlooredCoupon(underlying_, _settings, cap: null, floor: putStrike_);
                double put = -underlying_.rate() + atStrike.rate();
                // Sum up
                putOptionRate -= put;
@@ -403,12 +398,6 @@ namespace QLNet
             pricer_.registerWith(update);
          update();
          underlying_.setPricer(pricer);
-      }
-
-      // Factory - for Leg generators
-      public virtual CashFlow factory(FloatingRateCoupon underlying, double? callStrike, Position.Type callPosition, bool isCallATMIncluded, double? callDigitalPayoff, double? putStrike, Position.Type putPosition, bool isPutATMIncluded, double? putDigitalPayoff, DigitalReplication replication)
-      {
-         return new DigitalCoupon(underlying, callStrike, callPosition, isCallATMIncluded, callDigitalPayoff, putStrike, putPosition, isPutATMIncluded, putDigitalPayoff, replication);
       }
 
       //! \name Data members
@@ -446,8 +435,9 @@ namespace QLNet
       protected bool hasCallStrike_;
       //! Type of replication
       protected Replication.Type replicationType_;
+       SavedSettings _settings;
 
-      //@}
+       //@}
       private double callPayoff()
       {
          // to use only if index has fixed

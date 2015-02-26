@@ -52,7 +52,7 @@ namespace QLNet
          if (fixedDC_== null)
             fixedDC_ = overnightIndex_.dayCounter();
 
-         legs_[0] = new FixedRateLeg(schedule)
+         legs_[0] = new FixedRateLeg(schedule, settings)
             .withCouponRates(fixedRate_, fixedDC_)
             .withNotionals(nominal_);
 

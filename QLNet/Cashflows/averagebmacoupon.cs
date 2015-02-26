@@ -39,10 +39,9 @@ namespace QLNet {
 
         // double gearing = 1.0, double spread = 0.0, 
         // Date refPeriodStart = Date(), Date refPeriodEnd = Date(), DayCounter dayCounter = DayCounter());
-        public AverageBMACoupon(double nominal, Date paymentDate, Date startDate, Date endDate, BMAIndex index,
-                                double gearing, double spread, Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter)
-            : base(nominal, paymentDate, startDate, endDate, index.fixingDays(), index, gearing, spread,
-                         refPeriodStart, refPeriodEnd, dayCounter, false) {
+        public AverageBMACoupon(double nominal, Date paymentDate, Date startDate, Date endDate, BMAIndex index, double gearing, double spread, Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter, SavedSettings settings)
+            : base(nominal, paymentDate, startDate, endDate, index.fixingDays(), index, settings, gearing: gearing, spread: spread,
+                         refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, dayCounter: dayCounter, isInArrears: false) {
             fixingSchedule_ = index.fixingSchedule(
                                 index.fixingCalendar()
                                     .advance(startDate, new Period(-index.fixingDays() + bmaCutoffDays, TimeUnit.Days),
@@ -152,11 +151,13 @@ namespace QLNet {
         private BMAIndex index_;
         private List<double> gearings_;
         private List<double> spreads_;
+        SavedSettings _settings;
 
-        public AverageBMALeg(Schedule schedule, BMAIndex index) {
+        public AverageBMALeg(Schedule schedule, BMAIndex index, SavedSettings settings) {
             schedule_ = schedule;
             index_ = index;
             paymentAdjustment_ = BusinessDayConvention.Following;
+            _settings = settings;
         }
 
         public AverageBMALeg withPaymentDayCounter(DayCounter dayCounter) {
@@ -208,7 +209,7 @@ namespace QLNet {
                                                    Utils.Get<double>(gearings_, i, 1.0),
                                                    Utils.Get<double>(spreads_, i, 0.0),
                                                    refStart, refEnd,
-                                                   paymentDayCounter_));
+                                                   paymentDayCounter_, _settings));
             }
 
             return cashflows;

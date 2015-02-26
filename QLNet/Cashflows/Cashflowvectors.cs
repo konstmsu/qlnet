@@ -35,21 +35,14 @@ namespace QLNet {
     }
 
     public static class CashFlowVectors {
-        public static List<CashFlow> FloatingLeg<InterestRateIndexType, FloatingCouponType, CappedFlooredCouponType>(List<double> nominals,
-                                                Schedule schedule,
-                                                InterestRateIndexType index,
-                                                DayCounter paymentDayCounter,
-                                                BusinessDayConvention paymentAdj,
-                                                List<int> fixingDays,
-                                                List<double> gearings,
-                                                List<double> spreads,
-                                                List<double> caps,
-                                                List<double> floors,
-                                                bool isInArrears,
-                                                bool isZero)
-            where InterestRateIndexType : InterestRateIndex
-            where FloatingCouponType : FloatingRateCoupon, new()
-            where CappedFlooredCouponType : CappedFlooredCoupon, new() {
+        public static List<CashFlow> FloatingLeg<TInterestRateIndex, TFloatingRateCoupon, TCappedFlooredCoupon>(
+            Func<double, Date, Date, Date, int, TInterestRateIndex, double, double, Date, Date, DayCounter, bool, SavedSettings, TFloatingRateCoupon> floatingRateCouponFactory,
+            Func<double, Date, Date, Date, int, TInterestRateIndex, double, double, double?, double?, Date, Date, DayCounter, bool, SavedSettings, TCappedFlooredCoupon> cappedFlooredCouponFactory,
+            List<double> nominals, Schedule schedule, TInterestRateIndex index, DayCounter paymentDayCounter, BusinessDayConvention paymentAdj, List<int> fixingDays, List<double> gearings, List<double> spreads, List<double> caps, List<double> floors, bool isInArrears, bool isZero, SavedSettings settings)
+            where TInterestRateIndex : InterestRateIndex
+            where TFloatingRateCoupon : FloatingRateCoupon
+            where TCappedFlooredCoupon : CappedFlooredCoupon
+             {
 
             int n = schedule.Count;
             if (nominals.Count == 0) throw new ArgumentException("no notional given");
@@ -87,19 +80,19 @@ namespace QLNet {
                                                 paymentDate,
                                                 Utils.effectiveFixedRate(spreads, caps, floors, i),
                                                 paymentDayCounter,
-                                                start, end, refStart, refEnd));
+                                                start, end, settings, refPeriodStart: refStart, refPeriodEnd: refEnd));
                 } else {
                     if (Utils.noOption(caps, floors, i)) {
-                        leg.Add(new FloatingCouponType().factory(Utils.Get(nominals, i),
+                        leg.Add(floatingRateCouponFactory(Utils.Get(nominals, i),
                             paymentDate, start, end,
                             Utils.Get(fixingDays, i, 2),
                             index,
                             Utils.Get(gearings, i, 1),
                             Utils.Get(spreads, i),
                             refStart, refEnd, paymentDayCounter,
-                            isInArrears));
+                            isInArrears, settings));
                     } else {
-                        leg.Add(new CappedFlooredCouponType().factory(Utils.Get(nominals, i),
+                        leg.Add(cappedFlooredCouponFactory(Utils.Get(nominals, i),
                             paymentDate, start, end,
                             Utils.Get(fixingDays, i, 2),
                             index,
@@ -108,34 +101,20 @@ namespace QLNet {
                             Utils.toNullable(Utils.Get(caps, i, Double.MinValue)),
                             Utils.toNullable(Utils.Get(floors, i, Double.MinValue)),
                             refStart, refEnd, paymentDayCounter,
-                            isInArrears));
+                            isInArrears, settings));
                     }
                 }
             }
             return leg;
         }
 
-        public static List<CashFlow> FloatingDigitalLeg<InterestRateIndexType, FloatingCouponType, DigitalCouponType>(List<double> nominals,
-                                                Schedule schedule,
-                                                InterestRateIndexType index,
-                                                DayCounter paymentDayCounter,
-                                                BusinessDayConvention paymentAdj,
-                                                List<int> fixingDays,
-                                                List<double> gearings,
-                                                List<double> spreads,
-                                                bool isInArrears,
-                                                List<double> callStrikes,
-                                                Position.Type callPosition,
-                                                bool isCallATMIncluded,
-                                                List<double> callDigitalPayoffs,
-                                                List<double> putStrikes,
-                                                Position.Type putPosition,
-                                                bool isPutATMIncluded,
-                                                List<double> putDigitalPayoffs,
-                                                DigitalReplication replication)
-            where InterestRateIndexType : InterestRateIndex
-            where FloatingCouponType : FloatingRateCoupon, new()
-            where DigitalCouponType : DigitalCoupon, new() {
+        public static List<CashFlow> FloatingDigitalLeg<TInterestRateIndex, TFloatingRateCoupon, TDigitalCoupon>(
+            Func<double , Date , Date , Date , int , TInterestRateIndex , double , double , Date , Date , DayCounter , bool , SavedSettings , TFloatingRateCoupon> floatingRateCouponFactory,
+            Func<TFloatingRateCoupon , double? , Position.Type , bool , double? , double? , Position.Type , bool , double? , DigitalReplication , SavedSettings, TDigitalCoupon> digitalCouponFactory,
+            List<double> nominals, Schedule schedule, TInterestRateIndex index, DayCounter paymentDayCounter, BusinessDayConvention paymentAdj, List<int> fixingDays, List<double> gearings, List<double> spreads, bool isInArrears, List<double> callStrikes, Position.Type callPosition, bool isCallATMIncluded, List<double> callDigitalPayoffs, List<double> putStrikes, Position.Type putPosition, bool isPutATMIncluded, List<double> putDigitalPayoffs, DigitalReplication replication, SavedSettings settings)
+            where TInterestRateIndex : InterestRateIndex
+            where TFloatingRateCoupon: FloatingRateCoupon
+            where TDigitalCoupon : DigitalCoupon {
 
             int n = schedule.Count;
             if (nominals.Count == 0) throw new ArgumentException("no nominal given");
@@ -177,10 +156,10 @@ namespace QLNet {
                                         paymentDate,
                                         Utils.Get(spreads, i, 1.0),
                                         paymentDayCounter,
-                                        start, end, refStart, refEnd));
+                                        start, end, settings, refPeriodStart: refStart, refPeriodEnd: refEnd));
 
                 } else { // floating digital coupon
-                    FloatingCouponType underlying = new FloatingCouponType().factory(
+                    var underlying =  floatingRateCouponFactory(
                        Utils.Get(nominals, i, 1.0),
                        paymentDate, start, end,
                        Utils.Get(fixingDays, i, index.fixingDays()),
@@ -188,9 +167,9 @@ namespace QLNet {
                        Utils.Get(gearings, i, 1.0),
                        Utils.Get(spreads, i, 0.0),
                        refStart, refEnd,
-                       paymentDayCounter, isInArrears) as FloatingCouponType;
+                       paymentDayCounter, isInArrears, settings);
 
-                    DigitalCouponType digitalCoupon = new DigitalCouponType().factory(
+                    TDigitalCoupon digitalCoupon = digitalCouponFactory(
                      underlying,
                      Utils.toNullable(Utils.Get(callStrikes, i, Double.MinValue)),
                      callPosition,
@@ -200,7 +179,7 @@ namespace QLNet {
                      putPosition,
                      isPutATMIncluded,
                      Utils.toNullable(Utils.Get(putDigitalPayoffs, i, Double.MinValue)),
-                     replication) as DigitalCouponType;
+                     replication, settings) as TDigitalCoupon;
 
                     leg.Add(digitalCoupon);
                 }
@@ -247,18 +226,7 @@ namespace QLNet {
            return leg;
         }
 
-         public static List<CashFlow> yoyInflationLeg(List<double> notionals_, 
-                                                      Schedule schedule_, 
-                                                      BusinessDayConvention paymentAdjustment_, 
-                                                      YoYInflationIndex index_, 
-                                                      List<double> gearings_, 
-                                                      List<double> spreads_, 
-                                                      DayCounter paymentDayCounter_,
-                                                      List<double> caps_, 
-                                                      List<double> floors_ ,
-                                                      Calendar paymentCalendar_,
-                                                      List<int> fixingDays_,
-                                                      Period observationLag_)
+         public static List<CashFlow> yoyInflationLeg(List<double> notionals_, Schedule schedule_, BusinessDayConvention paymentAdjustment_, YoYInflationIndex index_, List<double> gearings_, List<double> spreads_, DayCounter paymentDayCounter_, List<double> caps_, List<double> floors_, Calendar paymentCalendar_, List<int> fixingDays_, Period observationLag_, SavedSettings settings)
          {
             int n = schedule_.Count -1 ;
 
@@ -313,9 +281,9 @@ namespace QLNet {
                   leg.Add(new FixedRateCoupon(Utils.Get(notionals_, i, 1.0),
                                               paymentDate,
                                               Utils.effectiveFixedRate(spreads_, caps_,
-                                                                         floors_, i),
+                                                  floors_, i),
                                               paymentDayCounter_,
-                                              start, end, refStart, refEnd));
+                                              start, end, settings, refPeriodStart: refStart, refPeriodEnd: refEnd));
                }
                else
                {
@@ -329,10 +297,9 @@ namespace QLNet {
                                                                      Utils.Get(fixingDays_, i, 0),
                                                                      index_,
                                                                      observationLag_,
-                                                                     paymentDayCounter_,
-                                                                     Utils.Get(gearings_, i, 1.0),
-                                                                     Utils.Get(spreads_, i, 0.0),
-                                                                     refStart, refEnd);
+                                                                     paymentDayCounter_, settings, gearing: Utils.Get(gearings_, i, 1.0),
+                                                                     spread: Utils.Get(spreads_, i, 0.0),
+                                                                     refPeriodStart: refStart, refPeriodEnd: refEnd);
 
                      // in this case you can set a pricer
                      // straight away because it only provides computation - not data
@@ -350,12 +317,11 @@ namespace QLNet {
                                    Utils.Get(fixingDays_, i, 0),
                                    index_,
                                    observationLag_,
-                                   paymentDayCounter_,
-                                   Utils.Get(gearings_, i, 1.0),
-                                   Utils.Get(spreads_, i, 0.0),
-                                   Utils.toNullable(Utils.Get(caps_, i, Double.MinValue)),
-                                   Utils.toNullable(Utils.Get(floors_, i, Double.MinValue)),
-                                   refStart, refEnd));
+                                   paymentDayCounter_, settings, gearing: Utils.Get(gearings_, i, 1.0),
+                                   spread: Utils.Get(spreads_, i, 0.0),
+                                   cap: Utils.toNullable(Utils.Get(caps_, i, Double.MinValue)),
+                                   floor: Utils.toNullable(Utils.Get(floors_, i, Double.MinValue)),
+                                   refPeriodStart: refStart, refPeriodEnd: refEnd));
                   }
                }
             }

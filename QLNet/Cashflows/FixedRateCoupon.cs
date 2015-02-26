@@ -28,18 +28,14 @@ namespace QLNet
    public class FixedRateCoupon : Coupon 
    {
       // constructors
-      public FixedRateCoupon(double nominal, Date paymentDate, double rate, DayCounter dayCounter,
-                             Date accrualStartDate, Date accrualEndDate, 
-                             Date refPeriodStart = null, Date refPeriodEnd = null,Date exCouponDate = null,double? amount = null)
-			: base(nominal, paymentDate, accrualStartDate, accrualEndDate, refPeriodStart, refPeriodEnd, exCouponDate,amount) 
+      public FixedRateCoupon(double nominal, Date paymentDate, double rate, DayCounter dayCounter, Date accrualStartDate, Date accrualEndDate, SavedSettings settings, Date refPeriodStart = null, Date refPeriodEnd = null, Date exCouponDate = null, double? amount = null)
+			: base(nominal, paymentDate, accrualStartDate, accrualEndDate, settings, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, exCouponDate: exCouponDate,amount: amount) 
       {
          rate_ = new InterestRate(rate, dayCounter, Compounding.Simple,Frequency.Annual);
       }
 
-      public FixedRateCoupon(double nominal, Date paymentDate, InterestRate interestRate, 
-                             Date accrualStartDate, Date accrualEndDate,
-									  Date refPeriodStart = null, Date refPeriodEnd = null, Date exCouponDate = null, double? amount = null) 
-         : base(nominal, paymentDate, accrualStartDate, accrualEndDate, refPeriodStart, refPeriodEnd,exCouponDate, amount) 
+      public FixedRateCoupon(double nominal, Date paymentDate, InterestRate interestRate, Date accrualStartDate, Date accrualEndDate, SavedSettings settings, Date refPeriodStart = null, Date refPeriodEnd = null, Date exCouponDate = null, double? amount = null) 
+         : base(nominal, paymentDate, accrualStartDate, accrualEndDate, settings, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd,exCouponDate: exCouponDate, amount: amount) 
       {
          rate_ = interestRate;
       }
@@ -89,13 +85,15 @@ namespace QLNet
       private   Calendar exCouponCalendar_;
       private   BusinessDayConvention exCouponAdjustment_;
       private   bool exCouponEndOfMonth_;
+       SavedSettings _settings;
 
-      // constructor
-      public FixedRateLeg(Schedule schedule) 
+       // constructor
+      public FixedRateLeg(Schedule schedule, SavedSettings settings) 
       {
          schedule_ = schedule;
          calendar_ = schedule.calendar();
          paymentAdjustment_ = BusinessDayConvention.Following;
+          _settings = settings;
       }
 
       // other initializers
@@ -198,7 +196,7 @@ namespace QLNet
          {
             if (!(firstPeriodDC_ == null || firstPeriodDC_ == rate.dayCounter()))
                 throw new ArgumentException("regular first coupon does not allow a first-period day count");
-            leg.Add(new FixedRateCoupon(nominal, paymentDate, rate, start, end, start, end, exCouponDate));
+            leg.Add(new FixedRateCoupon(nominal, paymentDate, rate, start, end, _settings, refPeriodStart: start, refPeriodEnd: end, exCouponDate: exCouponDate));
          } 
          else 
          {
@@ -207,7 +205,7 @@ namespace QLNet
              InterestRate r = new InterestRate(rate.rate(),
                                                (firstPeriodDC_ == null || firstPeriodDC_.empty()) ? rate.dayCounter() : firstPeriodDC_,
                                                rate.compounding(), rate.frequency());
-				 leg.Add(new FixedRateCoupon(nominal, paymentDate, r, start, end, refer, end, exCouponDate));
+				 leg.Add(new FixedRateCoupon(nominal, paymentDate, r, start, end, _settings, refPeriodStart: refer, refPeriodEnd: end, exCouponDate: exCouponDate));
          }
 
          // regular periods
@@ -227,7 +225,7 @@ namespace QLNet
             if ((i - 1) < notionals_.Count)   nominal = notionals_[i - 1];
             else                              nominal = notionals_.Last();
 
-				leg.Add(new FixedRateCoupon(nominal, paymentDate, rate, start, end, start, end, exCouponDate));
+				leg.Add(new FixedRateCoupon(nominal, paymentDate, rate, start, end, _settings, refPeriodStart: start, refPeriodEnd: end, exCouponDate: exCouponDate));
          }
 
          if (schedule_.Count > 2) {
@@ -249,11 +247,11 @@ namespace QLNet
              else                              nominal = notionals_.Last();
 
              if (schedule_.isRegular(N-1))
-					 leg.Add(new FixedRateCoupon(nominal, paymentDate, rate, start, end, start, end, exCouponDate));
+					 leg.Add(new FixedRateCoupon(nominal, paymentDate, rate, start, end, _settings, refPeriodStart: start, refPeriodEnd: end, exCouponDate: exCouponDate));
              else {
                  Date refer = start + schedule_.tenor();
                  refer = schCalendar.adjust(refer, schedule_.businessDayConvention());
-					  leg.Add(new FixedRateCoupon(nominal, paymentDate, rate, start, end, start, refer, exCouponDate));
+					  leg.Add(new FixedRateCoupon(nominal, paymentDate, rate, start, end, _settings, refPeriodStart: start, refPeriodEnd: refer, exCouponDate: exCouponDate));
              }
          }
          return leg;

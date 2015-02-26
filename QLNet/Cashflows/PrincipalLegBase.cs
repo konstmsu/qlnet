@@ -67,12 +67,14 @@ namespace QLNet
    //! helper class building a Bullet Principal leg
    public class PricipalLeg : PrincipalLegBase
    {
-      // constructor
-      public PricipalLeg(Schedule schedule, DayCounter paymentDayCounter)
+       SavedSettings _settings;
+       // constructor
+      public PricipalLeg(Schedule schedule, DayCounter paymentDayCounter, SavedSettings settings)
       {
          schedule_ = schedule;
          paymentAdjustment_ = BusinessDayConvention.Following;
          dayCounter_ = paymentDayCounter;
+          _settings = settings;
       }
 
       // creator
@@ -89,12 +91,12 @@ namespace QLNet
          double nominal = notionals_[0];
          double quota = nominal / (schedule_.Count - 1);
 
-         leg.Add(new Principal(nominal * sign_, nominal, paymentDate, start, end, dayCounter_,  start, end));
+         leg.Add(new Principal(nominal * sign_, nominal, paymentDate, start, end, dayCounter_, _settings, refPeriodStart: start, refPeriodEnd: end));
 
          if (schedule_.Count == 2)
          {
             paymentDate = calendar.adjust(end, paymentAdjustment_);
-            leg.Add(new Principal(nominal * sign_ * -1, 0, paymentDate, start, end, dayCounter_, start, end));
+            leg.Add(new Principal(nominal * sign_ * -1, 0, paymentDate, start, end, dayCounter_, _settings, refPeriodStart: start, refPeriodEnd: end));
          }
          else
          {
@@ -106,7 +108,7 @@ namespace QLNet
                paymentDate = calendar.adjust(start, paymentAdjustment_);
                nominal -= quota;
 
-               leg.Add(new Principal(quota * sign_ * -1, nominal, paymentDate, start, end, dayCounter_, start, end));
+               leg.Add(new Principal(quota * sign_ * -1, nominal, paymentDate, start, end, dayCounter_, _settings, refPeriodStart: start, refPeriodEnd: end));
             }
          }
 
@@ -117,11 +119,13 @@ namespace QLNet
    //! helper class building a Bullet Principal leg
    public class BulletPricipalLeg : PrincipalLegBase
    {
-      // constructor
-      public BulletPricipalLeg(Schedule schedule)
+       SavedSettings _settings;
+       // constructor
+      public BulletPricipalLeg(Schedule schedule, SavedSettings settings)
       {
             schedule_ = schedule;
             paymentAdjustment_ = BusinessDayConvention.Following;
+          _settings = settings;
       }
 
       // creator
@@ -137,10 +141,10 @@ namespace QLNet
          Date paymentDate = calendar.adjust(start, paymentAdjustment_);
          double nominal = notionals_[0];
 
-         leg.Add(new Principal(nominal, nominal, paymentDate, start, end, dayCounter_, start, end));
+         leg.Add(new Principal(nominal, nominal, paymentDate, start, end, dayCounter_, _settings, refPeriodStart: start, refPeriodEnd: end));
 
          paymentDate = calendar.adjust(end, paymentAdjustment_);
-         leg.Add(new Principal(nominal * -1, 0, paymentDate, start, end, dayCounter_, start, end));
+         leg.Add(new Principal(nominal * -1, 0, paymentDate, start, end, dayCounter_, _settings, refPeriodStart: start, refPeriodEnd: end));
 
          return leg;
       }

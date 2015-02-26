@@ -35,18 +35,8 @@ namespace QLNet
    public class InflationCoupon : Coupon,IObserver
    {
 
-      public InflationCoupon(Date paymentDate,
-                             double nominal,
-                             Date startDate,
-                             Date endDate,
-                             int fixingDays,
-                             InflationIndex index,
-                             Period observationLag,
-                             DayCounter dayCounter,
-                             Date refPeriodStart = null,
-                             Date refPeriodEnd = null,
-                             Date exCouponDate = null)
-         : base(nominal, paymentDate, startDate, endDate, refPeriodStart, refPeriodEnd, exCouponDate)  // ref period is before lag
+      public InflationCoupon(Date paymentDate, double nominal, Date startDate, Date endDate, int fixingDays, InflationIndex index, Period observationLag, DayCounter dayCounter, SavedSettings settings, Date refPeriodStart = null, Date refPeriodEnd = null, Date exCouponDate = null)
+         : base(nominal, paymentDate, startDate, endDate, settings, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, exCouponDate: exCouponDate)  // ref period is before lag
       {
          index_ = index;
          observationLag_ = observationLag;

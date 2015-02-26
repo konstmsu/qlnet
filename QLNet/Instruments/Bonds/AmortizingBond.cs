@@ -65,8 +65,6 @@ namespace QLNet
             default:
                break;
          }
-
-          _settings = settings;
       }
 
       public bool isPremium()
@@ -94,8 +92,8 @@ namespace QLNet
             FixedRateCoupon r,r2;
             if (i > 1)
             {
-               r = new FixedRateCoupon(currentNominal, actualDate, rate, prevDate, actualDate, prevDate, actualDate);
-               r2 = new FixedRateCoupon(currentNominal, actualDate, rate2, prevDate, actualDate, prevDate, actualDate, null,_originalPayment);
+               r = new FixedRateCoupon(currentNominal, actualDate, rate, prevDate, actualDate, _settings, refPeriodStart: prevDate, refPeriodEnd: actualDate);
+               r2 = new FixedRateCoupon(currentNominal, actualDate, rate2, prevDate, actualDate, _settings, refPeriodStart: prevDate, refPeriodEnd: actualDate, exCouponDate: null,amount: _originalPayment);
             }
 
             else
@@ -104,13 +102,13 @@ namespace QLNet
                Period p1 = new Period(_payFrequency);
                Date testDate = nullCalendar.advance(actualDate, -1 * p1);
 
-               r = new FixedRateCoupon(currentNominal, actualDate, rate, testDate, actualDate, prevDate, actualDate);
-               r2 = new FixedRateCoupon(currentNominal, actualDate, rate2, testDate, actualDate, prevDate, actualDate, null,_originalPayment);
+               r = new FixedRateCoupon(currentNominal, actualDate, rate, testDate, actualDate, _settings, refPeriodStart: prevDate, refPeriodEnd: actualDate);
+               r2 = new FixedRateCoupon(currentNominal, actualDate, rate2, testDate, actualDate, _settings, refPeriodStart: prevDate, refPeriodEnd: actualDate, exCouponDate: null,amount: _originalPayment);
             }
 
             double amort = Math.Round(Math.Abs(_originalPayment - r.amount()),2);
           
-            AmortizingPayment p = new AmortizingPayment(amort, actualDate);
+            AmortizingPayment p = new AmortizingPayment(amort, actualDate, _settings);
             if (_isPremium)
                currentNominal -= Math.Abs(amort);
             else
@@ -154,12 +152,12 @@ namespace QLNet
 
             // Base Interest
             InterestRate r1 = new InterestRate(_couponRate,_dCounter,Compounding.Simple,_payFrequency);
-            FixedRateCoupon c1 = new FixedRateCoupon(_faceValue,d,r1,lastDate,d);
+            FixedRateCoupon c1 = new FixedRateCoupon(_faceValue,d,r1,lastDate,d, _settings);
             double baseInterest = c1.amount();
 
             // 
             InterestRate r2 = new InterestRate(_yield,_dCounter,Compounding.Simple,_payFrequency);
-            FixedRateCoupon c2 = new FixedRateCoupon(_marketValue,d,r2,lastDate,d);
+            FixedRateCoupon c2 = new FixedRateCoupon(_marketValue,d,r2,lastDate,d, _settings);
             double yieldInterest = c2.amount();
 
             totAmortized += Math.Abs(baseInterest - yieldInterest);
@@ -184,14 +182,14 @@ namespace QLNet
                                            DateGeneration.Rule.Backward, false, _settings);
 
 
-         List<CashFlow> cashflows = new FixedRateLeg(schedule)
+         List<CashFlow> cashflows = new FixedRateLeg(schedule, _settings)
             .withCouponRates(_couponRate, _dCounter)
             .withPaymentCalendar(_calendar)
             .withNotionals(_faceValue)
             .withPaymentAdjustment(BusinessDayConvention.Unadjusted);
 
          // Add single redemption for yield calculation
-         Redemption r = new Redemption(_faceValue , _maturityDate);
+         Redemption r = new Redemption(_faceValue , _maturityDate, _settings);
          cashflows.Add( r );
 
          // Calculate Amortizing Yield ( Effective Rate )
@@ -226,6 +224,5 @@ namespace QLNet
       protected double _yield;
       protected double _originalPayment;
       protected bool _isPremium;
-       SavedSettings _settings;
    }
 }

@@ -55,7 +55,7 @@ namespace QLNet
          Schedule schedule = new Schedule(startDate,endDate,bondLength,calendar,BusinessDayConvention.Unadjusted,
                                           BusinessDayConvention.Unadjusted,DateGeneration.Rule.Backward,false, settings);
 
-         bond = new AmortizingFixedRateBond(0, calendar, amount, startDate, bondLength, payFrequency, rate, dCounter, settings, settings);
+         bond = new AmortizingFixedRateBond(0, calendar, amount, startDate, bondLength, payFrequency, rate, dCounter, settings);
 
          return bond;
 

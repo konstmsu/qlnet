@@ -95,23 +95,12 @@ namespace QLNet
         return I1;
       }
       
-      public CPICoupon(double baseCPI, // user provided, could be arbitrary
-                        Date paymentDate,
-                        double nominal,
-                        Date startDate,
-                        Date endDate,
-                        int fixingDays,
-                        ZeroInflationIndex index,
-                        Period observationLag,
-                        InterpolationType observationInterpolation,
-                        DayCounter dayCounter,
-                        double fixedRate, // aka gearing
-                        double spread = 0.0,
-                        Date refPeriodStart = null,
-                        Date refPeriodEnd = null,
-                        Date exCouponDate = null)
+      public CPICoupon(double baseCPI, Date paymentDate, double nominal, Date startDate, Date endDate, int fixingDays, ZeroInflationIndex index, Period observationLag, InterpolationType observationInterpolation, DayCounter dayCounter, double fixedRate, SavedSettings settings, double spread = 0.0, Date refPeriodStart = null, Date refPeriodEnd = null, Date exCouponDate = null
+// user provided, could be arbitrary
+          // aka gearing
+          )
          :base(paymentDate, nominal, startDate, endDate, fixingDays, index, 
-               observationLag, dayCounter, refPeriodStart, refPeriodEnd, exCouponDate)
+               observationLag, dayCounter, settings, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, exCouponDate: exCouponDate)
       {
 
          baseCPI_ = baseCPI;
@@ -151,16 +140,8 @@ namespace QLNet
    /*! It is NOT a coupon, i.e. no accruals. */
    public class CPICashFlow : IndexedCashFlow
    {
-      public CPICashFlow(double notional,
-                         ZeroInflationIndex index,
-                         Date baseDate,
-                         double baseFixing,
-                         Date fixingDate,
-                         Date paymentDate,
-                         bool growthOnly = false,
-                         InterpolationType interpolation = InterpolationType.AsIndex,
-                         Frequency frequency = Frequency.NoFrequency)
-      : base(notional, index, baseDate, fixingDate,paymentDate, growthOnly)
+      public CPICashFlow(double notional, ZeroInflationIndex index, Date baseDate, double baseFixing, Date fixingDate, Date paymentDate, SavedSettings settings, bool growthOnly = false, InterpolationType interpolation = InterpolationType.AsIndex, Frequency frequency = Frequency.NoFrequency)
+      : base(notional, index, baseDate, fixingDate,paymentDate, settings, growthOnly)
       {
          baseFixing_= baseFixing;
          interpolation_= interpolation;
@@ -312,7 +293,7 @@ namespace QLNet
                   leg.Add(new FixedRateCoupon(Utils.Get(notionals_, i, 0.0),
                                               paymentDate,
                                               Utils.effectiveFixedRate(spreads_, caps_, floors_, i),
-                                              paymentDayCounter_, start, end, refStart, refEnd, exCouponDate));
+                                              paymentDayCounter_, start, end, settings_, refPeriodStart: refStart, refPeriodEnd: refEnd, exCouponDate: exCouponDate));
                }
                else
                {
@@ -330,9 +311,8 @@ namespace QLNet
                                           index_, observationLag_,
                                           observationInterpolation_,
                                           paymentDayCounter_,
-                                          Utils.Get(fixedRates_, i, 0.0),
-                                          Utils.Get(spreads_, i, 0.0),
-                                          refStart, refEnd, exCouponDate);
+                                          Utils.Get(fixedRates_, i, 0.0), settings_, Utils.Get(spreads_, i, 0.0),
+                                          refPeriodStart: refStart, refPeriodEnd: refEnd, exCouponDate: exCouponDate);
 
                      // in this case you can set a pricer
                      // straight away because it only provides computation - not data
@@ -356,8 +336,7 @@ namespace QLNet
          CashFlow xnl = new CPICashFlow
                            (Utils.Get(notionals_, n, 0.0), index_,
                             new Date(), // is fake, i.e. you do not have one
-                            baseCPI_, fixingDate, pDate,
-                            subtractInflationNominal_, observationInterpolation_,
+                            baseCPI_, fixingDate, pDate, settings_, subtractInflationNominal_, observationInterpolation_,
                             index_.frequency());
 
          leg.Add(xnl);

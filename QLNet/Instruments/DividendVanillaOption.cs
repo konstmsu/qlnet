@@ -28,10 +28,9 @@ namespace QLNet {
     public class DividendVanillaOption : OneAssetOption {
         private List<Dividend> cashFlow_;
 
-        public DividendVanillaOption(StrikedTypePayoff payoff, Exercise exercise,
-                                     List<Date> dividendDates, List<double> dividends)   
+        public DividendVanillaOption(StrikedTypePayoff payoff, Exercise exercise, List<Date> dividendDates, List<double> dividends, SavedSettings settings)   
             : base(payoff, exercise) {
-            cashFlow_ = Utils.DividendVector(dividendDates, dividends);
+            cashFlow_ = Utils.DividendVector(dividendDates, dividends, settings);
         }
         
         

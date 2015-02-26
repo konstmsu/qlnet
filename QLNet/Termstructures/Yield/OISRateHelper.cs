@@ -31,12 +31,11 @@ namespace QLNet
           )
          : base(fixedRate, settings)
       {
-         settlementDays_ = settlementDays;
+          settlementDays_ = settlementDays;
          tenor_ = tenor;
          overnightIndex_ = overnightIndex;
           overnightIndex_.notifyObserversEvent += (Callback)update;
           initializeDates();
-          _settings = settings;
       }
 
       public OvernightIndexedSwap swap() { return swap_; }
@@ -49,7 +48,7 @@ namespace QLNet
          IborIndex clonedIborIndex = overnightIndex_.clone(termStructureHandle_);
          OvernightIndex clonedOvernightIndex = clonedIborIndex as OvernightIndex;
 
-         swap_ = new MakeOIS(tenor_, clonedOvernightIndex, 0.0, _settings)
+         swap_ = new MakeOIS(tenor_, clonedOvernightIndex, 0.0, settings_)
                      .withSettlementDays(settlementDays_)
                      .withDiscountingTermStructure(termStructureHandle_);
          
@@ -78,7 +77,6 @@ namespace QLNet
       protected OvernightIndex overnightIndex_;
       protected OvernightIndexedSwap swap_;
       protected RelinkableHandle<YieldTermStructure> termStructureHandle_ = new RelinkableHandle<YieldTermStructure>();
-       SavedSettings _settings;
    }
 
 

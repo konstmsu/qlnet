@@ -38,7 +38,7 @@ namespace QLNet
 
          maturityDate_ = schedule.endDate();
 
-         cashflows_ = new CmsLeg(schedule, index)
+         cashflows_ = new CmsLeg(schedule, index, settings)
              .withPaymentDayCounter(paymentDayCounter)
              .withFixingDays(fixingDays)
              .withGearings(gearings)

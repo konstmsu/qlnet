@@ -45,15 +45,9 @@ namespace QLNet
       public DayCounter dayCounter() { return dayCounter_; }
 
       // Constructors
-      public Principal() { }       // default constructor
-      public Principal(double amount, 
-                       double nominal, 
-                       Date paymentDate, 
-                       Date accrualStartDate, 
-                       Date accrualEndDate, 
-                       DayCounter dayCounter, 
-                       Date refPeriodStart = null , 
-                       Date refPeriodEnd = null )
+      public Principal(SavedSettings settings) : base(settings)
+      { }       // default constructor
+      public Principal(double amount, double nominal, Date paymentDate, Date accrualStartDate, Date accrualEndDate, DayCounter dayCounter, SavedSettings settings, Date refPeriodStart = null, Date refPeriodEnd = null) : base(settings)
       {
          amount_ = amount;
          nominal_ = nominal;

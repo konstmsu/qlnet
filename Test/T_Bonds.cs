@@ -1071,7 +1071,9 @@ namespace TestSuite
       [TestMethod()]
       public void testAmortizingBond2()
       {
-         // Par – 500,000
+          var settings = new SavedSettings();
+          
+          // Par – 500,000
          // Cost – 471,444
          // Coupon Rate - .0520
          // Issue Date – March 15 1999
@@ -1091,8 +1093,8 @@ namespace TestSuite
          DayCounter dc = new Thirty360(Thirty360.Thirty360Convention.USA);
 
          // Build Bond
-         AmortizingBond bond = BondFactory.makeAmortizingBond(faceValue, marketValue, couponRate,
-            issueDate, maturirtyDate, tradeDate, paymentFrequency, dc, AmortizingMethod.EffectiveInterestRate, new SavedSettings());
+          AmortizingBond bond = BondFactory.makeAmortizingBond(faceValue, marketValue, couponRate,
+            issueDate, maturirtyDate, tradeDate, paymentFrequency, dc, AmortizingMethod.EffectiveInterestRate, settings);
 
          // Amortizing Yield ( Effective Rate )
          double y1 = bond.Yield();

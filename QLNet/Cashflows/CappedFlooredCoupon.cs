@@ -59,10 +59,11 @@ namespace QLNet
       protected double? floor_;
 
       // need by CashFlowVectors
-      public CappedFlooredCoupon() { }
+      public CappedFlooredCoupon(SavedSettings settings) : base(settings)
+      { }
 
-      public CappedFlooredCoupon(FloatingRateCoupon underlying, double? cap = null, double? floor = null)
-         : base(underlying.nominal(), underlying.date(), underlying.accrualStartDate(), underlying.accrualEndDate(), underlying.fixingDays, underlying.index(), underlying.gearing(), underlying.spread(), underlying.refPeriodStart, underlying.refPeriodEnd, underlying.dayCounter(), underlying.isInArrears())
+      public CappedFlooredCoupon(FloatingRateCoupon underlying, SavedSettings settings, double? cap = null, double? floor = null)
+         : base(underlying.nominal(), underlying.date(), underlying.accrualStartDate(), underlying.accrualEndDate(), underlying.fixingDays, underlying.index(), settings, gearing: underlying.gearing(), spread: underlying.spread(), refPeriodStart: underlying.refPeriodStart, refPeriodEnd: underlying.refPeriodEnd, dayCounter: underlying.dayCounter(), isInArrears: underlying.isInArrears())
       {
          underlying_ = underlying;
          isCapped_ = false;
@@ -166,70 +167,43 @@ namespace QLNet
       }
 
       // Factory - for Leg generators
-      public virtual CashFlow factory(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, InterestRateIndex index, double gearing, double spread, double? cap, double? floor, Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter, bool isInArrears)
-      {
-         return new CappedFlooredCoupon(new FloatingRateCoupon(nominal, paymentDate, startDate, endDate, fixingDays, index, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears), cap, floor);
-      }
+       public static CappedFlooredCouponFactory CappedFlooredCouponFactory = (nominal, paymentDate, startDate, endDate, fixingDays, index, gearing, spread, cap, floor, refPeriodStart, refPeriodEnd, dayCounter, isInArrears, settings) =>
+           new CappedFlooredCoupon(new FloatingRateCoupon(nominal, paymentDate, startDate, endDate, fixingDays, index, settings, gearing: gearing, spread: spread, 
+               refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, dayCounter: dayCounter, isInArrears: isInArrears), settings, cap: cap, floor: floor);
    }
+
+    public delegate CappedFlooredCoupon CappedFlooredCouponFactory(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, InterestRateIndex index, double gearing, double spread, double? cap, double? floor, Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter, bool isInArrears, SavedSettings settings);
+
 
    public class CappedFlooredIborCoupon : CappedFlooredCoupon
    {
       // need by CashFlowVectors
-      public CappedFlooredIborCoupon() { }
+      public CappedFlooredIborCoupon(SavedSettings settings) : base(settings)
+      { }
 
-      public CappedFlooredIborCoupon(double nominal, 
-                                     Date paymentDate, 
-                                     Date startDate, 
-                                     Date endDate, 
-                                     int fixingDays, 
-                                     IborIndex index, 
-                                     double gearing = 1.0, 
-                                     double spread = 0.0, 
-                                     double? cap = null, 
-                                     double? floor = null, 
-                                     Date refPeriodStart = null, 
-                                     Date refPeriodEnd = null, 
-                                     DayCounter dayCounter = null, 
-                                     bool isInArrears = false)
-         : base(new IborCoupon(nominal, paymentDate, startDate, endDate, fixingDays, index, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears) as FloatingRateCoupon, cap, floor)
+      public CappedFlooredIborCoupon(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, IborIndex index, SavedSettings settings, double gearing = 1.0, double spread = 0.0, double? cap = null, double? floor = null, Date refPeriodStart = null, Date refPeriodEnd = null, DayCounter dayCounter = null, bool isInArrears = false)
+         : base(new IborCoupon(nominal, paymentDate, startDate, endDate, fixingDays, index, settings, gearing: gearing, spread: spread, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, dayCounter: dayCounter, isInArrears: isInArrears) as FloatingRateCoupon, settings, cap: cap, floor: floor)
       {
       }
 
-      // Factory - for Leg generators
-      public virtual CashFlow factory(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, IborIndex index, double gearing, double spread, double? cap, double? floor, Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter, bool isInArrears)
-      {
-         return new CappedFlooredIborCoupon(nominal, paymentDate, startDate, endDate, fixingDays, index, gearing, spread, cap, floor, refPeriodStart, refPeriodEnd, dayCounter, isInArrears);
-      }
    }
 
    public class CappedFlooredCmsCoupon : CappedFlooredCoupon
    {
       // need by CashFlowVectors
-      public CappedFlooredCmsCoupon() { }
+      public CappedFlooredCmsCoupon(SavedSettings settings) : base(settings)
+      { }
 
-      public CappedFlooredCmsCoupon(double nominal, 
-                                    Date paymentDate, 
-                                    Date startDate, 
-                                    Date endDate, 
-                                    int fixingDays, 
-                                    SwapIndex index, 
-                                    double gearing = 1.0, 
-                                    double spread = 0.0, 
-                                    double? cap = null, 
-                                    double? floor = null, 
-                                    Date refPeriodStart = null, 
-                                    Date refPeriodEnd = null, 
-                                    DayCounter dayCounter = null, 
-                                    bool isInArrears = false)
-         : base(new CmsCoupon(nominal, paymentDate, startDate, endDate, fixingDays, index, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears) as FloatingRateCoupon, cap, floor)
+      public CappedFlooredCmsCoupon(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, SwapIndex index, SavedSettings settings, double gearing = 1.0, double spread = 0.0, double? cap = null, double? floor = null, Date refPeriodStart = null, Date refPeriodEnd = null, DayCounter dayCounter = null, bool isInArrears = false)
+         : base(new CmsCoupon(nominal, paymentDate, startDate, endDate, fixingDays, index, settings, gearing: gearing, spread: spread, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, dayCounter: dayCounter, isInArrears: isInArrears) as FloatingRateCoupon, settings, cap: cap, floor: floor)
       {
       }
 
-      // Factory - for Leg generators
-      public override CashFlow factory(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, InterestRateIndex index, double gearing, double spread, double? cap, double? floor, Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter, bool isInArrears)
-      {
-         return new CappedFlooredCmsCoupon(nominal, paymentDate, startDate, endDate, fixingDays, (SwapIndex)index, gearing, spread, cap, floor, refPeriodStart, refPeriodEnd, dayCounter, isInArrears);
-      }
+      //// Factory - for Leg generators
+      //public override CashFlow factory(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, InterestRateIndex index, double gearing, double spread, double? cap, double? floor, Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter, bool isInArrears, SavedSettings settings1)
+      //{
+      //   return new CappedFlooredCmsCoupon(nominal, paymentDate, startDate, endDate, fixingDays, (SwapIndex)index, settings, gearing: gearing, spread: spread, cap: cap, floor: floor, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, dayCounter: dayCounter, isInArrears: isInArrears);
+      //}
    }
 
 }

@@ -73,12 +73,12 @@ namespace QLNet
 			protectionStart_ = protectionStart == null ? schedule[0] :  protectionStart;
 
          Utils.QL_REQUIRE( protectionStart_ <= schedule[0], () => "protection can not start after accrual" );
-			leg_ = new FixedRateLeg(schedule)
+			leg_ = new FixedRateLeg(schedule, settings)
             .withCouponRates(spread, dayCounter)
 				.withNotionals(notional)
             .withPaymentAdjustment(convention);
         
-			upfrontPayment_ = new SimpleCashFlow(0.0, schedule[0]);
+			upfrontPayment_ = new SimpleCashFlow(0.0, schedule[0], _settings);
 
         if (claim_ == null )
             claim_ = new FaceValueClaim();
@@ -108,6 +108,7 @@ namespace QLNet
       */
 		public CreditDefaultSwap(Protection.Side side, double notional, double upfront, double runningSpread, Schedule schedule, BusinessDayConvention convention, DayCounter dayCounter, SavedSettings settings, bool settlesAccrual = true, bool paysAtDefaultTime = true, Date protectionStart = null, Date upfrontDate = null, Claim claim = null)
 		{
+            _settings = settings;
 			
 			side_ = side;
 			notional_ = notional;
@@ -119,19 +120,18 @@ namespace QLNet
 			protectionStart_ = protectionStart == null ? schedule[0] :  protectionStart;
 
          Utils.QL_REQUIRE( protectionStart_ <= schedule[0], () => "protection can not start after accrual" );
-			leg_ = new FixedRateLeg(schedule)
+			leg_ = new FixedRateLeg(schedule, settings)
             .withCouponRates(runningSpread, dayCounter)
             .withNotionals(notional)
             .withPaymentAdjustment(convention);
         
 			Date d = upfrontDate == null ? schedule[0] : upfrontDate;
-			upfrontPayment_ = new SimpleCashFlow(notional*upfront, d);
+			upfrontPayment_ = new SimpleCashFlow(notional*upfront, d, _settings);
          Utils.QL_REQUIRE( upfrontPayment_.date() >= protectionStart_, () => "upfront can not be due before contract start" );
 
         if (claim_ == null)
             claim_ = new FaceValueClaim();
 		  claim_.registerWith(update);
-		    _settings = settings;
 		}
       //@}
       //! \name Instrument interface

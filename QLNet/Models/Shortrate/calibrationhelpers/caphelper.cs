@@ -115,7 +115,7 @@ namespace QLNet
 										  index_.fixingCalendar(),
 										  BusinessDayConvention.Unadjusted, BusinessDayConvention.Unadjusted,
 										  DateGeneration.Rule.Forward, false, settings_);
-			List<CashFlow> fixedLeg = new FixedRateLeg( fixedSchedule )
+			List<CashFlow> fixedLeg = new FixedRateLeg( fixedSchedule, settings_)
 				 .withCouponRates( fixedRate, fixedLegDayCounter_ )
 				 .withNotionals( nominals )
 				 .withPaymentAdjustment( index_.businessDayConvention() );

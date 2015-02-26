@@ -379,9 +379,9 @@ namespace QLNet
             double amount = (R / 100.0) * (notionals_[i - 1] - notionals_[i]);
             CashFlow payment;
             if (i < notionalSchedule_.Count - 1)
-               payment = new AmortizingPayment(amount, notionalSchedule_[i]);
+               payment = new AmortizingPayment(amount, notionalSchedule_[i], _settings);
             else
-               payment = new Redemption(amount, notionalSchedule_[i]);
+               payment = new Redemption(amount, notionalSchedule_[i], _settings);
 
             cashflows_.Add(payment);
             redemptions_.Add(payment);
@@ -398,7 +398,7 @@ namespace QLNet
       */
       protected void setSingleRedemption(double notional, double redemption, Date date)
       {
-         CashFlow redemptionCashflow = new Redemption(notional * redemption / 100.0, date);
+         CashFlow redemptionCashflow = new Redemption(notional * redemption / 100.0, date, _settings);
          setSingleRedemption(notional, redemptionCashflow);
       }
 
@@ -479,7 +479,7 @@ namespace QLNet
       protected List<CashFlow> redemptions_ = new List<CashFlow>(); // the redemptions
       protected Date maturityDate_, issueDate_;
       protected double? settlementValue_;
-       SavedSettings _settings;
+       protected SavedSettings _settings;
        //public double faceAmount() { return notionals_.First(); }
 
       #endregion

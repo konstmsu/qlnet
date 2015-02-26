@@ -86,7 +86,7 @@ namespace QLNet
          else
             paymentConvention_ = floatingSchedule_.businessDayConvention();
 
-         legs_[0] = new FixedRateLeg(fixedSchedule)
+         legs_[0] = new FixedRateLeg(fixedSchedule, settings)
                                      .withCouponRates(fixedRate, fixedDayCount)
                                      .withPaymentAdjustment(paymentConvention_)
                                      .withNotionals(nominal);

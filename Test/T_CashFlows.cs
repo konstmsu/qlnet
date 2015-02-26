@@ -48,7 +48,7 @@ namespace TestSuite
 			List<CashFlow> leg = new List<CashFlow>();
     
 			for (int i=0; i<3; ++i)
-				leg.Add(new SimpleCashFlow(1.0, today+i));
+				leg.Add(new SimpleCashFlow(1.0, today+i, backup));
 
 			// case 1: don't include reference-date payments, no override at
 			//         today's date
@@ -183,7 +183,7 @@ namespace TestSuite
 			double spread = 0.0115;
 			IborCouponPricer pricer = new BlackIborCouponPricer(vol, settings);
 			FloatingRateCoupon coupon = new FloatingRateCoupon(100,payDate, startDate, endDate, 2,
-												index3m, 1.0 , spread / 100);
+												index3m, settings, gearing: 1.0 , spread: spread / 100);
 			coupon.setPricer(pricer);
 
 			try 
@@ -211,7 +211,7 @@ namespace TestSuite
 				.withConvention(BusinessDayConvention.Unadjusted)
 				.backwards().value();
 
-			List<CashFlow> leg = new FixedRateLeg(schedule)
+			List<CashFlow> leg = new FixedRateLeg(schedule, settings)
 						.withCouponRates(0.03, new Actual360())
 						.withPaymentCalendar(new TARGET())
 						.withNotionals(100.0)

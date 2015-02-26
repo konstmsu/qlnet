@@ -204,7 +204,7 @@ namespace QLNet
 
         if (!isZeroCouponBond) 
         {
-            cashflows_ = new FixedRateLeg(schedule)
+            cashflows_ = new FixedRateLeg(schedule, settings)
                             .withCouponRates(coupons, accrualDayCounter)
                             .withNotionals(faceAmount)
                             .withPaymentAdjustment(paymentConvention);

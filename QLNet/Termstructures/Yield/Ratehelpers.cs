@@ -111,7 +111,7 @@ namespace QLNet {
     // This class takes care of rebuilding the date schedule when the global evaluation date changes
     public abstract class RelativeDateRateHelper : RateHelper {
         protected Date evaluationDate_;
-        readonly SavedSettings settings_;
+        protected readonly SavedSettings settings_;
 
         ///////////////////////////////////////////
         // constructors
@@ -293,7 +293,6 @@ namespace QLNet {
         RelinkableHandle<YieldTermStructure> termStructureHandle_ = new RelinkableHandle<YieldTermStructure>();
         protected Handle<Quote> spread_;
         protected Period fwdStart_;
-        readonly SavedSettings settings_;
 
         #region ctors
         //public SwapRateHelper(Quote rate, SwapIndex swapIndex) :
@@ -310,7 +309,6 @@ namespace QLNet {
             iborIndex_ = swapIndex.iborIndex();
             spread_ = spread;
             fwdStart_ = fwdStart;
-            settings_ = settings;
 
             // add observers
             iborIndex_.notifyObserversEvent += (Callback)update;
@@ -350,7 +348,6 @@ namespace QLNet {
             iborIndex_ = iborIndex;
             spread_ = spread;
             fwdStart_ = fwdStart;
-            settings_ = settings;
 
             // add observers
             iborIndex_.notifyObserversEvent += (Callback)update;
@@ -384,7 +381,6 @@ namespace QLNet {
             iborIndex_ = iborIndex;
             spread_ = spread;
             fwdStart_ = fwdStart;
-            settings_ = settings;
 
             // add observers
             iborIndex_.notifyObserversEvent += (Callback)update;
@@ -407,7 +403,6 @@ namespace QLNet {
             iborIndex_ = swapIndex.iborIndex();
             spread_ = spread;
             fwdStart_ = fwdStart;
-            settings_ = settings;
 
             // add observers
             iborIndex_.notifyObserversEvent += (Callback)update;
@@ -494,7 +489,8 @@ namespace QLNet {
             // ibor leg
             )    
             : base(liborFraction, settings) {
-            tenor_ = tenor;
+                _settings = settings;
+                tenor_ = tenor;
             settlementDays_ = settlementDays;
             calendar_ = calendar;
             bmaPeriod_ = bmaPeriod;
@@ -507,7 +503,6 @@ namespace QLNet {
             bmaIndex_.notifyObserversEvent += (Callback)update;
 
             initializeDates();
-            _settings = settings;
             }
 
         //! \name RateHelper interface

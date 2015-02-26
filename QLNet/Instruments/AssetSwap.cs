@@ -115,18 +115,18 @@ namespace QLNet
          {
             // upfront on the floating leg
             double upfront = (dirtyPrice - 100.0) / 100.0 * notional;
-            CashFlow upfrontCashFlow = new SimpleCashFlow(upfront, upfrontDate_);
+            CashFlow upfrontCashFlow = new SimpleCashFlow(upfront, upfrontDate_, settings);
             legs_[1].Insert(0, upfrontCashFlow);
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
             double backPayment = notional;
-            CashFlow backPaymentCashFlow = new SimpleCashFlow(backPayment, finalDate);
+            CashFlow backPaymentCashFlow = new SimpleCashFlow(backPayment, finalDate, settings);
             legs_[1].Add(backPaymentCashFlow);
          }
          else
          {
             // final notional exchange
-            CashFlow finalCashFlow = new SimpleCashFlow(notional, finalDate);
+            CashFlow finalCashFlow = new SimpleCashFlow(notional, finalDate, settings);
             legs_[1].Add(finalCashFlow);
          }
 
@@ -232,12 +232,12 @@ namespace QLNet
             Coupon c = bondLeg[i] as Coupon;
             if (c != null)
             {
-               CashFlow accruedCoupon = new SimpleCashFlow(c.accruedAmount(dealMaturity), finalDate);
+               CashFlow accruedCoupon = new SimpleCashFlow(c.accruedAmount(dealMaturity), finalDate, settings);
                legs_[0].Add(accruedCoupon);
             }
          }
          // add the nonParRepayment_
-         CashFlow nonParRepaymentFlow = new SimpleCashFlow(nonParRepayment_, finalDate);
+         CashFlow nonParRepaymentFlow = new SimpleCashFlow(nonParRepayment_, finalDate, settings);
          legs_[0].Add(nonParRepaymentFlow);
 
          Utils.QL_REQUIRE( !legs_[0].empty(), () => "empty bond leg to start with" );
@@ -247,18 +247,18 @@ namespace QLNet
          {
             // upfront on the floating leg
             double upfront = (dirtyPrice - 100.0) / 100.0 * notional;
-            CashFlow upfrontCashFlow = new SimpleCashFlow(upfront, upfrontDate_);
+            CashFlow upfrontCashFlow = new SimpleCashFlow(upfront, upfrontDate_, settings);
             legs_[1].Insert(0, upfrontCashFlow);
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
             double backPayment = notional;
-            CashFlow backPaymentCashFlow = new SimpleCashFlow(backPayment, finalDate);
+            CashFlow backPaymentCashFlow = new SimpleCashFlow(backPayment, finalDate, settings);
             legs_[1].Add(backPaymentCashFlow);
          }
          else
          {
             // final notional exchange
-            CashFlow finalCashFlow = new SimpleCashFlow(notional, finalDate);
+            CashFlow finalCashFlow = new SimpleCashFlow(notional, finalDate, settings);
             legs_[1].Add(finalCashFlow);
          }
 

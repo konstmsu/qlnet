@@ -311,7 +311,7 @@ namespace TestSuite
          Utils.QL_REQUIRE( ind != null, () => "dynamic_pointer_cast to Index from InflationIndex failed" );
 
 			double notional = 1000000.0;//1m
-			IndexedCashFlow iicf = new IndexedCashFlow( notional, ind, baseDate, fixDate, payDate );
+			IndexedCashFlow iicf = new IndexedCashFlow( notional, ind, baseDate, fixDate, payDate, backup);
 			double correctIndexed = ii.fixing( iicf.fixingDate() ) / ii.fixing( iicf.baseDate() );
 			double calculatedIndexed = iicf.amount() / iicf.notional();
 			Assert.IsTrue( Math.Abs( correctIndexed - calculatedIndexed ) < eps,

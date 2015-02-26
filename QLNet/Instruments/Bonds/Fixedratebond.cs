@@ -42,7 +42,7 @@ namespace QLNet
          dayCounter_ = accrualDayCounter;
          maturityDate_ = schedule.endDate();
 
-         cashflows_ = new FixedRateLeg(schedule)
+         cashflows_ = new FixedRateLeg(schedule, settings)
             .withCouponRates(coupons, accrualDayCounter)
 				.withExCouponPeriod(exCouponPeriod,
 										  exCouponCalendar,
@@ -106,7 +106,7 @@ namespace QLNet
                                           rule, endOfMonth, settings, firstDate: firstDate, nextToLastDate: nextToLastDate);
 
             
-         cashflows_ = new FixedRateLeg(schedule)
+         cashflows_ = new FixedRateLeg(schedule, settings)
             .withCouponRates(coupons, accrualDayCounter)
 				.withExCouponPeriod(exCouponPeriod,
 										  exCouponCalendar,
@@ -137,7 +137,7 @@ namespace QLNet
          dayCounter_ = coupons[0].dayCounter();
          maturityDate_ = schedule.endDate();
 
-        cashflows_ = new FixedRateLeg(schedule)
+        cashflows_ = new FixedRateLeg(schedule, settings)
                     .withCouponRates(coupons)
 						  .withExCouponPeriod(exCouponPeriod,
 										  exCouponCalendar,

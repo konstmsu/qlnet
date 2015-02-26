@@ -127,10 +127,9 @@ namespace QLNet
    {
       public OvernightIndexedCoupon(Date paymentDate, double nominal, Date startDate, Date endDate, OvernightIndex overnightIndex, SavedSettings settings, double gearing = 1.0, double spread = 0.0, Date refPeriodStart = null, Date refPeriodEnd = null, DayCounter dayCounter = null)
          : base(nominal, paymentDate,startDate, endDate,
-                         overnightIndex.fixingDays(), overnightIndex,
-                         gearing, spread,
-                         refPeriodStart, refPeriodEnd,
-                         dayCounter, false) 
+                         overnightIndex.fixingDays(), overnightIndex, settings, gearing: gearing, spread: spread,
+                         refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd,
+                         dayCounter: dayCounter, isInArrears: false) 
       {
          // value dates
          Schedule sch = new MakeSchedule(settings)

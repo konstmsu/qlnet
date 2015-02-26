@@ -33,7 +33,7 @@ namespace QLNet
       private Date date_;
       public override Date date() { return date_; }
 
-      public SimpleCashFlow(double amount, Date date)
+      public SimpleCashFlow(double amount, Date date, SavedSettings settings) : base(settings)
       {
          if (date == null) throw new ApplicationException("null date SimpleCashFlow");
          amount_ = amount;
@@ -47,7 +47,7 @@ namespace QLNet
     */
     public class Redemption : SimpleCashFlow 
     {
-       public Redemption(double amount, Date date) : base(amount, date) { }
+       public Redemption(double amount, Date date, SavedSettings settings) : base(amount, date, settings) { }
     }
 
     //! Amortizing payment
@@ -56,7 +56,7 @@ namespace QLNet
     */
     public class AmortizingPayment : SimpleCashFlow 
     {
-       public AmortizingPayment(double amount, Date date) : base(amount, date) { }
+       public AmortizingPayment(double amount, Date date, SavedSettings settings) : base(amount, date, settings) { }
     }
 
     //! Voluntary Prepay
@@ -65,6 +65,6 @@ namespace QLNet
     */
     public class VoluntaryPrepay : SimpleCashFlow
     {
-       public VoluntaryPrepay(double amount, Date date) : base(amount, date) { }
+       public VoluntaryPrepay(double amount, Date date, SavedSettings settings) : base(amount, date, settings) { }
     }
 }

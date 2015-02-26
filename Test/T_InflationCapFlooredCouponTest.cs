@@ -152,7 +152,7 @@ namespace TestSuite
             InitializedList<double> gearingVector = new InitializedList<double>(length, gearing);
             InitializedList<double> spreadVector = new InitializedList<double>(length, spread);
 
-            return new yoyInflationLeg(schedule, calendar, ii, observationLag)
+            return new yoyInflationLeg(schedule, calendar, ii, observationLag, settings_)
             .withPaymentDayCounter(dc)
             .withGearings(gearingVector)
             .withSpreads(spreadVector)
@@ -167,7 +167,7 @@ namespace TestSuite
                               convention, convention,
                               DateGeneration.Rule.Forward, false, settings_);
             InitializedList<double> coupons = new InitializedList<double>(length, 0.0);
-            return new FixedRateLeg(schedule)
+            return new FixedRateLeg(schedule, settings_)
             .withCouponRates(coupons, dc)
             .withNotionals(nominals);
         }
@@ -219,7 +219,7 @@ namespace TestSuite
                               BusinessDayConvention.Unadjusted,// ref periods & acc periods
                               DateGeneration.Rule.Forward, false, settings_);
 
-            List<CashFlow> yoyLeg =  new yoyInflationLeg(schedule, calendar, ii, observationLag)
+            List<CashFlow> yoyLeg =  new yoyInflationLeg(schedule, calendar, ii, observationLag, settings_)
             .withPaymentDayCounter(dc)
             .withGearings(gearingVector)
             .withSpreads(spreadVector)

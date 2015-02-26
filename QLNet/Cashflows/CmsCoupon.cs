@@ -31,21 +31,11 @@ namespace QLNet {
     //    
     public class CmsCoupon : FloatingRateCoupon {
         // need by CashFlowVectors
-        public CmsCoupon() { }
+        public CmsCoupon(SavedSettings settings) : base(settings)
+        { }
 
-        public CmsCoupon(double nominal, 
-                         Date paymentDate, 
-                         Date startDate, 
-                         Date endDate, 
-                         int fixingDays, 
-                         SwapIndex swapIndex, 
-                         double gearing = 1.0, 
-                         double spread = 0.0, 
-                         Date refPeriodStart = null, 
-                         Date refPeriodEnd = null, 
-                         DayCounter dayCounter = null, 
-                         bool isInArrears = false )
-            : base(nominal, paymentDate, startDate, endDate, fixingDays, swapIndex, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears) {
+        public CmsCoupon(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays, SwapIndex swapIndex, SavedSettings settings, double gearing = 1.0, double spread = 0.0, Date refPeriodStart = null, Date refPeriodEnd = null, DayCounter dayCounter = null, bool isInArrears = false)
+            : base(nominal, paymentDate, startDate, endDate, fixingDays, swapIndex, settings, gearing: gearing, spread: spread, refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, dayCounter: dayCounter, isInArrears: isInArrears) {
             swapIndex_ = swapIndex;
         }
         //! \name Inspectors
@@ -68,30 +58,35 @@ namespace QLNet {
         private SwapIndex swapIndex_;
 
         // Factory - for Leg generators
-        public override CashFlow factory(double nominal, Date paymentDate, Date startDate, Date endDate, int fixingDays,
-                     InterestRateIndex index, double gearing, double spread,
-                     Date refPeriodStart, Date refPeriodEnd, DayCounter dayCounter, bool isInArrears)
-        {
-           return new CmsCoupon(nominal, paymentDate, startDate, endDate, fixingDays,
-                      (SwapIndex)index, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears);
-        }
-
+        public static FloatingRateCouponFactory factory2 = (nominal, paymentDate, startDate, endDate, fixingDays, index, gearing, spread, refPeriodStart, refPeriodEnd, dayCounter, isInArrears, settings) => 
+            new CmsCoupon(nominal, paymentDate, startDate, endDate, fixingDays, (SwapIndex)index, settings, gearing: gearing, spread: spread,
+                refPeriodStart: refPeriodStart, refPeriodEnd: refPeriodEnd, dayCounter: dayCounter, isInArrears: isInArrears);
     }
 
 
     //! helper class building a sequence of capped/floored cms-rate coupons
     public class CmsLeg : FloatingLegBase {
-        public CmsLeg(Schedule schedule, SwapIndex swapIndex) {
+        SavedSettings _settings;
+
+        public CmsLeg(Schedule schedule, SwapIndex swapIndex, SavedSettings settings) {
             schedule_ = schedule;
             index_ = swapIndex;
             paymentAdjustment_ = BusinessDayConvention.Following;
             inArrears_ = false;
             zeroPayments_ = false;
+            _settings = settings;
         }
 
-        public override List<CashFlow> value() {
-            return CashFlowVectors.FloatingLeg<SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
-                notionals_, schedule_, index_ as SwapIndex, paymentDayCounter_, paymentAdjustment_, fixingDays_, gearings_, spreads_, caps_, floors_, inArrears_, zeroPayments_);
+        public override List<CashFlow> value()
+        {
+            Func<double, Date, Date, Date, int, SwapIndex, double, double, Date, Date, DayCounter, bool, SavedSettings, FloatingRateCoupon> floatingRateCouponFactory = (nominal, date, startDate, endDate, days, index, gearing, spread, start, end, counter, arrears, settings) => 
+                new CmsCoupon(nominal, date, startDate, endDate, days, index, settings, gearing, spread, start, end, counter, arrears);
+
+            Func<double, Date, Date, Date, int, SwapIndex, double, double, double?, double?, Date, Date, DayCounter, bool, SavedSettings, CappedFlooredCoupon> cappedFlooredCouponFactory = (nominal, date, startDate, endDate, days, index, gearing, spread, cap, floor, start, end, counter, arrears, settings) =>
+                new CappedFlooredCmsCoupon(nominal, date, startDate, endDate, days,  index, settings, gearing, spread, cap, floor, start, end, counter, arrears);
+
+            return CashFlowVectors.FloatingLeg(
+                floatingRateCouponFactory, cappedFlooredCouponFactory,  notionals_, schedule_, index_ as SwapIndex, paymentDayCounter_, paymentAdjustment_, fixingDays_, gearings_, spreads_, caps_, floors_, inArrears_, zeroPayments_, _settings);
         }
     }
 }
