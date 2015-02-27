@@ -40,24 +40,22 @@ namespace QLNet
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-      public BlackVolTermStructure()
-         : base(BusinessDayConvention.Following, null)
+      public BlackVolTermStructure(SavedSettings settings)
+         : base(BusinessDayConvention.Following, settings, null)
       { }
         
-      public BlackVolTermStructure(BusinessDayConvention bdc = BusinessDayConvention.Following,DayCounter dc = null)
-         :base(bdc, dc)
+      public BlackVolTermStructure(SavedSettings settings, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(bdc, settings, dc)
          {}
       
       //! initialize with a fixed reference date
-      public BlackVolTermStructure(Date referenceDate,Calendar cal = null, 
-         BusinessDayConvention bdc = BusinessDayConvention.Following,DayCounter dc = null)
-         :base(referenceDate, cal, bdc, dc)
+      public BlackVolTermStructure(Date referenceDate, SavedSettings settings, Calendar cal = null, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(referenceDate, cal, bdc, settings, dc)
       {}
         
       //! calculate the reference date based on the global evaluation date
-      public BlackVolTermStructure(int settlementDays,Calendar cal, BusinessDayConvention bdc = BusinessDayConvention.Following,
-         DayCounter dc = null)
-         :base(settlementDays, cal, bdc, dc)
+      public BlackVolTermStructure(int settlementDays, Calendar cal, SavedSettings settings, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(settlementDays, cal, bdc, settings, dc)
       {}
       
       #endregion
@@ -218,21 +216,18 @@ namespace QLNet
                    constructor must manage their own reference date
                    by overriding the referenceDate() method.
       */
-      public BlackVolatilityTermStructure(BusinessDayConvention bdc = BusinessDayConvention.Following,
-         DayCounter dc = null)
-         :base(bdc, dc)
+      public BlackVolatilityTermStructure(SavedSettings settings, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(settings, bdc, dc)
       {}
       
       //! initialize with a fixed reference date
-      public BlackVolatilityTermStructure(Date referenceDate,Calendar cal = null,
-         BusinessDayConvention bdc = BusinessDayConvention.Following,DayCounter dc = null)
-         :base(referenceDate, cal, bdc, dc)
+      public BlackVolatilityTermStructure(Date referenceDate, SavedSettings settings, Calendar cal = null, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(referenceDate, settings, cal, bdc, dc)
       {}
       
       //! calculate the reference date based on the global evaluation date
-      public BlackVolatilityTermStructure(int settlementDays,Calendar cal, 
-         BusinessDayConvention bdc = BusinessDayConvention.Following,DayCounter dc = null)
-         :base(settlementDays, cal, bdc, dc)
+      public BlackVolatilityTermStructure(int settlementDays, Calendar cal, SavedSettings settings, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(settlementDays, cal, settings, bdc, dc)
       {}
       
       #endregion
@@ -271,21 +266,18 @@ namespace QLNet
                    constructor must manage their own reference date
                    by overriding the referenceDate() method.
       */
-      public BlackVarianceTermStructure(BusinessDayConvention bdc = BusinessDayConvention.Following,
-         DayCounter dc = null)
-         :base(bdc, dc)
+      public BlackVarianceTermStructure(SavedSettings settings, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(settings, bdc, dc)
       {}
       
       //! initialize with a fixed reference date
-      public BlackVarianceTermStructure(Date referenceDate,Calendar cal = null,
-         BusinessDayConvention bdc = BusinessDayConvention.Following,DayCounter dc = null)
-         :base(referenceDate, cal, bdc, dc)
+      public BlackVarianceTermStructure(Date referenceDate, SavedSettings settings, Calendar cal = null, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(referenceDate, settings, cal, bdc, dc)
       {}
 
       //! calculate the reference date based on the global evaluation date
-      public BlackVarianceTermStructure(int settlementDays,Calendar cal, 
-         BusinessDayConvention bdc = BusinessDayConvention.Following,DayCounter dc = null)
-         :base(settlementDays, cal, bdc, dc)
+      public BlackVarianceTermStructure(int settlementDays, Calendar cal, SavedSettings settings, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(settlementDays, cal, settings, bdc, dc)
       {}
 
       #endregion

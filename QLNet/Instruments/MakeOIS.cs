@@ -169,7 +169,7 @@ namespace QLNet
             startDate = effectiveDate_;
          else
          {
-            Date referenceDate = Settings.evaluationDate();
+            Date referenceDate = _settings.evaluationDate();
             Date spotDate = calendar.advance(referenceDate,
                                              new Period(fixingDays_,TimeUnit.Days));
             startDate = spotDate+forwardStart_;

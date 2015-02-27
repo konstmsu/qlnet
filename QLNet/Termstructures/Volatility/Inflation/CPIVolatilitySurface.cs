@@ -31,20 +31,14 @@ namespace QLNet
     */
     public class CPIVolatilitySurface : VolatilityTermStructure
     {
-        public CPIVolatilitySurface()
-          : base(BusinessDayConvention.Following, null) { }
+        public CPIVolatilitySurface(SavedSettings settings)
+          : base(BusinessDayConvention.Following, settings, null) { }
 
         /*! calculates the reference date based on the global
             evaluation date.
         */
-        public CPIVolatilitySurface(int settlementDays,
-                                    Calendar cal,
-                                    BusinessDayConvention bdc,
-                                    DayCounter dc,
-                                    Period observationLag,
-                                    Frequency frequency,
-                                    bool indexIsInterpolated)
-            :base(settlementDays, cal, bdc, dc)
+        public CPIVolatilitySurface(int settlementDays, Calendar cal, BusinessDayConvention bdc, DayCounter dc, Period observationLag, Frequency frequency, bool indexIsInterpolated, SavedSettings settings)
+            :base(settlementDays, cal, bdc, settings, dc)
         {
             baseLevel_ = null;
             observationLag_ = observationLag;

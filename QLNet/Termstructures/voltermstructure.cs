@@ -36,20 +36,20 @@ namespace QLNet
                    constructor must manage their own reference date
                    by overriding the referenceDate() method.
       */
-      public VolatilityTermStructure(BusinessDayConvention bdc, DayCounter dc = null)
-         :base(dc)
+      public VolatilityTermStructure(BusinessDayConvention bdc, SavedSettings settings, DayCounter dc = null)
+         :base(settings, dc)
       {
          bdc_ = bdc;
       }
       //! initialize with a fixed reference date
-      public VolatilityTermStructure(Date referenceDate,Calendar cal, BusinessDayConvention bdc, DayCounter dc = null)
-         :base(referenceDate, cal, dc)
+      public VolatilityTermStructure(Date referenceDate, Calendar cal, BusinessDayConvention bdc, SavedSettings settings, DayCounter dc = null)
+         :base(referenceDate, settings, cal, dc)
       {
          bdc_ = bdc;
       }
       //! calculate the reference date based on the global evaluation date
-      public VolatilityTermStructure(int settlementDays,Calendar cal, BusinessDayConvention bdc, DayCounter dc =null)
-         :base(settlementDays, cal, dc)
+      public VolatilityTermStructure(int settlementDays, Calendar cal, BusinessDayConvention bdc, SavedSettings settings, DayCounter dc = null)
+         :base(settlementDays, cal, settings, dc)
       {
          bdc_ = bdc;
       }

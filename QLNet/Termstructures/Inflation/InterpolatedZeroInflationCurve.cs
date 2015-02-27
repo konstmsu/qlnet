@@ -25,12 +25,9 @@ namespace QLNet
 {
 	public class InterpolatedZeroInflationCurve<Interpolator> : ZeroInflationTermStructure, InterpolatedCurve
 	{
-		public InterpolatedZeroInflationCurve( Date referenceDate, Calendar calendar, DayCounter dayCounter, Period lag,
-														  Frequency frequency, bool indexIsInterpolated, Handle<YieldTermStructure> yTS,
-														  List<Date> dates, List<double> rates,
-														  Interpolator interpolator = default(Interpolator) )
+		public InterpolatedZeroInflationCurve(Date referenceDate, Calendar calendar, DayCounter dayCounter, Period lag, Frequency frequency, bool indexIsInterpolated, Handle<YieldTermStructure> yTS, List<Date> dates, List<double> rates, SavedSettings settings, Interpolator interpolator = default(Interpolator))
 			: base( referenceDate, calendar, dayCounter, rates[0],
-											lag, frequency, indexIsInterpolated, yTS )
+											lag, frequency, indexIsInterpolated, yTS, settings)
 		{
 			dates_ = dates;
 
@@ -156,15 +153,7 @@ namespace QLNet
 			 (or can't) provide the points for interpolation on
 			 construction.
 		*/
-		protected InterpolatedZeroInflationCurve( Date referenceDate,
-												 Calendar calendar,
-												 DayCounter dayCounter,
-												 Period lag,
-												 Frequency frequency,
-												 bool indexIsInterpolated,
-												 double baseZeroRate,
-												 Handle<YieldTermStructure> yTS,
-												 Interpolator interpolator = default(Interpolator) )
+		protected InterpolatedZeroInflationCurve(Date referenceDate, Calendar calendar, DayCounter dayCounter, Period lag, Frequency frequency, bool indexIsInterpolated, double baseZeroRate, Handle<YieldTermStructure> yTS, SavedSettings settings, Interpolator interpolator = default(Interpolator)) : base(settings)
 		{
 		}
 

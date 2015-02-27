@@ -155,7 +155,7 @@ namespace QLNet
 
          arguments.type = type_;
 
-         Date today = Settings.evaluationDate();
+         Date today = settings_.evaluationDate();
 
          for (int i=0; i<n; ++i) 
          {

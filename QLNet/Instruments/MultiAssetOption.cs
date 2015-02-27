@@ -39,15 +39,17 @@ namespace QLNet {
                 delta = gamma = theta = vega = rho = dividendRho = null;
             }
 		}
-		public MultiAssetOption(Payoff payoff, Exercise exercise) : base(payoff, exercise)
+		public MultiAssetOption(Payoff payoff, Exercise exercise, SavedSettings settings) : base(payoff, exercise)
 		{
+		    settings_ = settings;
 		}
-		//! \name Instrument interface
+
+	    //! \name Instrument interface
 		//@{
 
 		public override bool isExpired()
 		{
-			return exercise_.lastDate() < Settings.evaluationDate();
+			return exercise_.lastDate() < settings_.evaluationDate();
 		}
 		//@}
 		//! \name greeks
@@ -133,5 +135,6 @@ namespace QLNet {
         protected double? vega_;
         protected double? rho_;
         protected double? dividendRho_;
+	    readonly SavedSettings settings_;
 	}
 }

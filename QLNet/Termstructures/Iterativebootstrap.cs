@@ -55,7 +55,7 @@ namespace QLNet
 
 	//! Universal piecewise-term-structure boostrapper.
 	public class IterativeBootstrap<T,U>:IBootStrap<T>
-		where T : Curve<U>, new()
+		where T : Curve<U>
 		where U : TermStructure
 	{
 		private bool validCurve_ = false;
@@ -70,7 +70,7 @@ namespace QLNet
 
 		public IterativeBootstrap()
 		{
-			ts_ = new T();
+			ts_ = default(T);
 			initialized_ = false;
 			validCurve_ = false;
 

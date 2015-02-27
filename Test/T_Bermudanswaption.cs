@@ -63,7 +63,7 @@ namespace TestSuite
                 fixedDayCount = new Thirty360();
                 
                 termStructure = new RelinkableHandle<YieldTermStructure>(); 
-                termStructure.linkTo(Utilities.flatRate(new Date(19, Month.February, 2002), 0.04875825, new Actual365Fixed()));
+                termStructure.linkTo(Utilities.flatRate(new Date(19, Month.February, 2002), 0.04875825, new Actual365Fixed(), settings));
 
                 index = new Euribor6M(termStructure, settings);
                 calendar = index.fixingCalendar();
@@ -115,7 +115,7 @@ namespace TestSuite
             // flat yield term structure impling 1x5 swap at 5%
             vars.termStructure.linkTo(Utilities.flatRate(vars.settlement,
                                                   0.04875825,
-                                                  new Actual365Fixed()));
+                                                  new Actual365Fixed(), settings));
 
             double atmRate = vars.makeSwap(0.0).fairRate();
 

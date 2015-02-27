@@ -94,6 +94,7 @@ namespace TestSuite
       public void testBSMOperatorConsistency()
       {
          //("Testing consistency of BSM operators...");
+          var settings = new SavedSettings();
 
          Vector grid = new Vector(10);
          double price = 20.0;
@@ -117,14 +118,14 @@ namespace TestSuite
          double residualTime = dc.yearFraction(today, exercise);
 
          SimpleQuote spot = new SimpleQuote(0.0);
-         YieldTermStructure qTS = Utilities.flatRate(today, q, dc);
-         YieldTermStructure rTS = Utilities.flatRate(today, r, dc);
-         BlackVolTermStructure volTS = Utilities.flatVol(today, sigma, dc);
+         YieldTermStructure qTS = Utilities.flatRate(today, q, dc, settings);
+         YieldTermStructure rTS = Utilities.flatRate(today, r, dc, settings);
+         BlackVolTermStructure volTS = Utilities.flatVol(today, sigma, dc, settings);
          GeneralizedBlackScholesProcess stochProcess = new GeneralizedBlackScholesProcess(
                                                         new Handle<Quote>(spot),
                                                         new Handle<YieldTermStructure>(qTS),
                                                         new Handle<YieldTermStructure>(rTS),
-                                                        new Handle<BlackVolTermStructure>(volTS));
+                                                        new Handle<BlackVolTermStructure>(volTS), settings);
          BSMOperator op1 = new BSMOperator(grid, stochProcess, residualTime);
          PdeOperator<PdeBSM> op2 = new PdeOperator<PdeBSM>(grid, stochProcess, residualTime);
 

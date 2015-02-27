@@ -92,8 +92,8 @@ namespace TestSuite
                instruments.Add(new SwapRateHelper(swapData[i].rate / 100, new Period(swapData[i].n, swapData[i].units),
                                calendar, Frequency.Annual, BusinessDayConvention.Unadjusted, new Thirty360(), index, settings));
             }
-            termStructure = new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, new Actual360());
-            dummyTermStructure = new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, new Actual360());
+            termStructure = new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, new Actual360(), settings);
+            dummyTermStructure = new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, new Actual360(), settings);
          }
       }
 
@@ -107,7 +107,7 @@ namespace TestSuite
 
          SimpleQuote flatRate = new SimpleQuote();
          Handle<Quote> flatRateHandle = new Handle<Quote>(flatRate);
-         vars.termStructure = new FlatForward(vars.settlementDays, new NullCalendar(), flatRateHandle, new Actual360());
+         vars.termStructure = new FlatForward(vars.settlementDays, new NullCalendar(), flatRateHandle, new Actual360(), settings);
          flatRate.setValue(.03);
 
          int[] days = new int[] { 10, 30, 60, 120, 360, 720 };
@@ -144,7 +144,7 @@ namespace TestSuite
          Date newToday = today + new Period(3, TimeUnit.Years);
          Date newSettlement = vars.calendar.advance(newToday, vars.settlementDays, TimeUnit.Days);
          Date testDate = newSettlement + new Period(5, TimeUnit.Years);
-         YieldTermStructure implied = new ImpliedTermStructure(new Handle<YieldTermStructure>(vars.termStructure), newSettlement);
+         YieldTermStructure implied = new ImpliedTermStructure(new Handle<YieldTermStructure>(vars.termStructure), newSettlement, settings);
          double baseDiscount = vars.termStructure.discount(newSettlement);
          double discount = vars.termStructure.discount(testDate);
          double impliedDiscount = implied.discount(testDate);
@@ -166,7 +166,7 @@ namespace TestSuite
          Date newToday = today + new Period(3, TimeUnit.Years);
          Date newSettlement = vars.calendar.advance(newToday, vars.settlementDays, TimeUnit.Days);
          RelinkableHandle<YieldTermStructure> h = new RelinkableHandle<YieldTermStructure>();
-         YieldTermStructure implied = new ImpliedTermStructure(h, newSettlement);
+         YieldTermStructure implied = new ImpliedTermStructure(h, newSettlement, settings);
          Flag flag = new Flag();
          implied.registerWith(flag.update);
          h.linkTo(vars.termStructure);
@@ -184,7 +184,7 @@ namespace TestSuite
          double tolerance = 1.0e-10;
          Quote me = new SimpleQuote(0.01);
          Handle<Quote> mh = new Handle<Quote>(me);
-         YieldTermStructure spreaded = new ForwardSpreadedTermStructure(new Handle<YieldTermStructure>(vars.termStructure), mh);
+         YieldTermStructure spreaded = new ForwardSpreadedTermStructure(new Handle<YieldTermStructure>(vars.termStructure), mh, settings);
          Date testDate = vars.termStructure.referenceDate() + new Period(5, TimeUnit.Years);
          DayCounter tsdc = vars.termStructure.dayCounter();
          DayCounter sprdc = spreaded.dayCounter();
@@ -210,7 +210,7 @@ namespace TestSuite
          SimpleQuote me = new SimpleQuote(0.01);
          Handle<Quote> mh = new Handle<Quote>(me);
          RelinkableHandle<YieldTermStructure> h = new RelinkableHandle<YieldTermStructure>(); //(vars.dummyTermStructure);
-         YieldTermStructure spreaded = new ForwardSpreadedTermStructure(h, mh);
+         YieldTermStructure spreaded = new ForwardSpreadedTermStructure(h, mh, settings);
          Flag flag = new Flag();
          spreaded.registerWith(flag.update);
          h.linkTo(vars.termStructure);
@@ -233,7 +233,7 @@ namespace TestSuite
          double tolerance = 1.0e-10;
          Quote me = new SimpleQuote(0.01);
          Handle<Quote> mh = new Handle<Quote>(me);
-         YieldTermStructure spreaded = new ZeroSpreadedTermStructure(new Handle<YieldTermStructure>(vars.termStructure), mh);
+         YieldTermStructure spreaded = new ZeroSpreadedTermStructure(new Handle<YieldTermStructure>(vars.termStructure), mh, settings);
          Date testDate = vars.termStructure.referenceDate() + new Period(5, TimeUnit.Years);
          DayCounter rfdc = vars.termStructure.dayCounter();
          double zero = vars.termStructure.zeroRate(testDate, rfdc, Compounding.Continuous, Frequency.NoFrequency).rate();
@@ -256,7 +256,7 @@ namespace TestSuite
          Handle<Quote> mh = new Handle<Quote>(me);
          RelinkableHandle<YieldTermStructure> h = new RelinkableHandle<YieldTermStructure>(vars.dummyTermStructure);
 
-         YieldTermStructure spreaded = new ZeroSpreadedTermStructure(h, mh);
+         YieldTermStructure spreaded = new ZeroSpreadedTermStructure(h, mh, settings);
          Flag flag = new Flag();
          spreaded.registerWith(flag.update);
          h.linkTo(vars.termStructure);

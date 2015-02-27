@@ -29,28 +29,28 @@ namespace QLNet
    {
       #region Constructors
 
-      public FlatHazardRate(Date referenceDate, Handle<Quote> hazardRate, DayCounter dc)
-         : base(referenceDate, new Calendar(), dc)
+      public FlatHazardRate(Date referenceDate, Handle<Quote> hazardRate, DayCounter dc, SavedSettings settings)
+         : base(referenceDate, settings, new Calendar(), dc)
       {
          hazardRate_ = hazardRate;
          hazardRate_.registerWith(update);
       }
 
-      public FlatHazardRate(Date referenceDate, double hazardRate, DayCounter dc)
-         : base(referenceDate, new Calendar(), dc)
+      public FlatHazardRate(Date referenceDate, double hazardRate, DayCounter dc, SavedSettings settings)
+         : base(referenceDate, settings, new Calendar(), dc)
       {
          hazardRate_ = new Handle<Quote>( new SimpleQuote(hazardRate));
       }
 
-      public FlatHazardRate(int settlementDays,Calendar calendar,Handle<Quote> hazardRate,DayCounter dc)
-         : base(settlementDays, calendar, dc)
+      public FlatHazardRate(int settlementDays, Calendar calendar, Handle<Quote> hazardRate, DayCounter dc, SavedSettings settings)
+         : base(settlementDays, calendar, settings, dc)
       {
          hazardRate_ = hazardRate;
          hazardRate_.registerWith(update);
       }
 
-      public FlatHazardRate(int settlementDays, Calendar calendar, double hazardRate, DayCounter dc)
-         : base(settlementDays, calendar, dc)
+      public FlatHazardRate(int settlementDays, Calendar calendar, double hazardRate, DayCounter dc, SavedSettings settings)
+         : base(settlementDays, calendar, settings, dc)
       {
          hazardRate_ = new Handle<Quote>(new SimpleQuote(hazardRate));
       }

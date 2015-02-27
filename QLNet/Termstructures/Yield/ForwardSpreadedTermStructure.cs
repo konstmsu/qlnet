@@ -36,7 +36,8 @@ namespace QLNet {
         private Handle<YieldTermStructure> originalCurve_;
         private Handle<Quote> spread_;
 
-        public ForwardSpreadedTermStructure(Handle<YieldTermStructure> h, Handle<Quote> spread) {
+        public ForwardSpreadedTermStructure(Handle<YieldTermStructure> h, Handle<Quote> spread, SavedSettings settings) : base(settings)
+        {
             originalCurve_ = h;
             spread_ = spread;
 

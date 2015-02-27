@@ -35,20 +35,19 @@ namespace QLNet
                    constructor must manage their own reference date
                    by overriding the referenceDate() method.
       */
-      public OptionletVolatilityStructure()
-         : base(BusinessDayConvention.Following, null) { }
+      public OptionletVolatilityStructure(SavedSettings settings)
+         : base(BusinessDayConvention.Following, settings, null) { }
 
-      public OptionletVolatilityStructure(BusinessDayConvention bdc = BusinessDayConvention.Following,
-         DayCounter dc = null)
-         : base(bdc, dc) {}
+      public OptionletVolatilityStructure(SavedSettings settings, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         : base(bdc, settings, dc) {}
 
       //! initialize with a fixed reference date
-      public OptionletVolatilityStructure(Date referenceDate,Calendar cal,BusinessDayConvention bdc,DayCounter dc = null)
-         : base(referenceDate, cal, bdc, dc) {}
+      public OptionletVolatilityStructure(Date referenceDate, Calendar cal, BusinessDayConvention bdc, SavedSettings settings, DayCounter dc = null)
+         : base(referenceDate, cal, bdc, settings, dc) {}
       
       //! calculate the reference date based on the global evaluation date
-      public OptionletVolatilityStructure(int settlementDays,Calendar cal,BusinessDayConvention bdc,DayCounter dc = null)
-         : base(settlementDays, cal, bdc, dc) {}
+      public OptionletVolatilityStructure(int settlementDays, Calendar cal, BusinessDayConvention bdc, SavedSettings settings, DayCounter dc = null)
+         : base(settlementDays, cal, bdc, settings, dc) {}
       
       #endregion
 

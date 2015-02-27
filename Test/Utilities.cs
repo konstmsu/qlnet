@@ -38,41 +38,41 @@ namespace TestSuite {
     };
 
     public static class Utilities {
-        public static YieldTermStructure flatRate(Date today, double forward, DayCounter dc) {
-            return new FlatForward(today, new SimpleQuote(forward), dc);
+        public static YieldTermStructure flatRate(Date today, double forward, DayCounter dc, SavedSettings settings) {
+            return new FlatForward(today, new SimpleQuote(forward), dc, settings);
         }
 
-        public static YieldTermStructure flatRate(Date today, Quote forward, DayCounter dc) {
-            return new FlatForward(today, forward, dc);
+        public static YieldTermStructure flatRate(Date today, Quote forward, DayCounter dc, SavedSettings settings) {
+            return new FlatForward(today, forward, dc, settings);
         }
 
         //philippe2009_17
-        public static YieldTermStructure flatRate(double forward, DayCounter dc)
+        public static YieldTermStructure flatRate(double forward, DayCounter dc, SavedSettings settings)
         {
-            return flatRate(new SimpleQuote(forward), dc);
+            return flatRate(new SimpleQuote(forward), dc, settings);
         }
 
-        public static YieldTermStructure flatRate(Quote forward, DayCounter dc)
+        public static YieldTermStructure flatRate(Quote forward, DayCounter dc, SavedSettings settings)
         {
-            return new FlatForward(0, new NullCalendar(), forward, dc);
+            return new FlatForward(0, new NullCalendar(), forward, dc, settings);
         }
 
-        public static BlackVolTermStructure flatVol(Date today, double vol, DayCounter dc) {
-            return flatVol(today, new SimpleQuote(vol), dc);
+        public static BlackVolTermStructure flatVol(Date today, double vol, DayCounter dc, SavedSettings settings) {
+            return flatVol(today, new SimpleQuote(vol), dc, settings);
         }
 
-        public static BlackVolTermStructure flatVol(Date today, Quote vol, DayCounter dc) {
-            return new BlackConstantVol(today, new NullCalendar(), new Handle<Quote>(vol), dc);
+        public static BlackVolTermStructure flatVol(Date today, Quote vol, DayCounter dc, SavedSettings settings) {
+            return new BlackConstantVol(today, new NullCalendar(), new Handle<Quote>(vol), dc, settings);
         }
         //philippe2009_17
-        public static BlackVolTermStructure flatVol(Quote vol, DayCounter dc)
+        public static BlackVolTermStructure flatVol(Quote vol, DayCounter dc, SavedSettings settings)
         {
-            return new BlackConstantVol(0, new NullCalendar(), new Handle<Quote>(vol), dc);
+            return new BlackConstantVol(0, new NullCalendar(), new Handle<Quote>(vol), dc, settings);
         }
 
-        public static BlackVolTermStructure flatVol(double vol, DayCounter dc)
+        public static BlackVolTermStructure flatVol(double vol, DayCounter dc, SavedSettings settings)
         {
-            return flatVol(new SimpleQuote(vol), dc);
+            return flatVol(new SimpleQuote(vol), dc, settings);
         }
 
         public static double norm(Vector v, int size, double h) {

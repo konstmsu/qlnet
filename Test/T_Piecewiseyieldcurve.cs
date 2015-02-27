@@ -381,7 +381,7 @@ namespace TestSuite {
             CommonVars vars = new CommonVars(settings);
 
             vars.termStructure = new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlementDays,
-                                                           vars.calendar, vars.instruments, new Actual360());
+                                                           vars.calendar, vars.instruments, new Actual360(), settings);
             Flag f = new Flag();
             vars.termStructure.registerWith(f.update);
 
@@ -423,7 +423,7 @@ namespace TestSuite {
                                    vars.fixedLegDayCounter, euribor6m, settings));
             }
 
-            vars.termStructure = new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlement, swapHelpers, new Actual360());
+            vars.termStructure = new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlement, swapHelpers, new Actual360(), settings);
 
             Handle<YieldTermStructure> curveHandle = new Handle<YieldTermStructure>(vars.termStructure);
 
@@ -495,7 +495,7 @@ namespace TestSuite {
             DayCounter d1 = new Actual360();
 
             vars.termStructure = new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlementDays,
-                                                           vars.calendar, vars.instruments, d);
+                                                           vars.calendar, vars.instruments, d, settings);
 
             InterestRate ir = vars.termStructure.forwardRate(vars.settlement, vars.settlement + 30, d1, Compounding.Simple);
 
@@ -545,7 +545,7 @@ namespace TestSuite {
                                                new Actual360(),
                                                new List<Handle<Quote>>(),
                                                new List<Date>(),
-                                               1.0e-12);
+                                               1.0e-12, settings);
 
             RelinkableHandle<YieldTermStructure> curveHandle = new RelinkableHandle<YieldTermStructure>();
             curveHandle.linkTo(vars.termStructure);
@@ -586,7 +586,7 @@ namespace TestSuite {
 
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
-            testCurveCopy<Discount, LogLinear>(vars);
+            testCurveCopy<Discount, LogLinear>(vars, settings);
         }
 
         [TestMethod()]
@@ -595,7 +595,7 @@ namespace TestSuite {
 
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
-            testCurveCopy<ForwardRate, BackwardFlat>(vars);
+            testCurveCopy<ForwardRate, BackwardFlat>(vars, settings);
         }
 
         [TestMethod()]
@@ -604,7 +604,7 @@ namespace TestSuite {
 
             SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars(settings);
-            testCurveCopy<ZeroYield, Linear>(vars);
+            testCurveCopy<ZeroYield, Linear>(vars, settings);
         }
 
 
@@ -623,7 +623,7 @@ namespace TestSuite {
 		  {
 
             vars.termStructure = new PiecewiseYieldCurve<T, I, B>(vars.settlement, vars.instruments,
-                                    new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator);
+                                    new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator, settings);
 
             RelinkableHandle<YieldTermStructure> curveHandle = new RelinkableHandle<YieldTermStructure>();
             curveHandle.linkTo(vars.termStructure);
@@ -668,7 +668,7 @@ namespace TestSuite {
 
             // check bonds
             vars.termStructure = new PiecewiseYieldCurve<T, I, B>(vars.settlement, vars.bondHelpers,
-                                     new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator);
+                                     new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator, settings);
             curveHandle.linkTo(vars.termStructure);
 
             for (int i = 0; i < vars.bonds; i++)
@@ -696,7 +696,7 @@ namespace TestSuite {
 
             // check FRA
             vars.termStructure = new PiecewiseYieldCurve<T, I, B>(vars.settlement, vars.fraHelpers,
-                                        new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator);
+                                        new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator, settings);
             curveHandle.linkTo(vars.termStructure);
 
             IborIndex euribor3m = new Euribor3M(curveHandle, settings);
@@ -745,7 +745,7 @@ namespace TestSuite {
             vars.settlement = vars.calendar.advance(vars.today, vars.settlementDays, TimeUnit.Days);
 
             Handle<YieldTermStructure> riskFreeCurve = new Handle<YieldTermStructure>(
-                                                       new FlatForward(vars.settlement, 0.04, new Actual360()));
+                                                       new FlatForward(vars.settlement, 0.04, new Actual360(), settings));
 
             BMAIndex bmaIndex = new BMAIndex(settings);
             IborIndex liborIndex = new USDLibor(new Period(3, TimeUnit.Months), riskFreeCurve, settings);
@@ -767,7 +767,7 @@ namespace TestSuite {
             bmaIndex.addFixing(lastFixing, 0.03);
 
             vars.termStructure = new PiecewiseYieldCurve<T, I, B>(vars.settlement, vars.bmaHelpers,
-                                     new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator);
+                                     new Actual360(), new List<Handle<Quote>>(), new List<Date>(), 1.0e-12, interpolator, settings);
 
             RelinkableHandle<YieldTermStructure> curveHandle = new RelinkableHandle<YieldTermStructure>();
             curveHandle.linkTo(vars.termStructure);
@@ -816,12 +816,12 @@ namespace TestSuite {
             IndexManager.instance().clearHistories();
         }
 
-        public void testCurveCopy<T, I>(CommonVars vars)
+        public void testCurveCopy<T, I>(CommonVars vars, SavedSettings settings)
 			  where T : ITraits<YieldTermStructure>, new()
             where I : IInterpolationFactory, new() {
-            testCurveCopy<T, I>(vars, new I());
+            testCurveCopy<T, I>(vars, new I(), settings);
         }
-        public void testCurveCopy<T, I>(CommonVars vars, I interpolator)
+        public void testCurveCopy<T, I>(CommonVars vars, I interpolator, SavedSettings settings)
 			  where T : ITraits<YieldTermStructure>, new()
             where I : IInterpolationFactory, new() {
 
@@ -830,7 +830,7 @@ namespace TestSuite {
                                                                           new List<Handle<Quote>>(),
                                                                           new List<Date>(),
                                                                           1.0e-12,
-                                                                          interpolator);
+                                                                          interpolator, settings);
             // necessary to trigger bootstrap
             curve.recalculate();
 

@@ -50,7 +50,7 @@ namespace QLNet {
         {
         }
 
-		public ContinuousAveragingAsianOption(Average.Type averageType, StrikedTypePayoff payoff, Exercise exercise) : base(payoff, exercise)
+		public ContinuousAveragingAsianOption(Average.Type averageType, StrikedTypePayoff payoff, Exercise exercise, SavedSettings settings) : base(payoff, exercise, settings)
 		{
 			averageType_ = averageType;
 		}
@@ -118,8 +118,8 @@ namespace QLNet {
         {
         }
 
-        public DiscreteAveragingAsianOption(Average.Type averageType, double runningAccumulator, int pastFixings, List<Date> fixingDates, StrikedTypePayoff payoff, Exercise exercise)
-            : base(payoff, exercise)
+        public DiscreteAveragingAsianOption(Average.Type averageType, double runningAccumulator, int pastFixings, List<Date> fixingDates, StrikedTypePayoff payoff, Exercise exercise, SavedSettings settings)
+            : base(payoff, exercise, settings)
 		{
 			averageType_ = averageType;
 			runningAccumulator_ = runningAccumulator;

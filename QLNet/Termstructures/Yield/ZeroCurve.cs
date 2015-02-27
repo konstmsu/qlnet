@@ -63,8 +63,8 @@ namespace QLNet {
 
         //public InterpolatedDiscountCurve(List<Date> dates, List<double> discounts, DayCounter dayCounter,
         //                                 Calendar cal = Calendar(), Interpolator interpolator = Interpolator())
-        public InterpolatedZeroCurve(List<Date> dates, List<double> yields, DayCounter dayCounter, Interpolator interpolator)
-            : base(dates.First(), new Calendar(), dayCounter) {
+        public InterpolatedZeroCurve(List<Date> dates, List<double> yields, DayCounter dayCounter, Interpolator interpolator, SavedSettings settings)
+            : base(dates.First(), settings, new Calendar(), dayCounter) {
 
             times_ = new List<double>();
             dates_ = dates;

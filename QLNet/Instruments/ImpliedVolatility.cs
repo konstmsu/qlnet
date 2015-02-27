@@ -40,7 +40,7 @@ namespace QLNet {
             return result;
         }
 
-        public static GeneralizedBlackScholesProcess clone(GeneralizedBlackScholesProcess process, SimpleQuote volQuote) {
+        public static GeneralizedBlackScholesProcess clone(GeneralizedBlackScholesProcess process, SimpleQuote volQuote, SavedSettings settings) {
             Handle<Quote> stateVariable = process.stateVariable();
             Handle<YieldTermStructure> dividendYield = process.dividendYield();
             Handle<YieldTermStructure> riskFreeRate = process.riskFreeRate();
@@ -48,9 +48,9 @@ namespace QLNet {
             Handle<BlackVolTermStructure> blackVol = process.blackVolatility();
             var volatility = new Handle<BlackVolTermStructure>(new BlackConstantVol(blackVol.link.referenceDate(),
                                                                blackVol.link.calendar(), new Handle<Quote>(volQuote),
-                                                               blackVol.link.dayCounter()));
+                                                               blackVol.link.dayCounter(), settings));
 
-            return new GeneralizedBlackScholesProcess(stateVariable, dividendYield, riskFreeRate, volatility);
+            return new GeneralizedBlackScholesProcess(stateVariable, dividendYield, riskFreeRate, volatility, settings);
         }
     }
 

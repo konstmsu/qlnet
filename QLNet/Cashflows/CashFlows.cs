@@ -313,13 +313,13 @@ namespace QLNet
          private Date settlementDate_, npvDate_;
           SavedSettings _settings;
 
-          public ZSpreadFinder(Leg leg, YieldTermStructure discountCurve, double npv, DayCounter dc, Compounding comp, Frequency freq, bool includeSettlementDateFlows, Date settlementDate, Date npvDate, SavedSettings settings, SavedSettings settings1)
+          public ZSpreadFinder(Leg leg, YieldTermStructure discountCurve, double npv, DayCounter dc, Compounding comp, Frequency freq, bool includeSettlementDateFlows, Date settlementDate, Date npvDate, SavedSettings settings)
          {
             leg_ = leg;
             npv_ = npv;
             zSpread_ = new SimpleQuote(0.0);
             curve_ = new ZeroSpreadedTermStructure(new Handle<YieldTermStructure>(discountCurve),
-                                                   new Handle<Quote>(zSpread_), comp, freq, dc);
+                                                   new Handle<Quote>(zSpread_), settings, comp, freq, dc);
             includeSettlementDateFlows_ = includeSettlementDateFlows;
             settlementDate_ = settlementDate;
             npvDate_ = npvDate;
@@ -876,7 +876,7 @@ namespace QLNet
             npvDate = settlementDate;
 
          FlatForward flatRate = new FlatForward(settlementDate, yield.rate(), yield.dayCounter(),
-                                               yield.compounding(), yield.frequency());
+                                               yield.compounding(), yield.frequency(), settings);
          return bps(leg, flatRate, includeSettlementDateFlows, settings, settlementDate: settlementDate, npvDate: npvDate);
       }
 
@@ -1184,8 +1184,7 @@ namespace QLNet
          Handle<YieldTermStructure> discountCurveHandle = new Handle<YieldTermStructure>(discountCurve);
          Handle<Quote> zSpreadQuoteHandle = new Handle<Quote>(new SimpleQuote(zSpread));
 
-         ZeroSpreadedTermStructure spreadedCurve = new ZeroSpreadedTermStructure(discountCurveHandle,zSpreadQuoteHandle,
-            comp, freq, dc);
+         ZeroSpreadedTermStructure spreadedCurve = new ZeroSpreadedTermStructure(discountCurveHandle,zSpreadQuoteHandle, settings, comp, freq, dc);
 
          spreadedCurve.enableExtrapolation(discountCurveHandle.link.allowsExtrapolation());
 
@@ -1203,7 +1202,7 @@ namespace QLNet
          Brent solver = new Brent();
          solver.setMaxEvaluations(maxIterations);
          ZSpreadFinder objFunction = new ZSpreadFinder(leg,discount,npv,dayCounter, compounding, frequency, 
-            includeSettlementDateFlows, settlementDate, npvDate, settings, settings);
+            includeSettlementDateFlows, settlementDate, npvDate, settings);
          double step = 0.01;
          return solver.solve(objFunction, accuracy, guess, step);
       }

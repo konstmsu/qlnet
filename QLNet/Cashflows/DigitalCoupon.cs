@@ -253,7 +253,7 @@ namespace QLNet
             throw new ApplicationException("pricer not set");
 
          Date fixingDate = underlying_.fixingDate();
-         Date today = Settings.evaluationDate();
+         Date today = _settings.evaluationDate();
          bool enforceTodaysHistoricFixings = Settings.enforcesTodaysHistoricFixings;
          double underlyingRate = underlying_.rate();
          if (fixingDate < today || ((fixingDate == today) && enforceTodaysHistoricFixings))

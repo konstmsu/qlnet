@@ -29,9 +29,9 @@ namespace QLNet
         SavedSettings _settings;
 
         public CapletVarianceCurve(Date referenceDate, List<Date> dates, List<double> capletVolCurve, DayCounter dayCounter, SavedSettings settings)
-           : base(referenceDate, new Calendar(), BusinessDayConvention.Following, new DayCounter())
+           : base(referenceDate, new Calendar(), BusinessDayConvention.Following, settings, new DayCounter())
         {
-            blackCurve_=new BlackVarianceCurve(referenceDate, dates, capletVolCurve, dayCounter, false);
+            blackCurve_=new BlackVarianceCurve(referenceDate, dates, capletVolCurve, dayCounter, false, settings);
             _settings = settings;
         }
 

@@ -66,7 +66,7 @@ namespace TestSuite
             Settings.setEvaluationDate(today);
 
             //Date today = Settings::instance().evaluationDate();
-            termStructure.linkTo(Utilities.flatRate(today, 0.05, new Actual365Fixed()));
+            termStructure.linkTo(Utilities.flatRate(today, 0.05, new Actual365Fixed(), settings));
             
             pricer = new BlackIborCouponPricer(settings);
             Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure = 

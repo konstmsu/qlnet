@@ -87,7 +87,7 @@ namespace QLNet
       //@{ 
       public override bool isExpired()
       {
-         return exercise_.Dates.Last() < Settings.evaluationDate();
+         return exercise_.Dates.Last() < settings_.evaluationDate();
       }
 
       public override void setupArguments(IPricingEngineArguments args)

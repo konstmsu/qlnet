@@ -91,7 +91,7 @@ namespace TestSuite
 						iir.addFixing(rpiSchedule[i], fixData[i]);
 				}
 
-				YieldTermStructure nominalFF = new FlatForward(evaluationDate, 0.05, new ActualActual());
+				YieldTermStructure nominalFF = new FlatForward(evaluationDate, 0.05, new ActualActual(), settings_);
 				nominalTS.linkTo(nominalFF);
 
 				// now build the YoY inflation curve
@@ -126,7 +126,7 @@ namespace TestSuite
 						new PiecewiseYoYInflationCurve<Linear>(
 								evaluationDate, calendar, dc, observationLag,
 								iir.frequency(),iir.interpolated(), baseYYRate,
-								new Handle<YieldTermStructure>(nominalTS), helpers);
+								new Handle<YieldTermStructure>(nominalTS), helpers, settings_);
 				pYYTS.recalculate();
 				yoyTS = pYYTS as YoYInflationTermStructure;
 
@@ -164,7 +164,7 @@ namespace TestSuite
 																			dc,
 																			observationLag,
 																			frequency,
-																			iir.interpolated()));
+																			iir.interpolated(), settings_));
 
 
 				switch (which) {
@@ -351,7 +351,7 @@ namespace TestSuite
 				}
 			} // pricer loop
 			// remove circular refernce
-			vars.hy.linkTo(new YoYInflationTermStructure());
+			vars.hy.linkTo(new YoYInflationTermStructure(settings));
 		}
 
 		// Test inflation cap/floor parity, i.e. that cap-floor = swap, note that this
@@ -430,7 +430,7 @@ namespace TestSuite
 				  }
 			 }
 			 // remove circular refernce
-			 vars.hy.linkTo(new YoYInflationTermStructure());
+			 vars.hy.linkTo(new YoYInflationTermStructure(settings));
 		}
 
 		
@@ -495,7 +495,7 @@ namespace TestSuite
 									+" diff was "+(Math.Abs(floor.NPV()-cachedFloorNPVbac)));
 
 			// remove circular refernce
-			vars.hy.linkTo(new YoYInflationTermStructure());
+			vars.hy.linkTo(new YoYInflationTermStructure(settings));
 	}
 	
 	}

@@ -28,25 +28,25 @@ namespace QLNet {
     public class BlackConstantVol : BlackVolatilityTermStructure {
         private Handle<Quote> volatility_;
 
-        public BlackConstantVol(Date referenceDate, Calendar cal, double volatility, DayCounter dc)
-            : base(referenceDate, cal, BusinessDayConvention.Following, dc) {
+        public BlackConstantVol(Date referenceDate, Calendar cal, double volatility, DayCounter dc, SavedSettings settings)
+            : base(referenceDate, settings, cal, BusinessDayConvention.Following, dc) {
             volatility_ = new Handle<Quote>(new SimpleQuote(volatility));
         }
 
-        public BlackConstantVol(Date referenceDate, Calendar cal, Handle<Quote> volatility, DayCounter dc)
-            : base(referenceDate, cal, BusinessDayConvention.Following, dc) {
+        public BlackConstantVol(Date referenceDate, Calendar cal, Handle<Quote> volatility, DayCounter dc, SavedSettings settings)
+            : base(referenceDate, settings, cal, BusinessDayConvention.Following, dc) {
             volatility_ = volatility;
 
             volatility_.registerWith(update);
         }
 
-        public BlackConstantVol(int settlementDays, Calendar cal, double volatility, DayCounter dc)
-            : base(settlementDays, cal, BusinessDayConvention.Following, dc) {
+        public BlackConstantVol(int settlementDays, Calendar cal, double volatility, DayCounter dc, SavedSettings settings)
+            : base(settlementDays, cal, settings, BusinessDayConvention.Following, dc) {
             volatility_ = new Handle<Quote>(new SimpleQuote(volatility));
         }
 
-        public BlackConstantVol(int settlementDays, Calendar cal, Handle<Quote> volatility, DayCounter dc)
-            : base(settlementDays, cal, BusinessDayConvention.Following, dc) {
+        public BlackConstantVol(int settlementDays, Calendar cal, Handle<Quote> volatility, DayCounter dc, SavedSettings settings)
+            : base(settlementDays, cal, settings, BusinessDayConvention.Following, dc) {
             volatility_ = volatility;
 
             volatility_.registerWith(update);

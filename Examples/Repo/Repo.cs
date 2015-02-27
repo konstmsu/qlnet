@@ -24,7 +24,14 @@ using QLNet;
 
 namespace Repo {
 	public class Repo {
-		static void Main(string[] args) {
+	    public Repo(SavedSettings settings1)
+	    {
+	        _settings = settings1;
+	    }
+
+	    static SavedSettings _settings;
+
+	    static void Main(string[] args) {
             SavedSettings settings = new SavedSettings();
             DateTime timer = DateTime.Now;
 
@@ -60,7 +67,7 @@ namespace Repo {
 											   .01, // dummy rate
 											   bondDayCountConvention,
 											   Compounding.Compounded,
-											   bondCouponFrequency));
+											   bondCouponFrequency, _settings));
 
 			/*
 			boost::shared_ptr<FixedRateBond> bond(
@@ -95,12 +102,12 @@ namespace Repo {
 
 			bondCurve.linkTo(new FlatForward(repoSettlementDate,
 									   bond.yield(bondCleanPrice,
-												   bondDayCountConvention,
-												   Compounding.Compounded,
-												   bondCouponFrequency),
+									       bondDayCountConvention,
+									       Compounding.Compounded,
+									       bondCouponFrequency),
 									   bondDayCountConvention,
 									   Compounding.Compounded,
-									   bondCouponFrequency));
+									   bondCouponFrequency, _settings));
 
 			Position.Type fwdType = Position.Type.Long;
 			double dummyStrike = 91.5745;
@@ -110,7 +117,7 @@ namespace Repo {
 											   repoRate,
 											   repoDayCountConvention,
 											   repoCompounding,
-											   repoCompoundFreq));
+											   repoCompoundFreq, settings));
 
 
 			FixedRateBondForward bondFwd = new FixedRateBondForward(repoSettlementDate,

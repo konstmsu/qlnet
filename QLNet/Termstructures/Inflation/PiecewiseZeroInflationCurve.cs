@@ -179,23 +179,18 @@ namespace QLNet
 
 
 
-		public PiecewiseZeroInflationCurve( DayCounter dayCounter, double baseZeroRate, Period observationLag, Frequency frequency,
-													  bool indexIsInterpolated, Handle<YieldTermStructure> yTS )
-			: base( dayCounter, baseZeroRate, observationLag, frequency, indexIsInterpolated, yTS ) { }
+		public PiecewiseZeroInflationCurve(DayCounter dayCounter, double baseZeroRate, Period observationLag, Frequency frequency, bool indexIsInterpolated, Handle<YieldTermStructure> yTS, SavedSettings settings)
+			: base( dayCounter, baseZeroRate, observationLag, frequency, indexIsInterpolated, yTS, settings) { }
 
-		public PiecewiseZeroInflationCurve( Date referenceDate, Calendar calendar, DayCounter dayCounter, double baseZeroRate,
-													  Period observationLag, Frequency frequency, bool indexIsInterpolated,
-													  Handle<YieldTermStructure> yTS )
-			: base( referenceDate, calendar, dayCounter, baseZeroRate, observationLag, frequency, indexIsInterpolated, yTS ) { }
+		public PiecewiseZeroInflationCurve(Date referenceDate, Calendar calendar, DayCounter dayCounter, double baseZeroRate, Period observationLag, Frequency frequency, bool indexIsInterpolated, Handle<YieldTermStructure> yTS, SavedSettings settings)
+			: base( referenceDate, calendar, dayCounter, baseZeroRate, observationLag, frequency, indexIsInterpolated, yTS, settings) { }
 
-		public PiecewiseZeroInflationCurve( int settlementDays, Calendar calendar, DayCounter dayCounter, double baseZeroRate,
-													  Period observationLag, Frequency frequency, bool indexIsInterpolated,
-													  Handle<YieldTermStructure> yTS )
-			: base( settlementDays, calendar, dayCounter, baseZeroRate, observationLag, frequency, indexIsInterpolated, yTS ) { }
+		public PiecewiseZeroInflationCurve(int settlementDays, Calendar calendar, DayCounter dayCounter, double baseZeroRate, Period observationLag, Frequency frequency, bool indexIsInterpolated, Handle<YieldTermStructure> yTS, SavedSettings settings)
+			: base( settlementDays, calendar, dayCounter, baseZeroRate, observationLag, frequency, indexIsInterpolated, yTS, settings) { }
 
 
-		public PiecewiseZeroInflationCurve()
-			: base()
+		public PiecewiseZeroInflationCurve(SavedSettings settings)
+			: base(settings)
 		{ }
 	}
 
@@ -206,19 +201,8 @@ namespace QLNet
 		where Bootstrap : IBootStrap<PiecewiseZeroInflationCurve>, new()
 	{
 
-		public PiecewiseZeroInflationCurve( Date referenceDate,
-					Calendar calendar,
-					DayCounter dayCounter,
-					Period lag,
-					Frequency frequency,
-					bool indexIsInterpolated,
-					double baseZeroRate,
-					Handle<YieldTermStructure> nominalTS,
-					List<BootstrapHelper<ZeroInflationTermStructure>> instruments,
-					double accuracy = 1.0e-12,
-					Interpolator i = default(Interpolator),
-					Bootstrap bootstrap = default(Bootstrap) )
-			: base( referenceDate, calendar, dayCounter, baseZeroRate, lag, frequency, indexIsInterpolated, nominalTS )
+		public PiecewiseZeroInflationCurve(Date referenceDate, Calendar calendar, DayCounter dayCounter, Period lag, Frequency frequency, bool indexIsInterpolated, double baseZeroRate, Handle<YieldTermStructure> nominalTS, List<BootstrapHelper<ZeroInflationTermStructure>> instruments, SavedSettings settings, double accuracy = 1.0e-12, Interpolator i = default(Interpolator), Bootstrap bootstrap = default(Bootstrap))
+			: base( referenceDate, calendar, dayCounter, baseZeroRate, lag, frequency, indexIsInterpolated, nominalTS, settings)
 		{
 			_instruments_ = instruments;
 			accuracy_ = accuracy;
@@ -288,19 +272,9 @@ namespace QLNet
 	public class PiecewiseZeroInflationCurve<Interpolator> : PiecewiseZeroInflationCurve<Interpolator, IterativeBootstrapForInflation, ZeroInflationTraits>
 		where Interpolator : IInterpolationFactory, new()
 	{
-		public PiecewiseZeroInflationCurve( Date referenceDate,
-					Calendar calendar,
-					DayCounter dayCounter,
-					Period lag,
-					Frequency frequency,
-					bool indexIsInterpolated,
-					double baseZeroRate,
-					Handle<YieldTermStructure> nominalTS,
-					List<BootstrapHelper<ZeroInflationTermStructure>> instruments,
-					double accuracy = 1.0e-12,
-					Interpolator i = default(Interpolator) )
+		public PiecewiseZeroInflationCurve(Date referenceDate, Calendar calendar, DayCounter dayCounter, Period lag, Frequency frequency, bool indexIsInterpolated, double baseZeroRate, Handle<YieldTermStructure> nominalTS, List<BootstrapHelper<ZeroInflationTermStructure>> instruments, SavedSettings settings, double accuracy = 1.0e-12, Interpolator i = default(Interpolator))
 			: base( referenceDate, calendar, dayCounter, lag, frequency, indexIsInterpolated, baseZeroRate, nominalTS,
-					instruments, accuracy, i ) { }
+					instruments, settings, accuracy, i ) { }
 
 
 	}

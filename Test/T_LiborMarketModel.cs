@@ -45,7 +45,7 @@ namespace TestSuite
             dates[0] = index.fixingCalendar().advance(todaysDate,
                                                    index.fixingDays(), TimeUnit.Days);
             Linear Interpolator = new Linear();
-            termStructure.linkTo(new InterpolatedZeroCurve<Linear>(dates, rates, dayCounter, Interpolator));
+            termStructure.linkTo(new InterpolatedZeroCurve<Linear>(dates, rates, dayCounter, Interpolator, settings));
 
             return index;
         }

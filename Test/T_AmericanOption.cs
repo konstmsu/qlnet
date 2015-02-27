@@ -132,7 +132,9 @@ namespace TestSuite {
         };
 
         [TestMethod()]
-        public void testBaroneAdesiWhaleyValues() {
+        public void testBaroneAdesiWhaleyValues()
+        {
+            var settings = new SavedSettings();
             // ("Testing Barone-Adesi and Whaley approximation for American options...");
 
             /* The data below are from
@@ -185,12 +187,12 @@ namespace TestSuite {
             DayCounter dc = new Actual360();
             SimpleQuote spot = new SimpleQuote(0.0);
             SimpleQuote qRate = new SimpleQuote(0.0);
-            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc);
+            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc, settings);
 
             SimpleQuote rRate = new SimpleQuote(0.0);
-            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc);
+            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc, settings);
             SimpleQuote vol = new SimpleQuote(0.0);
-            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc);
+            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc, settings);
 
             double tolerance = 3.0e-3;
 
@@ -208,11 +210,11 @@ namespace TestSuite {
                 BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
                                               new Handle<YieldTermStructure>(qTS),
                                               new Handle<YieldTermStructure>(rTS),
-                                              new Handle<BlackVolTermStructure>(volTS));
+                                              new Handle<BlackVolTermStructure>(volTS), settings);
 
                 IPricingEngine engine = new BaroneAdesiWhaleyApproximationEngine(stochProcess);
 
-                VanillaOption option = new VanillaOption(payoff, exercise);
+                VanillaOption option = new VanillaOption(payoff, exercise, settings);
                 option.setPricingEngine(engine);
 
                 double calculated = option.NPV();
@@ -229,6 +231,7 @@ namespace TestSuite {
         public void testBjerksundStenslandValues() {
             // ("Testing Bjerksund and Stensland approximation for American options...");
 
+            var settings = new SavedSettings();
             AmericanOptionData[] values = new AmericanOptionData[] {
                 //      type, strike,   spot,    q,    r,    t,  vol,   value, tol
                 // from "Option pricing formulas", Haug, McGraw-Hill 1998, pag 27
@@ -241,12 +244,12 @@ namespace TestSuite {
             DayCounter dc = new Actual360();
             SimpleQuote spot = new SimpleQuote(0.0);
             SimpleQuote qRate = new SimpleQuote(0.0);
-            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc);
+            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc, settings);
 
             SimpleQuote rRate = new SimpleQuote(0.0);
-            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc);
+            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc, settings);
             SimpleQuote vol = new SimpleQuote(0.0);
-            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc);
+            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc, settings);
 
             double tolerance = 3.0e-3;
 
@@ -264,11 +267,11 @@ namespace TestSuite {
                 BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
                                               new Handle<YieldTermStructure>(qTS),
                                               new Handle<YieldTermStructure>(rTS),
-                                              new Handle<BlackVolTermStructure>(volTS));
+                                              new Handle<BlackVolTermStructure>(volTS), settings);
 
                 IPricingEngine engine = new BjerksundStenslandApproximationEngine(stochProcess);
 
-                VanillaOption option = new VanillaOption(payoff, exercise);
+                VanillaOption option = new VanillaOption(payoff, exercise, settings);
                 option.setPricingEngine(engine);
 
                 double calculated = option.NPV();
@@ -283,6 +286,7 @@ namespace TestSuite {
 
         [TestMethod()]
         public void testJuValues() {
+            var settings = new SavedSettings();
 
             // ("Testing Ju approximation for American options...");
 
@@ -290,12 +294,12 @@ namespace TestSuite {
             DayCounter dc = new Actual360();
             SimpleQuote spot = new SimpleQuote(0.0);
             SimpleQuote qRate = new SimpleQuote(0.0);
-            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc);
+            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc, settings);
 
             SimpleQuote rRate = new SimpleQuote(0.0);
-            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc);
+            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc, settings);
             SimpleQuote vol = new SimpleQuote(0.0);
-            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc);
+            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc, settings);
 
             double tolerance = 1.0e-3;
 
@@ -313,11 +317,11 @@ namespace TestSuite {
                 BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
                                               new Handle<YieldTermStructure>(qTS),
                                               new Handle<YieldTermStructure>(rTS),
-                                              new Handle<BlackVolTermStructure>(volTS));
+                                              new Handle<BlackVolTermStructure>(volTS), settings);
 
                 IPricingEngine engine = new JuQuadraticApproximationEngine(stochProcess);
 
-                VanillaOption option = new VanillaOption(payoff, exercise);
+                VanillaOption option = new VanillaOption(payoff, exercise, settings);
                 option.setPricingEngine(engine);
 
                 double calculated = option.NPV();
@@ -334,17 +338,18 @@ namespace TestSuite {
         public void testFdValues() {
 
             //("Testing finite-difference engine for American options...");
+            var settings = new SavedSettings();
 
             Date today = Date.Today;
             DayCounter dc = new Actual360();
             SimpleQuote spot = new SimpleQuote(0.0);
             SimpleQuote qRate = new SimpleQuote(0.0);
-            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc);
+            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc, settings);
 
             SimpleQuote rRate = new SimpleQuote(0.0);
-            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc);
+            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc, settings);
             SimpleQuote vol = new SimpleQuote(0.0);
-            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc);
+            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc, settings);
 
             double tolerance = 8.0e-2;
 
@@ -362,11 +367,11 @@ namespace TestSuite {
                 BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
                                               new Handle<YieldTermStructure>(qTS),
                                               new Handle<YieldTermStructure>(rTS),
-                                              new Handle<BlackVolTermStructure>(volTS));
+                                              new Handle<BlackVolTermStructure>(volTS), settings);
 
                 IPricingEngine engine = new FDAmericanEngine(stochProcess, 100,100);
 
-                VanillaOption option = new VanillaOption(payoff, exercise);
+                VanillaOption option = new VanillaOption(payoff, exercise, settings);
                 option.setPricingEngine(engine);
 
                 double calculated = option.NPV();
@@ -381,6 +386,7 @@ namespace TestSuite {
 
         public void testFdGreeks<Engine>() where Engine : IFDEngine, new() {
 
+            var settings = new SavedSettings();
             //SavedSettings backup;
 
             Dictionary<string, double> calculated = new Dictionary<string,double>(), 
@@ -405,12 +411,12 @@ namespace TestSuite {
             DayCounter dc = new Actual360();
             SimpleQuote spot = new SimpleQuote(0.0);
             SimpleQuote qRate = new SimpleQuote(0.0);
-            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc);
+            YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc, settings);
 
             SimpleQuote rRate = new SimpleQuote(0.0);
-            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc);
+            YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc, settings);
             SimpleQuote vol = new SimpleQuote(0.0);
-            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc);
+            BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc, settings);
 
             for (int i=0; i<types.Length; i++) {
               for (int j=0; j<strikes.Length; j++) {
@@ -421,11 +427,11 @@ namespace TestSuite {
                     BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
                                                   new Handle<YieldTermStructure>(qTS),
                                                   new Handle<YieldTermStructure>(rTS),
-                                                  new Handle<BlackVolTermStructure>(volTS));
+                                                  new Handle<BlackVolTermStructure>(volTS), settings);
 
                     IPricingEngine engine = new Engine().factory(stochProcess);
 
-                    VanillaOption option = new VanillaOption(payoff, exercise);
+                    VanillaOption option = new VanillaOption(payoff, exercise, settings);
                     option.setPricingEngine(engine);
 
                     for (int l=0; l<underlyings.Length; l++) {

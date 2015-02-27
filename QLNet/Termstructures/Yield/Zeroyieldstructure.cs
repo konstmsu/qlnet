@@ -38,16 +38,14 @@ namespace QLNet
    {
       #region Constructors
 
-      public ZeroYieldStructure(DayCounter dc = null,List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
-         : base(dc, jumps, jumpDates) {}
+      public ZeroYieldStructure(SavedSettings settings, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         : base(settings, dc, jumps, jumpDates) {}
 
-      public ZeroYieldStructure(Date referenceDate,Calendar calendar = null,DayCounter dc = null,
-          List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
-         : base(referenceDate, calendar, dc, jumps, jumpDates) { }
+      public ZeroYieldStructure(Date referenceDate, SavedSettings settings, Calendar calendar = null, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         : base(referenceDate, settings, calendar, dc, jumps, jumpDates) { }
 
-      public ZeroYieldStructure(int settlementDays,Calendar calendar, DayCounter dc = null,
-          List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
-         : base(settlementDays, calendar, dc, jumps, jumpDates) { }
+      public ZeroYieldStructure(int settlementDays, Calendar calendar, SavedSettings settings, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         : base(settlementDays, calendar, settings, dc, jumps, jumpDates) { }
 
       #endregion
       

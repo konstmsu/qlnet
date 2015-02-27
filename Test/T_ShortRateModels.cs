@@ -52,7 +52,7 @@ namespace TestSuite
          Date settlement=new Date(19, Month.February, 2002);
          Settings.setEvaluationDate(today);
          Handle<YieldTermStructure> termStructure= 
-         new Handle<YieldTermStructure>(Utilities.flatRate(settlement, 0.04875825, new Actual365Fixed()));
+         new Handle<YieldTermStructure>(Utilities.flatRate(settlement, 0.04875825, new Actual365Fixed(), settings));
          //termStructure.link
          HullWhite model=new HullWhite(termStructure);
 
@@ -173,7 +173,7 @@ namespace TestSuite
                    new InterpolatedDiscountCurve<LogLinear>(
                        dates.ToList<Date>(),
                        discounts.ToList<double>(),
-                       new Actual365Fixed(),new Calendar(), null, null , Interpolator)
+                       new Actual365Fixed(), settings, new Calendar(), null, null , Interpolator)
             );
 
             HullWhite model = new HullWhite(termStructure);

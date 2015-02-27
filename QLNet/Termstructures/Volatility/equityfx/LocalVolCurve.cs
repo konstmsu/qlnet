@@ -26,8 +26,8 @@ namespace QLNet {
     public class LocalVolCurve : LocalVolTermStructure {
         private Handle<BlackVarianceCurve> blackVarianceCurve_;
 
-        public LocalVolCurve(Handle<BlackVarianceCurve> curve)
-            : base(curve.link.businessDayConvention(), curve.link.dayCounter()) {
+        public LocalVolCurve(Handle<BlackVarianceCurve> curve, SavedSettings settings)
+            : base(settings, curve.link.businessDayConvention(), curve.link.dayCounter()) {
             blackVarianceCurve_ = curve;
 
             blackVarianceCurve_.registerWith(update);

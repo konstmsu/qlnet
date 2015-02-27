@@ -29,9 +29,14 @@ namespace QLNet {
             thetaPerDay_, vega_, rho_, dividendRho_, strikeSensitivity_,
             itmCashProbability_;
 
-        public OneAssetOption(Payoff payoff, Exercise exercise) : base(payoff, exercise) {}
+        protected readonly SavedSettings settings_;
 
-        public override bool isExpired() { return exercise_.lastDate() < Settings.evaluationDate(); }
+        public OneAssetOption(Payoff payoff, Exercise exercise, SavedSettings settings) : base(payoff, exercise)
+        {
+            settings_ = settings;
+        }
+
+        public override bool isExpired() { return exercise_.lastDate() < settings_.evaluationDate(); }
 
         public double delta() {
             calculate();

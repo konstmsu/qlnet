@@ -28,14 +28,10 @@ namespace CallableBonds
    class CallableBonds
    {
       
-      static YieldTermStructure flatRate(Date today,
-                                  double forward,
-                                  DayCounter dc,
-                                  Compounding compounding,
-                                  Frequency frequency) 
+      static YieldTermStructure flatRate(Date today, double forward, DayCounter dc, Compounding compounding, Frequency frequency, SavedSettings settings) 
    
       {
-         return new FlatForward(today, forward, dc, compounding, frequency);
+         return new FlatForward(today, forward, dc, compounding, frequency, settings);
          //FlatForward flatRate = new FlatForward(settlementDate, r.rate(), r.dayCounter(), r.compounding(), r.frequency());
       }
 
@@ -74,7 +70,7 @@ namespace CallableBonds
                                                               bbIR.rate(),
                                                               bbIR.dayCounter(),
                                                               bbIR.compounding(),
-                                                              bbIR.frequency()));
+                                                              bbIR.frequency(), settings));
          // set up the call schedule
 
          CallabilitySchedule callSchedule = new CallabilitySchedule();

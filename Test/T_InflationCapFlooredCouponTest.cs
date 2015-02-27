@@ -96,7 +96,7 @@ namespace TestSuite
                iir.addFixing(rpiSchedule[i], fixData[i]);
             }
 
-            YieldTermStructure nominalFF = new FlatForward(evaluationDate, 0.05, new ActualActual());
+            YieldTermStructure nominalFF = new FlatForward(evaluationDate, 0.05, new ActualActual(), settings_);
             nominalTS.linkTo(nominalFF);
 
             // now build the YoY inflation curve
@@ -130,7 +130,7 @@ namespace TestSuite
             PiecewiseYoYInflationCurve<Linear>  pYYTS = new PiecewiseYoYInflationCurve<Linear>(
                                 evaluationDate, calendar, dc, observationLag,
                                 iir.frequency(),iir.interpolated(), baseYYRate,
-                                new Handle<YieldTermStructure>(nominalTS), helpers);
+                                new Handle<YieldTermStructure>(nominalTS), helpers, settings_);
             pYYTS.recalculate();
             yoyTS = pYYTS as YoYInflationTermStructure;
 
@@ -189,18 +189,18 @@ namespace TestSuite
                                 dc,
                                 observationLag,
                                 frequency,
-                                iir.interpolated()));
+                                iir.interpolated(), settings_));
 
             YoYInflationCouponPricer pricer = null;
             switch (which) {
                 case 0:
-                    pricer = new BlackYoYInflationCouponPricer(vol);
+                    pricer = new BlackYoYInflationCouponPricer(vol, settings_);
                     break;
                 case 1:
-                    pricer = new UnitDisplacedBlackYoYInflationCouponPricer(vol);
+                    pricer = new UnitDisplacedBlackYoYInflationCouponPricer(settings_, vol);
                     break;
                 case 2:
-                    pricer = new BachelierYoYInflationCouponPricer(vol);
+                    pricer = new BachelierYoYInflationCouponPricer(settings_, vol);
                     break;
                 default:
                     Assert.Fail("unknown coupon pricer request: which = "+which
@@ -251,7 +251,7 @@ namespace TestSuite
                             dc,
                             observationLag,
                             frequency,
-                            iir.interpolated()));
+                            iir.interpolated(), settings_));
 
 
             switch (which) {
@@ -625,7 +625,7 @@ namespace TestSuite
                         "  Diff: " + error );
          }
          // remove circular refernce
-         vars.hy.linkTo(new YoYInflationTermStructure());
+         vars.hy.linkTo(new YoYInflationTermStructure(settings));
    }
 
       [TestMethod()]
@@ -733,7 +733,7 @@ namespace TestSuite
          
          }
          // remove circular refernce
-         vars.hy.linkTo(new YoYInflationTermStructure());
+         vars.hy.linkTo(new YoYInflationTermStructure(settings));
       }
    }
 }

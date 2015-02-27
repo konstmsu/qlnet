@@ -53,7 +53,7 @@ namespace QLNet
             }
             else
             {
-                Date today = Settings.evaluationDate();
+                Date today = settings_.evaluationDate();
                 Date fixingDate = this.fixingDate();
 
                 TimeSeries<double> fixings = IndexManager.instance().getHistory(index_.name()).value();

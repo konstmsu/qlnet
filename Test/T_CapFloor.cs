@@ -53,7 +53,7 @@ namespace TestSuite {
                 fixingDays = 2;
                 settlement = calendar.advance(today, settlementDays, TimeUnit.Days);
                 termStructure.linkTo(Utilities.flatRate(settlement, 0.05,
-                                              new ActualActual(ActualActual.Convention.ISDA)));
+                                              new ActualActual(ActualActual.Convention.ISDA), settings_));
 
             }
 
@@ -368,6 +368,7 @@ namespace TestSuite {
 
         [TestMethod()]
         public void testImpliedVolatility() {
+            SavedSettings settings = new SavedSettings();
             CommonVars vars = new CommonVars();
 
             int maxEvaluations = 100;
@@ -392,7 +393,7 @@ namespace TestSuite {
                             for (int m = 0; m < vols.Length; m++) {
                                 double r = rRates[n];
                                 double v = vols[m];
-                                vars.termStructure.linkTo(Utilities.flatRate(vars.settlement, r, new Actual360()));
+                                vars.termStructure.linkTo(Utilities.flatRate(vars.settlement, r, new Actual360(), settings));
                                 capfloor.setPricingEngine(vars.makeEngine(v));
 
                                 double value = capfloor.NPV();
@@ -452,11 +453,12 @@ namespace TestSuite {
         [TestMethod()]
         public void testCachedValue() {
             CommonVars vars = new CommonVars();
+            SavedSettings settings = new SavedSettings();
 
             Date cachedToday = new Date(14, Month.March, 2002),
                  cachedSettlement = new Date(18, Month.March, 2002);
             Settings.setEvaluationDate(cachedToday);
-            vars.termStructure.linkTo(Utilities.flatRate(cachedSettlement, 0.05, new Actual360()));
+            vars.termStructure.linkTo(Utilities.flatRate(cachedSettlement, 0.05, new Actual360(), settings));
             Date startDate = vars.termStructure.link.referenceDate();
             List<CashFlow> leg = vars.makeLeg(startDate, 20);
             Instrument cap = vars.makeCapFloor(CapFloorType.Cap, leg, 0.07, 0.20);

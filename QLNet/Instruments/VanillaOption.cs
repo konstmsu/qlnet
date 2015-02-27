@@ -24,7 +24,7 @@ using System.Text;
 namespace QLNet {
     //! Vanilla option (no discrete dividends, no barriers) on a single asset
     public class VanillaOption : OneAssetOption {
-        public VanillaOption(StrikedTypePayoff payoff, Exercise exercise) : base(payoff, exercise) {}
+        public VanillaOption(StrikedTypePayoff payoff, Exercise exercise, SavedSettings settings) : base(payoff, exercise, settings) {}
 
         /*! \warning currently, this method returns the Black-Scholes
                  implied volatility using analytic formulas for
@@ -53,7 +53,7 @@ namespace QLNet {
 
             SimpleQuote volQuote = new SimpleQuote();
 
-            GeneralizedBlackScholesProcess newProcess = ImpliedVolatilityHelper.clone(process, volQuote);
+            GeneralizedBlackScholesProcess newProcess = ImpliedVolatilityHelper.clone(process, volQuote, settings_);
 
             // engines are built-in for the time being
             IPricingEngine engine;

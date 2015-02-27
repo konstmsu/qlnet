@@ -79,7 +79,7 @@ namespace TestSuite
             Settings.setEvaluationDate(today);
             settlement = calendar.advance(today, settlementDays, TimeUnit.Days);
 
-            termStructure.linkTo(Utilities.flatRate(settlement, 0.05, new Actual365Fixed()));
+            termStructure.linkTo(Utilities.flatRate(settlement, 0.05, new Actual365Fixed(), _settings));
          }
       }
 
@@ -244,7 +244,7 @@ namespace TestSuite
                                          BusinessDayConvention.Following, false, dayCounter, vars.termStructure, settings);
          double oneYear = 0.05;
          double r = Math.Log(1.0 + oneYear);
-         vars.termStructure.linkTo(Utilities.flatRate(vars.today, r, dayCounter));
+         vars.termStructure.linkTo(Utilities.flatRate(vars.today, r, dayCounter, settings));
 
          List<double> coupons = new List<double>() { oneYear };
          List<CashFlow> fixedLeg = new FixedRateLeg(schedule, settings)
@@ -292,7 +292,7 @@ namespace TestSuite
          vars.today = new Date(17, Month.June, 2002);
          Settings.setEvaluationDate(vars.today);
          vars.settlement = vars.calendar.advance(vars.today, vars.settlementDays, TimeUnit.Days);
-         vars.termStructure.linkTo(Utilities.flatRate(vars.settlement, 0.05, new Actual365Fixed()));
+         vars.termStructure.linkTo(Utilities.flatRate(vars.settlement, 0.05, new Actual365Fixed(), settings));
 
          VanillaSwap swap = vars.makeSwap(10, 0.06, 0.001, settings);
 #if QL_USE_INDEXED_COUPON

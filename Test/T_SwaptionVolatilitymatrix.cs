@@ -121,7 +121,7 @@ namespace TestSuite
                                              conventions.dayCounter, settings));
                 termStructure=new RelinkableHandle<YieldTermStructure>(); 
                 termStructure.linkTo((new FlatForward(0, conventions.calendar,
-                                                      0.05, new Actual365Fixed())));
+                                                      0.05, new Actual365Fixed(), settings)));
             }
        
             // utilities

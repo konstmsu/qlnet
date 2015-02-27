@@ -156,18 +156,20 @@ namespace TestSuite
 
             //SavedSettings backup;
 
+            var settings = new SavedSettings();
+
             Settings.setEvaluationDate(new Date(26,4,2005));
 
             Handle<Quote> x0=new Handle<Quote> (new SimpleQuote(100.0));
-            Handle<YieldTermStructure> r =new Handle<YieldTermStructure> (Utilities.flatRate(0.05, new Actual360()));
-            Handle<YieldTermStructure> q=new Handle<YieldTermStructure> (Utilities.flatRate(0.02, new Actual360()));
-            Handle<BlackVolTermStructure> sigma = new Handle<BlackVolTermStructure>(Utilities.flatVol(0.20, new Actual360()));
+            Handle<YieldTermStructure> r =new Handle<YieldTermStructure> (Utilities.flatRate(0.05, new Actual360(), settings));
+            Handle<YieldTermStructure> q=new Handle<YieldTermStructure> (Utilities.flatRate(0.02, new Actual360(), settings));
+            Handle<BlackVolTermStructure> sigma = new Handle<BlackVolTermStructure>(Utilities.flatVol(0.20, new Actual360(), settings));
             // commented values must be used when Halley's correction is enabled
-            testSingle( new BlackScholesMertonProcess(x0,q,r,sigma),
+            testSingle( new BlackScholesMertonProcess(x0,q,r,sigma, settings),
                        "Black-Scholes", false, 26.13784357783, 467.2928561411);
                                             // 26.13784357783, 467.2928562519);
             //Error make the borwnian bridge test first
-            testSingle(new BlackScholesMertonProcess(x0,q,r,sigma),
+            testSingle(new BlackScholesMertonProcess(x0,q,r,sigma, settings),
                        "Black-Scholes", true, 60.28215549393, 202.6143139999);
                                            // 60.28215551021, 202.6143139437);
 
@@ -185,6 +187,7 @@ namespace TestSuite
         [TestMethod()]
         public void testMultiPathGenerator()
         {
+            var settings = new SavedSettings();
 
             //("Testing n-D path generation against cached values...");
 
@@ -193,9 +196,9 @@ namespace TestSuite
             Settings.setEvaluationDate(new Date(26,4,2005));
 
             Handle<Quote> x0=new Handle<Quote> (new SimpleQuote(100.0));
-            Handle<YieldTermStructure> r =new Handle<YieldTermStructure> (Utilities.flatRate(0.05, new Actual360()));
-            Handle<YieldTermStructure> q=new Handle<YieldTermStructure> (Utilities.flatRate(0.02, new Actual360()));
-            Handle<BlackVolTermStructure> sigma=new Handle<BlackVolTermStructure> (Utilities.flatVol(0.20, new Actual360()));
+            Handle<YieldTermStructure> r =new Handle<YieldTermStructure> (Utilities.flatRate(0.05, new Actual360(), settings));
+            Handle<YieldTermStructure> q=new Handle<YieldTermStructure> (Utilities.flatRate(0.02, new Actual360(), settings));
+            Handle<BlackVolTermStructure> sigma=new Handle<BlackVolTermStructure> (Utilities.flatVol(0.20, new Actual360(), settings));
 
             Matrix correlation=new Matrix(3,3);
             correlation[0,0] = 1.0; correlation[0,1] = 0.9; correlation[0,2] = 0.7;
@@ -205,9 +208,9 @@ namespace TestSuite
             List<StochasticProcess1D>  processes = new List<StochasticProcess1D>(3);
             StochasticProcess process;
 
-            processes.Add(new BlackScholesMertonProcess(x0,q,r,sigma));
-            processes.Add(new BlackScholesMertonProcess(x0,q,r,sigma));
-            processes.Add(new BlackScholesMertonProcess(x0,q,r,sigma));
+            processes.Add(new BlackScholesMertonProcess(x0,q,r,sigma, settings));
+            processes.Add(new BlackScholesMertonProcess(x0,q,r,sigma, settings));
+            processes.Add(new BlackScholesMertonProcess(x0,q,r,sigma, settings));
             process = new StochasticProcessArray(processes,correlation);
             // commented values must be used when Halley's correction is enabled
             double[] result1 = {

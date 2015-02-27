@@ -26,6 +26,7 @@ namespace EquityOption {
     class EquityOption {
         static void Main(string[] args) {
 
+            var settings = new SavedSettings();
             DateTime timer = DateTime.Now;
 
             // set up dates
@@ -75,16 +76,16 @@ namespace EquityOption {
             Handle<Quote> underlyingH = new Handle<Quote>(new SimpleQuote(underlying));
 
             // bootstrap the yield/dividend/vol curves
-            var flatTermStructure = new Handle<YieldTermStructure>(new FlatForward(settlementDate, riskFreeRate, dayCounter));
-            var flatDividendTS = new Handle<YieldTermStructure>(new FlatForward(settlementDate, dividendYield, dayCounter));
-            var flatVolTS = new Handle<BlackVolTermStructure>(new BlackConstantVol(settlementDate, calendar, volatility, dayCounter));
+            var flatTermStructure = new Handle<YieldTermStructure>(new FlatForward(settlementDate, riskFreeRate, dayCounter, settings));
+            var flatDividendTS = new Handle<YieldTermStructure>(new FlatForward(settlementDate, dividendYield, dayCounter, settings));
+            var flatVolTS = new Handle<BlackVolTermStructure>(new BlackConstantVol(settlementDate, calendar, volatility, dayCounter, settings));
             StrikedTypePayoff payoff = new PlainVanillaPayoff(type, strike);
-            var bsmProcess = new BlackScholesMertonProcess(underlyingH, flatDividendTS, flatTermStructure, flatVolTS);
+            var bsmProcess = new BlackScholesMertonProcess(underlyingH, flatDividendTS, flatTermStructure, flatVolTS, settings);
 
             // options
-            VanillaOption europeanOption = new VanillaOption(payoff, europeanExercise);
-            VanillaOption bermudanOption = new VanillaOption(payoff, bermudanExercise);
-            VanillaOption americanOption = new VanillaOption(payoff, americanExercise);
+            VanillaOption europeanOption = new VanillaOption(payoff, europeanExercise, settings);
+            VanillaOption bermudanOption = new VanillaOption(payoff, bermudanExercise, settings);
+            VanillaOption americanOption = new VanillaOption(payoff, americanExercise, settings);
 
 
             // Analytic formulas:
@@ -142,9 +143,9 @@ namespace EquityOption {
 
             // Binomial method: Jarrow-Rudd
             method = "Binomial Jarrow-Rudd";
-            europeanOption.setPricingEngine(new BinomialVanillaEngine<JarrowRudd>(bsmProcess,timeSteps));
-            bermudanOption.setPricingEngine(new BinomialVanillaEngine<JarrowRudd>(bsmProcess,timeSteps));
-            americanOption.setPricingEngine(new BinomialVanillaEngine<JarrowRudd>(bsmProcess,timeSteps));
+            europeanOption.setPricingEngine(new BinomialVanillaEngine<JarrowRudd>(bsmProcess,timeSteps, settings));
+            bermudanOption.setPricingEngine(new BinomialVanillaEngine<JarrowRudd>(bsmProcess,timeSteps, settings));
+            americanOption.setPricingEngine(new BinomialVanillaEngine<JarrowRudd>(bsmProcess,timeSteps, settings));
 
             Console.Write("{0,-" + widths[0] + "}", method);
             Console.Write("{0,-" + widths[1] + ":0.000000}", europeanOption.NPV());
@@ -153,9 +154,9 @@ namespace EquityOption {
 
 
             method = "Binomial Cox-Ross-Rubinstein";
-            europeanOption.setPricingEngine(new BinomialVanillaEngine<CoxRossRubinstein>(bsmProcess, timeSteps));
-            bermudanOption.setPricingEngine(new BinomialVanillaEngine<CoxRossRubinstein>(bsmProcess, timeSteps));
-            americanOption.setPricingEngine(new BinomialVanillaEngine<CoxRossRubinstein>(bsmProcess, timeSteps));
+            europeanOption.setPricingEngine(new BinomialVanillaEngine<CoxRossRubinstein>(bsmProcess, timeSteps, settings));
+            bermudanOption.setPricingEngine(new BinomialVanillaEngine<CoxRossRubinstein>(bsmProcess, timeSteps, settings));
+            americanOption.setPricingEngine(new BinomialVanillaEngine<CoxRossRubinstein>(bsmProcess, timeSteps, settings));
 
             Console.Write("{0,-" + widths[0] + "}", method);
             Console.Write("{0,-" + widths[1] + ":0.000000}", europeanOption.NPV());
@@ -164,9 +165,9 @@ namespace EquityOption {
 
             // Binomial method: Additive equiprobabilities
             method = "Additive equiprobabilities";
-            europeanOption.setPricingEngine(new BinomialVanillaEngine<AdditiveEQPBinomialTree>(bsmProcess, timeSteps));
-            bermudanOption.setPricingEngine(new BinomialVanillaEngine<AdditiveEQPBinomialTree>(bsmProcess, timeSteps));
-            americanOption.setPricingEngine(new BinomialVanillaEngine<AdditiveEQPBinomialTree>(bsmProcess, timeSteps));
+            europeanOption.setPricingEngine(new BinomialVanillaEngine<AdditiveEQPBinomialTree>(bsmProcess, timeSteps, settings));
+            bermudanOption.setPricingEngine(new BinomialVanillaEngine<AdditiveEQPBinomialTree>(bsmProcess, timeSteps, settings));
+            americanOption.setPricingEngine(new BinomialVanillaEngine<AdditiveEQPBinomialTree>(bsmProcess, timeSteps, settings));
 
             Console.Write("{0,-" + widths[0] + "}", method);
             Console.Write("{0,-" + widths[1] + ":0.000000}", europeanOption.NPV());
@@ -175,9 +176,9 @@ namespace EquityOption {
 
             // Binomial method: Binomial Trigeorgis
             method = "Binomial Trigeorgis";
-            europeanOption.setPricingEngine(new BinomialVanillaEngine<Trigeorgis>(bsmProcess,timeSteps));
-            bermudanOption.setPricingEngine(new BinomialVanillaEngine<Trigeorgis>(bsmProcess,timeSteps));
-            americanOption.setPricingEngine(new BinomialVanillaEngine<Trigeorgis>(bsmProcess,timeSteps));
+            europeanOption.setPricingEngine(new BinomialVanillaEngine<Trigeorgis>(bsmProcess,timeSteps, settings));
+            bermudanOption.setPricingEngine(new BinomialVanillaEngine<Trigeorgis>(bsmProcess,timeSteps, settings));
+            americanOption.setPricingEngine(new BinomialVanillaEngine<Trigeorgis>(bsmProcess,timeSteps, settings));
 
             Console.Write("{0,-" + widths[0] + "}", method);
             Console.Write("{0,-" + widths[1] + ":0.000000}", europeanOption.NPV());
@@ -186,9 +187,9 @@ namespace EquityOption {
 
             // Binomial method: Binomial Tian
             method = "Binomial Tian";
-            europeanOption.setPricingEngine(new BinomialVanillaEngine<Tian>(bsmProcess,timeSteps));
-            bermudanOption.setPricingEngine(new BinomialVanillaEngine<Tian>(bsmProcess,timeSteps));
-            americanOption.setPricingEngine(new BinomialVanillaEngine<Tian>(bsmProcess,timeSteps));
+            europeanOption.setPricingEngine(new BinomialVanillaEngine<Tian>(bsmProcess,timeSteps, settings));
+            bermudanOption.setPricingEngine(new BinomialVanillaEngine<Tian>(bsmProcess,timeSteps, settings));
+            americanOption.setPricingEngine(new BinomialVanillaEngine<Tian>(bsmProcess,timeSteps, settings));
 
             Console.Write("{0,-" + widths[0] + "}", method);
             Console.Write("{0,-" + widths[1] + ":0.000000}", europeanOption.NPV());
@@ -197,9 +198,9 @@ namespace EquityOption {
 
             // Binomial method: Binomial Leisen-Reimer
             method = "Binomial Leisen-Reimer";
-            europeanOption.setPricingEngine(new BinomialVanillaEngine<LeisenReimer>(bsmProcess,timeSteps));
-            bermudanOption.setPricingEngine(new BinomialVanillaEngine<LeisenReimer>(bsmProcess,timeSteps));
-            americanOption.setPricingEngine(new BinomialVanillaEngine<LeisenReimer>(bsmProcess,timeSteps));
+            europeanOption.setPricingEngine(new BinomialVanillaEngine<LeisenReimer>(bsmProcess,timeSteps, settings));
+            bermudanOption.setPricingEngine(new BinomialVanillaEngine<LeisenReimer>(bsmProcess,timeSteps, settings));
+            americanOption.setPricingEngine(new BinomialVanillaEngine<LeisenReimer>(bsmProcess,timeSteps, settings));
 
             Console.Write("{0,-" + widths[0] + "}", method);
             Console.Write("{0,-" + widths[1] + ":0.000000}", europeanOption.NPV());
@@ -208,9 +209,9 @@ namespace EquityOption {
 
             // Binomial method: Binomial Joshi
             method = "Binomial Joshi";
-            europeanOption.setPricingEngine(new BinomialVanillaEngine<Joshi4>(bsmProcess,timeSteps));
-            bermudanOption.setPricingEngine(new BinomialVanillaEngine<Joshi4>(bsmProcess,timeSteps));
-            americanOption.setPricingEngine(new BinomialVanillaEngine<Joshi4>(bsmProcess,timeSteps));
+            europeanOption.setPricingEngine(new BinomialVanillaEngine<Joshi4>(bsmProcess,timeSteps, settings));
+            bermudanOption.setPricingEngine(new BinomialVanillaEngine<Joshi4>(bsmProcess,timeSteps, settings));
+            americanOption.setPricingEngine(new BinomialVanillaEngine<Joshi4>(bsmProcess,timeSteps, settings));
 
             Console.Write("{0,-" + widths[0] + "}", method);
             Console.Write("{0,-" + widths[1] + ":0.000000}", europeanOption.NPV());

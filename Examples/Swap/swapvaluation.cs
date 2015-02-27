@@ -231,7 +231,7 @@ namespace Swap {
             depoSwapInstruments.Add(s10y);
             depoSwapInstruments.Add(s15y);
             YieldTermStructure depoSwapTermStructure = new PiecewiseYieldCurve<Discount,LogLinear>(
-                        settlementDate, depoSwapInstruments, termStructureDayCounter, new List<Handle<Quote>>(), new List<Date>(), tolerance);
+                        settlementDate, depoSwapInstruments, termStructureDayCounter, new List<Handle<Quote>>(), new List<Date>(), tolerance, settings);
 
 
             // A depo-futures-swap curve
@@ -251,7 +251,7 @@ namespace Swap {
             depoFutSwapInstruments.Add(s10y);
             depoFutSwapInstruments.Add(s15y);
             YieldTermStructure depoFutSwapTermStructure = new PiecewiseYieldCurve<Discount,LogLinear>(
-                    settlementDate, depoFutSwapInstruments, termStructureDayCounter, new List<Handle<Quote>>(), new List<Date>(), tolerance);
+                    settlementDate, depoFutSwapInstruments, termStructureDayCounter, new List<Handle<Quote>>(), new List<Date>(), tolerance, settings);
 
 
             // A depo-FRA-swap curve
@@ -268,7 +268,7 @@ namespace Swap {
             depoFRASwapInstruments.Add(s10y);
             depoFRASwapInstruments.Add(s15y);
             YieldTermStructure depoFRASwapTermStructure = new PiecewiseYieldCurve<Discount,LogLinear>(
-                    settlementDate, depoFRASwapInstruments, termStructureDayCounter, new List<Handle<Quote>>(), new List<Date>(), tolerance);
+                    settlementDate, depoFRASwapInstruments, termStructureDayCounter, new List<Handle<Quote>>(), new List<Date>(), tolerance, settings);
 
             // Term structures that will be used for pricing:
             // the one used for discounting cash flows

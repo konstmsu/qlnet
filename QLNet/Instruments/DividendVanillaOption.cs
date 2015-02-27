@@ -29,7 +29,7 @@ namespace QLNet {
         private List<Dividend> cashFlow_;
 
         public DividendVanillaOption(StrikedTypePayoff payoff, Exercise exercise, List<Date> dividendDates, List<double> dividends, SavedSettings settings)   
-            : base(payoff, exercise) {
+            : base(payoff, exercise, settings) {
             cashFlow_ = Utils.DividendVector(dividendDates, dividends, settings);
         }
         
@@ -45,7 +45,7 @@ namespace QLNet {
 
 					 SimpleQuote volQuote = new SimpleQuote();
 
-					 GeneralizedBlackScholesProcess newProcess = ImpliedVolatilityHelper.clone(process, volQuote);
+					 GeneralizedBlackScholesProcess newProcess = ImpliedVolatilityHelper.clone(process, volQuote, settings_);
 
 					 // engines are built-in for the time being
 					 IPricingEngine engine;

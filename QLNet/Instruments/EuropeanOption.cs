@@ -25,6 +25,6 @@ namespace QLNet {
     //! European option on a single asset
     /*! \ingroup instruments */
     public class EuropeanOption : VanillaOption {
-        public EuropeanOption(StrikedTypePayoff payoff, Exercise exercise) : base(payoff, exercise) {}
+        public EuropeanOption(StrikedTypePayoff payoff, Exercise exercise, SavedSettings settings) : base(payoff, exercise, settings) {}
     }
 }

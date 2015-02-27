@@ -34,19 +34,19 @@ namespace QLNet
                    constructor must manage their own reference date
                    by overriding the referenceDate() method.
       */
-      public SwaptionVolatilityStructure()
-         : base(BusinessDayConvention.Following, null) { }
+      public SwaptionVolatilityStructure(SavedSettings settings)
+         : base(BusinessDayConvention.Following, settings, null) { }
 
-      public SwaptionVolatilityStructure(BusinessDayConvention bdc, DayCounter dc = null)
-         : base(bdc, dc) {}
+      public SwaptionVolatilityStructure(BusinessDayConvention bdc, SavedSettings settings, DayCounter dc = null)
+         : base(bdc, settings, dc) {}
       
       //! initialize with a fixed reference date
-      public SwaptionVolatilityStructure(Date referenceDate,Calendar calendar,BusinessDayConvention bdc,DayCounter dc = null)
-         : base(referenceDate, calendar, bdc, dc) {}
+      public SwaptionVolatilityStructure(Date referenceDate, Calendar calendar, BusinessDayConvention bdc, SavedSettings settings, DayCounter dc = null)
+         : base(referenceDate, calendar, bdc, settings, dc) {}
       
       //! calculate the reference date based on the global evaluation date
-      public SwaptionVolatilityStructure(int settlementDays,Calendar cal,BusinessDayConvention bdc,DayCounter dc = null)
-         : base(settlementDays, cal, bdc, dc) {}
+      public SwaptionVolatilityStructure(int settlementDays, Calendar cal, BusinessDayConvention bdc, SavedSettings settings, DayCounter dc = null)
+         : base(settlementDays, cal, bdc, settings, dc) {}
       
       #endregion
 

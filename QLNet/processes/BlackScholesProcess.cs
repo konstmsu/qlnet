@@ -52,7 +52,7 @@ namespace QLNet {
                     // ok, the local vol is constant too.
                     localVolatility_.linkTo(new LocalConstantVol(constVol.referenceDate(),
                                              constVol.blackVol(0.0, x0_.link.value()),
-                                             constVol.dayCounter()));
+                                             constVol.dayCounter(), _settings));
                     updated_ = true;
                     return localVolatility_;
                 }
@@ -61,13 +61,13 @@ namespace QLNet {
                 BlackVarianceCurve volCurve = blackVolatility().link as BlackVarianceCurve;
                 if (volCurve != null) {
                     // ok, we can use the optimized algorithm
-                    localVolatility_.linkTo(new LocalVolCurve(new Handle<BlackVarianceCurve>(volCurve)));
+                    localVolatility_.linkTo(new LocalVolCurve(new Handle<BlackVarianceCurve>(volCurve), _settings));
                     updated_ = true;
                     return localVolatility_;
                 }
 
                 // ok, so it's strike-dependent. Never mind.
-                localVolatility_.linkTo(new LocalVolSurface(blackVolatility_, riskFreeRate_, dividendYield_, x0_.link.value()));
+                localVolatility_.linkTo(new LocalVolSurface(blackVolatility_, riskFreeRate_, dividendYield_, x0_.link.value(), _settings));
                 updated_ = true;
                 return localVolatility_;
 
@@ -77,14 +77,16 @@ namespace QLNet {
         }
 
         private bool updated_;
+        SavedSettings _settings;
 
 
-        public GeneralizedBlackScholesProcess(Handle<Quote> x0, Handle<YieldTermStructure> dividendTS,
-                            Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS)
-            : this(x0, dividendTS, riskFreeTS, blackVolTS, new EulerDiscretization()) { }
-        public GeneralizedBlackScholesProcess(Handle<Quote> x0, Handle<YieldTermStructure> dividendTS,
-                                              Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS,
-                                              IDiscretization1D disc)
+        public GeneralizedBlackScholesProcess(Handle<Quote> x0, Handle<YieldTermStructure> dividendTS, Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS, SavedSettings settings)
+            : this(x0, dividendTS, riskFreeTS, blackVolTS, new EulerDiscretization(), settings)
+        {
+            _settings = settings;
+        }
+
+        public GeneralizedBlackScholesProcess(Handle<Quote> x0, Handle<YieldTermStructure> dividendTS, Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS, IDiscretization1D disc, SavedSettings settings)
             : base(disc) {
             x0_ = x0;
             riskFreeRate_ = riskFreeTS;
@@ -96,7 +98,8 @@ namespace QLNet {
             riskFreeRate_.registerWith(update);
             dividendYield_.registerWith(update);
             blackVolatility_.registerWith(update);
-        }
+            _settings = settings;
+            }
 
         public override double x0() { return x0_.link.value(); }
 
@@ -151,18 +154,13 @@ namespace QLNet {
         \ingroup processes
     */
     public class BlackScholesProcess : GeneralizedBlackScholesProcess {
-        public BlackScholesProcess(Handle<Quote> x0,
-                                   Handle<YieldTermStructure> riskFreeTS,
-                                   Handle<BlackVolTermStructure> blackVolTS)
-            : this(x0, riskFreeTS, blackVolTS, new EulerDiscretization()) {}
-        public BlackScholesProcess(Handle<Quote> x0,
-                                   Handle<YieldTermStructure> riskFreeTS,
-                                   Handle<BlackVolTermStructure> blackVolTS,
-                                   IDiscretization1D d)
+        public BlackScholesProcess(Handle<Quote> x0, Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS, SavedSettings settings)
+            : this(x0, riskFreeTS, blackVolTS, new EulerDiscretization(), settings) {}
+        public BlackScholesProcess(Handle<Quote> x0, Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS, IDiscretization1D d, SavedSettings settings)
             : base(x0,
              // no dividend yield
-             new Handle<YieldTermStructure>(new FlatForward(0, new NullCalendar(), 0.0, new Actual365Fixed())),
-             riskFreeTS, blackVolTS, d) { }
+             new Handle<YieldTermStructure>(new FlatForward(0, new NullCalendar(), 0.0, new Actual365Fixed(), settings)),
+             riskFreeTS, blackVolTS, d, settings) { }
     }
 
 
@@ -177,17 +175,10 @@ namespace QLNet {
         \ingroup processes
     */
     public class BlackScholesMertonProcess : GeneralizedBlackScholesProcess {
-        public BlackScholesMertonProcess(Handle<Quote> x0,
-                                         Handle<YieldTermStructure> dividendTS,
-                                         Handle<YieldTermStructure> riskFreeTS,
-                                         Handle<BlackVolTermStructure> blackVolTS)
-            : this(x0, dividendTS, riskFreeTS, blackVolTS, new EulerDiscretization()) { }
-        public BlackScholesMertonProcess(Handle<Quote> x0,
-                                         Handle<YieldTermStructure> dividendTS,
-                                         Handle<YieldTermStructure> riskFreeTS,
-                                         Handle<BlackVolTermStructure> blackVolTS,
-                                         IDiscretization1D d)
-            : base(x0, dividendTS, riskFreeTS, blackVolTS, d) { }
+        public BlackScholesMertonProcess(Handle<Quote> x0, Handle<YieldTermStructure> dividendTS, Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS, SavedSettings settings)
+            : this(x0, dividendTS, riskFreeTS, blackVolTS, new EulerDiscretization(), settings) { }
+        public BlackScholesMertonProcess(Handle<Quote> x0, Handle<YieldTermStructure> dividendTS, Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS, IDiscretization1D d, SavedSettings settings)
+            : base(x0, dividendTS, riskFreeTS, blackVolTS, d, settings) { }
     }
 
 
@@ -201,15 +192,10 @@ namespace QLNet {
         \ingroup processes
     */
     public class BlackProcess : GeneralizedBlackScholesProcess {
-        public BlackProcess(Handle<Quote> x0,
-                            Handle<YieldTermStructure> riskFreeTS,
-                            Handle<BlackVolTermStructure> blackVolTS)
-            : this(x0, riskFreeTS, blackVolTS, new EulerDiscretization()) { }
-        public BlackProcess(Handle<Quote> x0,
-                            Handle<YieldTermStructure> riskFreeTS,
-                            Handle<BlackVolTermStructure> blackVolTS,
-                            IDiscretization1D d)
-            : base(x0, riskFreeTS, riskFreeTS, blackVolTS, d) { }
+        public BlackProcess(Handle<Quote> x0, Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS, SavedSettings settings)
+            : this(x0, riskFreeTS, blackVolTS, new EulerDiscretization(), settings) { }
+        public BlackProcess(Handle<Quote> x0, Handle<YieldTermStructure> riskFreeTS, Handle<BlackVolTermStructure> blackVolTS, IDiscretization1D d, SavedSettings settings)
+            : base(x0, riskFreeTS, riskFreeTS, blackVolTS, d, settings) { }
     }
 
 
@@ -224,14 +210,9 @@ namespace QLNet {
         \ingroup processes
     */
     public class GarmanKohlagenProcess : GeneralizedBlackScholesProcess {
-        public GarmanKohlagenProcess(Handle<Quote> x0,
-                                     Handle<YieldTermStructure> foreignRiskFreeTS,
-                                     Handle<YieldTermStructure> domesticRiskFreeTS,
-                                     Handle<BlackVolTermStructure> blackVolTS)
-            : this(x0, foreignRiskFreeTS, domesticRiskFreeTS, blackVolTS, new EulerDiscretization()) { }
-        public GarmanKohlagenProcess(Handle<Quote> x0, Handle<YieldTermStructure> foreignRiskFreeTS,
-                                     Handle<YieldTermStructure> domesticRiskFreeTS,
-                                     Handle<BlackVolTermStructure> blackVolTS, IDiscretization1D d)
-            : base(x0, foreignRiskFreeTS, foreignRiskFreeTS, blackVolTS, d) { }
+        public GarmanKohlagenProcess(Handle<Quote> x0, Handle<YieldTermStructure> foreignRiskFreeTS, Handle<YieldTermStructure> domesticRiskFreeTS, Handle<BlackVolTermStructure> blackVolTS, SavedSettings settings)
+            : this(x0, foreignRiskFreeTS, domesticRiskFreeTS, blackVolTS, new EulerDiscretization(), settings) { }
+        public GarmanKohlagenProcess(Handle<Quote> x0, Handle<YieldTermStructure> foreignRiskFreeTS, Handle<YieldTermStructure> domesticRiskFreeTS, Handle<BlackVolTermStructure> blackVolTS, IDiscretization1D d, SavedSettings settings)
+            : base(x0, foreignRiskFreeTS, foreignRiskFreeTS, blackVolTS, d, settings) { }
     }
 }

@@ -107,7 +107,7 @@ namespace QLNet {
         {
         };
 
-		public BasketOption(BasketPayoff payoff, Exercise exercise) : base(payoff, exercise)
+		public BasketOption(BasketPayoff payoff, Exercise exercise, SavedSettings settings) : base(payoff, exercise, settings)
 		{
 		}
 	}

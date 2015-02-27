@@ -35,8 +35,8 @@ namespace QLNet
          See the TermStructure documentation for issues regarding
          constructors.
       */
-      public CallableBondVolatilityStructure()
-         : base(new DayCounter())
+      public CallableBondVolatilityStructure(SavedSettings settings)
+         : base(settings, new DayCounter())
       {
          bdc_ = BusinessDayConvention.Following;
       }
@@ -46,22 +46,20 @@ namespace QLNet
                   constructor must manage their own reference date
                   by overriding the referenceDate() method.
       */
-      public CallableBondVolatilityStructure(DayCounter dc = null, BusinessDayConvention bdc = BusinessDayConvention.Following)
-         : base(dc == null ? new DayCounter() : dc)
+      public CallableBondVolatilityStructure(SavedSettings settings, DayCounter dc = null, BusinessDayConvention bdc = BusinessDayConvention.Following)
+         : base(settings, dc == null ? new DayCounter() : dc)
       {
          bdc_ = bdc;
       }
       //! initialize with a fixed reference date
-      public CallableBondVolatilityStructure( Date referenceDate, Calendar calendar = null, DayCounter dc = null,
-                                              BusinessDayConvention bdc = BusinessDayConvention.Following)
-         : base(referenceDate, calendar == null ? new Calendar() : calendar, dc == null ? new DayCounter() : dc)
+      public CallableBondVolatilityStructure(Date referenceDate, SavedSettings settings, Calendar calendar = null, DayCounter dc = null, BusinessDayConvention bdc = BusinessDayConvention.Following)
+         : base(referenceDate, settings, calendar == null ? new Calendar() : calendar, dc == null ? new DayCounter() : dc)
       {
          bdc_ = bdc;
       }
       //! calculate the reference date based on the global evaluation date
-      public CallableBondVolatilityStructure(int settlementDays, Calendar calendar, DayCounter dc = null,
-                                              BusinessDayConvention bdc = BusinessDayConvention.Following)
-         : base(settlementDays, calendar, dc == null ? new DayCounter() : dc)
+      public CallableBondVolatilityStructure(int settlementDays, Calendar calendar, SavedSettings settings, DayCounter dc = null, BusinessDayConvention bdc = BusinessDayConvention.Following)
+         : base(settlementDays, calendar, settings, dc == null ? new DayCounter() : dc)
       {
          bdc_ = bdc;
       }

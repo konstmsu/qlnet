@@ -81,7 +81,7 @@ namespace QLNet {
 				}
 			}
 		}
-		public BarrierOption(Barrier.Type barrierType, double barrier, double rebate, StrikedTypePayoff payoff, Exercise exercise) : base(payoff, exercise)
+		public BarrierOption(Barrier.Type barrierType, double barrier, double rebate, StrikedTypePayoff payoff, Exercise exercise, SavedSettings settings) : base(payoff, exercise, settings)
 		{
 			barrierType_ = barrierType;
 			barrier_ = barrier;
@@ -128,7 +128,7 @@ namespace QLNet {
 	
 			SimpleQuote volQuote = new SimpleQuote();
 	
-			GeneralizedBlackScholesProcess newProcess = ImpliedVolatilityHelper.clone(process, volQuote);
+			GeneralizedBlackScholesProcess newProcess = ImpliedVolatilityHelper.clone(process, volQuote, settings_);
 	
 			// engines are built-in for the time being
 			IPricingEngine engine = null;

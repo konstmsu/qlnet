@@ -76,7 +76,7 @@ namespace BermudanSwaption
             Quote flatRate = new SimpleQuote(0.04875825);
             Handle<YieldTermStructure> rhTermStructure = new Handle<YieldTermStructure>(
                           new FlatForward(settlementDate, new Handle<Quote>(flatRate),
-                                          new Actual365Fixed()));
+                                          new Actual365Fixed(), settings));
 
             // Define the ATM/OTM/ITM swaps
             Frequency fixedLegFrequency = Frequency.Annual;

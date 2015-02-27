@@ -164,7 +164,7 @@ namespace TestSuite
                   Date maturity = vars.calendar.advance(issue, lengths[j], TimeUnit.Years);
 
                   SimpleQuote rate = new SimpleQuote(0.0);
-                  var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(vars.today, rate, bondDayCount));
+                  var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(vars.today, rate, bondDayCount, settings));
 
                   Schedule sch = new Schedule(dated, maturity, new Period(frequencies[l]), vars.calendar,
                                               accrualConvention, accrualConvention, DateGeneration.Rule.Backward, false, settings);
@@ -230,7 +230,7 @@ namespace TestSuite
          DayCounter bondDayCount = new ActualActual(ActualActual.Convention.ISMA);
          int settlementDays = 1;
 
-         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(today, new SimpleQuote(0.03), new Actual360()));
+         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(today, new SimpleQuote(0.03), new Actual360(), settings));
 
          // actual market values from the evaluation date
          Frequency freq = Frequency.Semiannual;
@@ -414,6 +414,7 @@ namespace TestSuite
       {
          Console.WriteLine("Testing zero-coupon bond prices against cached values...");
 
+         SavedSettings settings = new SavedSettings();
          CommonVars vars = new CommonVars();
 
          Date today = new Date(22, Month.November, 2004);
@@ -421,12 +422,11 @@ namespace TestSuite
 
          int settlementDays = 1;
 
-         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.03, new Actual360()));
+         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.03, new Actual360(), settings));
 
          double tolerance = 1.0e-6;
 
          // plain
-          SavedSettings settings=new SavedSettings();
           ZeroCouponBond bond1 = new ZeroCouponBond(settlementDays, new UnitedStates(UnitedStates.Market.GovernmentBond),
                               vars.faceAmount, new Date(30, Month.November, 2008), BusinessDayConvention.ModifiedFollowing,
                               100.0, new Date(30, Month.November, 2004), settings);
@@ -492,7 +492,7 @@ namespace TestSuite
 
          int settlementDays = 1;
 
-         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.03, new Actual360()));
+         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.03, new Actual360(), settings));
 
          double tolerance = 1.0e-6;
 
@@ -580,8 +580,8 @@ namespace TestSuite
 
          int settlementDays = 1;
 
-         var riskFreeRate = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.025, new Actual360()));
-         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.03, new Actual360()));
+         var riskFreeRate = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.025, new Actual360(), settings));
+         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(today, 0.03, new Actual360(), settings));
 
          IborIndex index = new USDLibor(new Period(6, TimeUnit.Months), riskFreeRate, settings);
          int fixingDays = 1;
@@ -782,7 +782,8 @@ namespace TestSuite
       [TestMethod()]
       public void testAmortizingFixedBond()
       {
-         Date startDate = new Date(2, 1, 2007);
+          SavedSettings settings = new SavedSettings();
+          Date startDate = new Date(2, 1, 2007);
          Settings.setEvaluationDate(startDate);
 
          Period bondLength = new Period(12, TimeUnit.Months);
@@ -790,9 +791,8 @@ namespace TestSuite
          Frequency payFrequency = Frequency.Monthly;
          double amount = 400000000;
          double rate = 0.06;
-         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(startDate, new SimpleQuote(rate), new Thirty360()));
+         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(startDate, new SimpleQuote(rate), new Thirty360(), settings));
 
-          SavedSettings settings=new SavedSettings();
           AmortizingFixedRateBond bond = BondFactory.makeAmortizingFixedBond(startDate, bondLength, dCounter, payFrequency, amount, rate, settings);
          IPricingEngine bondEngine = new DiscountingBondEngine(discountCurve, settings);
          bond.setPricingEngine(bondEngine);
@@ -831,7 +831,8 @@ namespace TestSuite
          // Second Edition - WILEY ISBN 978-1-118-00469-2
          // pag 58,61,63
 
-         #region Cached Values
+          SavedSettings settings = new SavedSettings();
+          #region Cached Values
          double[] OutstandingBalance = {400000000,399396651,398724866,397984841,397176808,396301034,395357823,394347512,393270474,
                                         392127117,390917882,389643247,388303720,386899847,385432204,383901402,382308084,380652925,
                                         378936631,377159941,375323622,373428474,371475324,369465030,367398478,365276580,363100276,
@@ -967,11 +968,10 @@ namespace TestSuite
          double PassThroughRate = 0.055;
          PSACurve psa100 = new PSACurve(startDate);
 
-         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(startDate, new SimpleQuote(WACrate), new Thirty360()));
+         var discountCurve = new Handle<YieldTermStructure>(Utilities.flatRate(startDate, new SimpleQuote(WACrate), new Thirty360(), settings));
 
          // 400 Million Pass-Through with a 5.5% Pass-through Rate, a WAC of 6.0%, and a WAM of 358 Months,
          // Assuming 100% PSA
-          SavedSettings settings=new SavedSettings();
           MBSFixedRateBond bond = BondFactory.makeMBSFixedBond(startDate,
                                                                bondLength,
                                                                originalLenght,

@@ -52,7 +52,7 @@ namespace QLNet {
     /// base class for all BBA %EUR %LIBOR indexes but the O/N
     ///    ! Euro LIBOR fixed by BBA.
     ///
-    ///        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+    ///        See <href a="http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414" />.
     ///
     ///        \warning This is the rate fixed in London by BBA. Use Euribor if
     ///                 you're interested in the fixing by the ECB.

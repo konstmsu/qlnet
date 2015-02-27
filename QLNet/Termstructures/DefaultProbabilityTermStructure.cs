@@ -33,10 +33,11 @@ namespace QLNet
    {
       #region Constructors
 
-		public DefaultProbabilityTermStructure() {}
+		public DefaultProbabilityTermStructure(SavedSettings settings) : base(settings)
+		{}
 
-      public DefaultProbabilityTermStructure(DayCounter dc = null,List<Handle<Quote> > jumps = null,List<Date> jumpDates = null)
-         :base(dc)
+      public DefaultProbabilityTermStructure(SavedSettings settings, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         :base(settings, dc)
       {
          if ( jumps != null )
             jumps_ = jumps;
@@ -55,9 +56,8 @@ namespace QLNet
             jumps_[i].registerWith(update);
       }
            
-      public DefaultProbabilityTermStructure(Date referenceDate,Calendar cal = null,DayCounter dc = null,
-            List<Handle<Quote> > jumps = null,List<Date> jumpDates = null)
-         :base(referenceDate, cal, dc)
+      public DefaultProbabilityTermStructure(Date referenceDate, SavedSettings settings, Calendar cal = null, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         :base(referenceDate, settings, cal, dc)
       {
          if ( jumps != null )
             jumps_ = jumps;
@@ -76,9 +76,8 @@ namespace QLNet
             jumps_[i].registerWith(update);
       }
         
-      public DefaultProbabilityTermStructure(int settlementDays,Calendar cal,DayCounter dc = null,
-            List<Handle<Quote> > jumps = null,List<Date> jumpDates = null)
-          : base(settlementDays, cal, dc)
+      public DefaultProbabilityTermStructure(int settlementDays, Calendar cal, SavedSettings settings, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+          : base(settlementDays, cal, settings, dc)
       {
          if ( jumps != null )
             jumps_ = jumps;

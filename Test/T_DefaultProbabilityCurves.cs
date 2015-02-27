@@ -29,7 +29,7 @@ namespace TestSuite
    public class T_DefaultProbabilityCurves
    {
       [TestMethod()]
-      public void testDefaultProbability() 
+      public void testDefaultProbability(SavedSettings settings) 
       {
          // Testing default-probability structure...
 
@@ -44,7 +44,7 @@ namespace TestSuite
          Date startDate = today;
          Date endDate = startDate;
 
-         FlatHazardRate flatHazardRate = new FlatHazardRate(startDate, hazardRateQuote, dayCounter);
+         FlatHazardRate flatHazardRate = new FlatHazardRate(startDate, hazardRateQuote, dayCounter, settings);
 
          for(int i=0; i<n; i++)
          {
@@ -88,7 +88,7 @@ namespace TestSuite
       }
 
       [TestMethod()]
-      public void testFlatHazardRate() 
+      public void testFlatHazardRate(SavedSettings settings) 
       {
 
          // Testing flat hazard rate...
@@ -104,7 +104,7 @@ namespace TestSuite
          Date startDate = today;
          Date endDate = startDate;
 
-         FlatHazardRate flatHazardRate = new FlatHazardRate(today, hazardRateQuote, dayCounter);
+         FlatHazardRate flatHazardRate = new FlatHazardRate(today, hazardRateQuote, dayCounter, settings);
 
          for(int i=0; i<n; i++)
          {

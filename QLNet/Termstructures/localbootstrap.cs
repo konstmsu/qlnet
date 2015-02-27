@@ -34,7 +34,7 @@ namespace QLNet
 
     // penalty function class for solving using a multi-dimensional solver
 	public class PenaltyFunction<T, U> : CostFunction
-		where T : Curve<U>, new()
+		where T : Curve<U>
 		where U : TermStructure
 	{
         //typedef typename Curve::traits_type Traits;
@@ -95,7 +95,7 @@ namespace QLNet
         good for the convex-monotone spline method.
     */
     public class LocalBootstrap <T,U>:IBootStrap<T>
-        where T : Curve<U>, new()
+        where T : Curve<U>
         where U : TermStructure
 	 {
         //typedef typename Curve::traits_type Traits;

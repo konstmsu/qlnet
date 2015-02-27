@@ -36,21 +36,19 @@ namespace QLNet
                    constructor must manage their own reference date
                    by overriding the referenceDate() method.
       */
-      public LocalVolTermStructure()
-         : base(BusinessDayConvention.Following, null) { }
+      public LocalVolTermStructure(SavedSettings settings)
+         : base(BusinessDayConvention.Following, settings, null) { }
 
-      public LocalVolTermStructure(BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
-         :base(bdc, dc) {}
+      public LocalVolTermStructure(SavedSettings settings, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(bdc, settings, dc) {}
       
       //! initialize with a fixed reference date
-      public LocalVolTermStructure(Date referenceDate,Calendar cal = null,
-         BusinessDayConvention bdc = BusinessDayConvention.Following,DayCounter dc = null)
-         :base(referenceDate, cal, bdc, dc) {}
+      public LocalVolTermStructure(Date referenceDate, SavedSettings settings, Calendar cal = null, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(referenceDate, cal, bdc, settings, dc) {}
       
       //! calculate the reference date based on the global evaluation date
-      public LocalVolTermStructure(int settlementDays,Calendar cal,BusinessDayConvention bdc = BusinessDayConvention.Following,
-         DayCounter dc = null)
-         :base(settlementDays, cal, bdc, dc) {}
+      public LocalVolTermStructure(int settlementDays, Calendar cal, SavedSettings settings, BusinessDayConvention bdc = BusinessDayConvention.Following, DayCounter dc = null)
+         :base(settlementDays, cal, bdc, settings, dc) {}
       
       #endregion
 

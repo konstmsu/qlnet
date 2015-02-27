@@ -44,10 +44,10 @@ namespace TestSuite
    public class T_Inflation
    {
 
-      private YieldTermStructure nominalTermStructure() 
+      private YieldTermStructure nominalTermStructure(SavedSettings settings) 
       {
         Date evaluationDate = new Date(13, Month.August, 2007);
-        return new FlatForward(evaluationDate, 0.05, new Actual360());
+        return new FlatForward(evaluationDate, 0.05, new Actual360(), settings);
       }
 
       private List<BootstrapHelper<ZeroInflationTermStructure>> makeHelpers(Datum[] iiData, int N, ZeroInflationIndex ii, Period observationLag, Calendar calendar, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
@@ -210,7 +210,7 @@ namespace TestSuite
 
 
 			ZeroInflationIndex ii = iiUKRPI as ZeroInflationIndex;
-			YieldTermStructure nominalTS = nominalTermStructure();
+			YieldTermStructure nominalTS = nominalTermStructure(backup);
 
 
 			// now build the zero inflation curve
@@ -244,7 +244,7 @@ namespace TestSuite
 			PiecewiseZeroInflationCurve<Linear> pZITS = new PiecewiseZeroInflationCurve<Linear>(
 								evaluationDate, calendar, dc, observationLag,
 								frequency, ii.interpolated(), baseZeroRate,
-								new Handle<YieldTermStructure>( nominalTS ), helpers );
+								new Handle<YieldTermStructure>( nominalTS ), helpers, backup);
 			pZITS.recalculate();
 
 			// first check that the zero rates on the curve match the data
@@ -523,7 +523,7 @@ namespace TestSuite
 					new PiecewiseZeroInflationCurve<Linear>(
 					evaluationDate, calendar, dc, observationLagyes,
 					frequency, iiyes.interpolated(), baseZeroRate,
-					new Handle<YieldTermStructure>( nominalTS ), helpersyes );
+					new Handle<YieldTermStructure>( nominalTS ), helpersyes, backup);
 			pZITSyes.recalculate();
 
 			// first check that the zero rates on the curve match the data
@@ -605,7 +605,7 @@ namespace TestSuite
 									);
 
 			// remove circular refernce
-			hz.linkTo( new ZeroInflationTermStructure() );
+			hz.linkTo( new ZeroInflationTermStructure(backup) );
 
 
 		}
@@ -810,7 +810,7 @@ namespace TestSuite
 				iir.addFixing(rpiSchedule[i], fixData[i]);
 			}
 
-			YieldTermStructure nominalTS = nominalTermStructure();
+			YieldTermStructure nominalTS = nominalTermStructure(backup);
 
 			// now build the YoY inflation curve
 			Datum[] yyData = {
@@ -842,7 +842,7 @@ namespace TestSuite
 			PiecewiseYoYInflationCurve<Linear> pYYTS = new PiecewiseYoYInflationCurve<Linear>(
 							evaluationDate, calendar, dc, observationLag,
 							iir.frequency(),iir.interpolated(), baseYYRate,
-							new Handle<YieldTermStructure>(nominalTS), helpers);
+							new Handle<YieldTermStructure>(nominalTS), helpers, backup);
 			pYYTS.recalculate();
 
 			// validation
@@ -926,7 +926,7 @@ namespace TestSuite
 											);
 			}
 			// remove circular refernce
-			hy.linkTo( new YoYInflationTermStructure());
+			hy.linkTo( new YoYInflationTermStructure(backup));
 	}
 
 

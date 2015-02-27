@@ -165,7 +165,7 @@ namespace TestSuite
 			Calendar calendar = new TARGET();
 
 			Handle<YieldTermStructure> rhTermStructure = new Handle<YieldTermStructure>(
-				Utilities.flatRate(settlementDate, 0.04875825, new Actual365Fixed()));
+				Utilities.flatRate(settlementDate, 0.04875825, new Actual365Fixed(), settings));
 
 			double volatility = 0.10;
 			Handle<OptionletVolatilityStructure> vol= new Handle<OptionletVolatilityStructure>(

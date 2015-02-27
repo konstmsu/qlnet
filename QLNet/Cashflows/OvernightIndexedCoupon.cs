@@ -27,8 +27,14 @@ namespace QLNet
    public class OvernightIndexedCouponPricer : FloatingRateCouponPricer
    {
       private OvernightIndexedCoupon coupon_;
+       readonly SavedSettings settings_;
 
-      public override void initialize(FloatingRateCoupon coupon)
+       public OvernightIndexedCouponPricer(SavedSettings settings)
+       {
+           settings_ = settings;
+       }
+
+       public override void initialize(FloatingRateCoupon coupon)
       {
          coupon_ = coupon as OvernightIndexedCoupon;
          if (coupon_ == null)
@@ -48,7 +54,7 @@ namespace QLNet
          double compoundFactor = 1.0;
 
          // already fixed part
-         Date today = Settings.evaluationDate();
+         Date today = settings_.evaluationDate();
          while (fixingDates[i]<today && i<n) 
          {
             // rate must have been fixed
@@ -164,7 +170,7 @@ namespace QLNet
          for (int i=0; i<n_; ++i)
             dt_.Add(dc.yearFraction(valueDates_[i], valueDates_[i+1]));
 
-         setPricer(new OvernightIndexedCouponPricer());
+         setPricer(new OvernightIndexedCouponPricer(settings));
    
       }
 

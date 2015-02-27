@@ -40,16 +40,14 @@ namespace QLNet
    {
       #region Constructors
 
-      public HazardRateStructure(DayCounter dc = null,List<Handle<Quote> > jumps = null,List<Date> jumpDates = null)
-         : base(dc, jumps, jumpDates) {}
+      public HazardRateStructure(SavedSettings settings, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         : base(settings, dc, jumps, jumpDates) {}
          
-      public HazardRateStructure(Date referenceDate,Calendar cal = null,DayCounter dc = null,
-         List<Handle<Quote> > jumps = null,List<Date> jumpDates = null)
-         : base(referenceDate, cal, dc, jumps, jumpDates) { }
+      public HazardRateStructure(Date referenceDate, SavedSettings settings, Calendar cal = null, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         : base(referenceDate, settings, cal, dc, jumps, jumpDates) { }
       
-      public HazardRateStructure(int settlementDays,Calendar cal,DayCounter dc = null,
-         List<Handle<Quote> > jumps = null,List<Date> jumpDates = null)
-         : base(settlementDays, cal, dc, jumps, jumpDates) { }
+      public HazardRateStructure(int settlementDays, Calendar cal, SavedSettings settings, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         : base(settlementDays, cal, settings, dc, jumps, jumpDates) { }
 
       #endregion
 

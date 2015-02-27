@@ -46,13 +46,13 @@ namespace QLNet {
         Interpolation varianceCurve_;
 
         // required for Handle
-        public BlackVarianceCurve() { }
+        public BlackVarianceCurve(SavedSettings settings) : base(settings)
+        { }
 
         //public BlackVarianceCurve(Date referenceDate, List<Date> dates, List<double> blackVolCurve, DayCounter dayCounter,
         //                          bool forceMonotoneVariance = true);
-        public BlackVarianceCurve(Date referenceDate, List<Date> dates, List<double> blackVolCurve, DayCounter dayCounter,
-                                  bool forceMonotoneVariance)
-            : base(referenceDate) {
+        public BlackVarianceCurve(Date referenceDate, List<Date> dates, List<double> blackVolCurve, DayCounter dayCounter, bool forceMonotoneVariance, SavedSettings settings)
+            : base(referenceDate, settings) {
 
             dayCounter_ = dayCounter;
             maxDate_ = dates.Last();

@@ -202,7 +202,7 @@ namespace TestSuite
             //today = calendar.adjust(Date::todaysDate());
             Settings.setEvaluationDate(today);
             settlement = calendar.advance(today,new Period(settlementDays,TimeUnit.Days),BusinessDayConvention.Following);
-            eoniaTermStructure.linkTo(Utilities.flatRate(settlement, 0.05,new Actual365Fixed()));
+            eoniaTermStructure.linkTo(Utilities.flatRate(settlement, 0.05,new Actual365Fixed(), settings_));
          }
       }
 
@@ -285,7 +285,7 @@ namespace TestSuite
          Settings.setEvaluationDate(vars.today);
          vars.settlement = vars.calendar.advance(vars.today,vars.settlementDays,TimeUnit.Days);
          double flat = 0.05;
-         vars.eoniaTermStructure.linkTo(Utilities.flatRate(vars.settlement,flat,new Actual360()));
+         vars.eoniaTermStructure.linkTo(Utilities.flatRate(vars.settlement,flat,new Actual360(), settings));
          double fixedRate = Math.Exp(flat) - 1;
          OvernightIndexedSwap swap = vars.makeSwap(new Period(1,TimeUnit.Years), fixedRate, 0.0, settings);
          double cachedNPV   = 0.001730450147;
@@ -388,11 +388,11 @@ namespace TestSuite
 
          PiecewiseYieldCurve<Discount, LogLinear> eoniaTS = new PiecewiseYieldCurve<Discount, LogLinear>(vars.today, 
                                                                   eoniaHelpers, 
-                                                                  new Actual365Fixed());
+                                                                  new Actual365Fixed(), settings);
 
          PiecewiseYieldCurve<Discount, LogLinear> swapTS = new PiecewiseYieldCurve<Discount, LogLinear>(vars.today, 
                                                                  swap3mHelpers, 
-                                                                 new Actual365Fixed());
+                                                                 new Actual365Fixed(), settings);
 
          vars.eoniaTermStructure.linkTo(eoniaTS);
 

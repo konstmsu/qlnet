@@ -28,7 +28,7 @@ namespace QLNet
    public class CallableBondConstantVolatility : CallableBondVolatilityStructure
    {
       public CallableBondConstantVolatility(Date referenceDate, double volatility, DayCounter dayCounter, SavedSettings settings)
-         :base(referenceDate)
+         :base(referenceDate, settings)
       {
          volatility_ = new Handle<Quote>(new SimpleQuote(volatility));
          dayCounter_ = dayCounter;
@@ -37,7 +37,7 @@ namespace QLNet
       }
 
       public CallableBondConstantVolatility(Date referenceDate, Handle<Quote> volatility, DayCounter dayCounter, SavedSettings settings)
-         :base(referenceDate)
+         :base(referenceDate, settings)
       {
          volatility_ = volatility;
          dayCounter_ = dayCounter;
@@ -47,7 +47,7 @@ namespace QLNet
       }
 
       public CallableBondConstantVolatility(int settlementDays, Calendar calendar, double volatility, DayCounter dayCounter, SavedSettings settings)
-         :base(settlementDays, calendar)
+         :base(settlementDays, calendar, settings)
       {
          volatility_ = new Handle<Quote>(new SimpleQuote(volatility));
          dayCounter_ = dayCounter;
@@ -56,7 +56,7 @@ namespace QLNet
       }
 
       public CallableBondConstantVolatility(int settlementDays, Calendar calendar, Handle<Quote> volatility, DayCounter dayCounter, SavedSettings settings)
-          :base(settlementDays, calendar)
+          :base(settlementDays, calendar, settings)
       {
          volatility_ = volatility;
          dayCounter_ = dayCounter;

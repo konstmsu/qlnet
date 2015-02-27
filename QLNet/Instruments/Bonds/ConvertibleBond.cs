@@ -89,19 +89,8 @@ namespace QLNet
          }
 
         //public class engine;
-        public option( ConvertibleBond bond,
-                             Exercise exercise,
-                             double conversionRatio,
-                             DividendSchedule dividends,
-                             CallabilitySchedule callability,
-                             Handle<Quote> creditSpread,
-                             List<CashFlow> cashflows,
-                             DayCounter dayCounter,
-                             Schedule schedule,
-                             Date issueDate,
-                             int settlementDays,
-                             double redemption)
-           :base(new PlainVanillaPayoff(Option.Type.Call, (bond.notionals()[0])/100.0 *redemption/conversionRatio), exercise)
+        public option(ConvertibleBond bond, Exercise exercise, double conversionRatio, DividendSchedule dividends, CallabilitySchedule callability, Handle<Quote> creditSpread, List<CashFlow> cashflows, DayCounter dayCounter, Schedule schedule, Date issueDate, int settlementDays, double redemption, SavedSettings settings)
+           :base(new PlainVanillaPayoff(Option.Type.Call, (bond.notionals()[0])/100.0 *redemption/conversionRatio), exercise, settings)
         {
             bond_ = bond; 
             conversionRatio_ = conversionRatio;
@@ -258,7 +247,7 @@ namespace QLNet
         setSingleRedemption(100.0, redemption, maturityDate_);
 
         option_ = new option(this, exercise, conversionRatio, dividends, callability, creditSpread, cashflows_, dayCounter, schedule,
-                             issueDate, settlementDays, redemption);
+                             issueDate, settlementDays, redemption, settings);
     }
     };  
 
@@ -285,7 +274,7 @@ namespace QLNet
         Utils.QL_REQUIRE( redemptions_.Count == 1, () => "multiple redemptions created" );
 
         option_ = new option(this, exercise, conversionRatio, dividends, callability, creditSpread, cashflows_, dayCounter, schedule,
-                             issueDate, settlementDays, redemption);
+                             issueDate, settlementDays, redemption, settings);
     }
     };
 
@@ -314,7 +303,7 @@ namespace QLNet
         Utils.QL_REQUIRE( redemptions_.Count == 1, () => "multiple redemptions created" );
 
         option_ = new option(this, exercise, conversionRatio, dividends, callability, creditSpread, cashflows_, dayCounter, schedule,
-                             issueDate, settlementDays, redemption);
+                             issueDate, settlementDays, redemption, settings);
     
       }
     }

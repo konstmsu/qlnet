@@ -52,32 +52,35 @@ namespace QLNet
                    by overriding the referenceDate() method.
         */
         
-      public TermStructure(DayCounter dc = null)
+      public TermStructure(SavedSettings settings, DayCounter dc = null)
       {
          moving_ = false;
          updated_ = true;
          settlementDays_ = null;
-         dayCounter_ = dc;
+          settings_ = settings;
+          dayCounter_ = dc;
       }
         
       //! initialize with a fixed reference date
-      public TermStructure(Date referenceDate,Calendar calendar = null,DayCounter dc = null)
+      public TermStructure(Date referenceDate, SavedSettings settings, Calendar calendar = null, DayCounter dc = null)
       {
          moving_ = false;
          updated_ = true;
          calendar_ = calendar;
          referenceDate_ = referenceDate;
-         settlementDays_= null;
+          settings_ = settings;
+          settlementDays_= null;
          dayCounter_ = dc;
       }
         
       //! calculate the reference date based on the global evaluation date
-      public TermStructure(int settlementDays, Calendar cal, DayCounter dc = null)
+      public TermStructure(int settlementDays, Calendar cal, SavedSettings settings, DayCounter dc = null)
       {
          moving_ = true;
          updated_ = false;
          calendar_ = cal;
-         settlementDays_ = settlementDays;
+          settings_ = settings;
+          settlementDays_ = settlementDays;
          dayCounter_ = dc;
 
          Settings.registerWith(update);
@@ -101,7 +104,7 @@ namespace QLNet
       {
          if (!updated_) 
          {
-            Date today = Settings.evaluationDate();
+            Date today = settings_.evaluationDate();
             referenceDate_ = calendar().advance(today, settlementDays(), TimeUnit.Days);
             updated_ = true;
          }
@@ -166,6 +169,7 @@ namespace QLNet
       private  Date referenceDate_;
       private  int? settlementDays_;
       private  DayCounter dayCounter_;
+       readonly SavedSettings settings_;
    }
 
 }

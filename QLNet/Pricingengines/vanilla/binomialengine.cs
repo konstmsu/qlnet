@@ -37,14 +37,16 @@ namespace QLNet {
     public class BinomialVanillaEngine<T> : VanillaOption.Engine where T : ITreeFactory<T>, ITree, new() {
         private GeneralizedBlackScholesProcess process_;
         private int timeSteps_;
+        SavedSettings _settings;
 
-        public BinomialVanillaEngine(GeneralizedBlackScholesProcess process, int timeSteps) {
+        public BinomialVanillaEngine(GeneralizedBlackScholesProcess process, int timeSteps, SavedSettings settings) {
             process_ = process;
             timeSteps_ = timeSteps;
 
             if (!(timeSteps>0)) throw new ApplicationException("timeSteps must be positive, " + timeSteps + " not allowed");
 
             process_.registerWith(update);
+            _settings = settings;
         }
 
         public override void calculate() {
@@ -63,9 +65,9 @@ namespace QLNet {
             Date referenceDate = process_.riskFreeRate().link.referenceDate();
 
             // binomial trees with constant coefficient
-            var flatRiskFree = new Handle<YieldTermStructure>(new FlatForward(referenceDate, r, rfdc));
-            var flatDividends = new Handle<YieldTermStructure>(new FlatForward(referenceDate, q, divdc));
-            var flatVol = new Handle<BlackVolTermStructure>(new BlackConstantVol(referenceDate, volcal, v, voldc));
+            var flatRiskFree = new Handle<YieldTermStructure>(new FlatForward(referenceDate, r, rfdc, _settings));
+            var flatDividends = new Handle<YieldTermStructure>(new FlatForward(referenceDate, q, divdc, _settings));
+            var flatVol = new Handle<BlackVolTermStructure>(new BlackConstantVol(referenceDate, volcal, v, voldc, _settings));
 
             PlainVanillaPayoff payoff = arguments_.payoff as PlainVanillaPayoff;
             if (payoff== null) throw new ApplicationException("non-plain payoff given");
@@ -73,7 +75,7 @@ namespace QLNet {
             double maturity = rfdc.yearFraction(referenceDate, maturityDate);
 
             StochasticProcess1D bs = 
-                new GeneralizedBlackScholesProcess(process_.stateVariable(), flatDividends, flatRiskFree, flatVol);
+                new GeneralizedBlackScholesProcess(process_.stateVariable(), flatDividends, flatRiskFree, flatVol, _settings);
 
             TimeGrid grid = new TimeGrid(maturity, timeSteps_);
 

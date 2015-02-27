@@ -37,9 +37,8 @@ namespace QLNet {
         Handle<YieldTermStructure> riskFreeTS_, dividendTS_;
         Handle<Quote> underlying_;
 
-        public LocalVolSurface(Handle<BlackVolTermStructure> blackTS, Handle<YieldTermStructure> riskFreeTS,
-                               Handle<YieldTermStructure> dividendTS, Handle<Quote> underlying)
-            : base( blackTS.link.businessDayConvention(), blackTS.link.dayCounter()) {
+        public LocalVolSurface(Handle<BlackVolTermStructure> blackTS, Handle<YieldTermStructure> riskFreeTS, Handle<YieldTermStructure> dividendTS, Handle<Quote> underlying, SavedSettings settings)
+            : base(settings, blackTS.link.businessDayConvention(), blackTS.link.dayCounter()) {
             blackTS_ = blackTS;
             riskFreeTS_ = riskFreeTS;
             dividendTS_ = dividendTS;
@@ -51,9 +50,8 @@ namespace QLNet {
             underlying_.registerWith(update);
         }
 
-        public LocalVolSurface(Handle<BlackVolTermStructure> blackTS, Handle<YieldTermStructure> riskFreeTS,
-                               Handle<YieldTermStructure> dividendTS, double underlying)
-             : base( blackTS.link.businessDayConvention(), blackTS.link.dayCounter()) {
+        public LocalVolSurface(Handle<BlackVolTermStructure> blackTS, Handle<YieldTermStructure> riskFreeTS, Handle<YieldTermStructure> dividendTS, double underlying, SavedSettings settings)
+             : base(settings, blackTS.link.businessDayConvention(), blackTS.link.dayCounter()) {
             blackTS_ = blackTS;
             riskFreeTS_ = riskFreeTS;
             dividendTS_ = dividendTS;

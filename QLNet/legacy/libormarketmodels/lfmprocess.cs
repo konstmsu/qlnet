@@ -36,11 +36,13 @@ namespace QLNet
         public List<double> accrualPeriod_;
         Vector m1;
         Vector m2;
-        SavedSettings _settings;
+        readonly SavedSettings _settings;
 
         public LiborForwardModelProcess(int size, IborIndex index, IDiscretization disc, SavedSettings settings)
             : base(disc )
         {
+            _settings = settings;
+
             size_ = size;
             index_ = index;
             initialValues_ = new InitializedList<double>(size_);
@@ -77,13 +79,11 @@ namespace QLNet
                 accrualStartTimes_[i]=dayCounter.yearFraction(settlement, coupon.accrualStartDate());
                 accrualEndTimes_[i]=dayCounter.yearFraction(settlement, coupon.accrualEndDate());
             }
-            _settings = settings;
         }
 
         public LiborForwardModelProcess(int size, IborIndex index, SavedSettings settings)
             : this( size, index,new EulerDiscretization(), settings)
         {
-            _settings = settings;
         }
 
         public override Vector drift(double t, Vector x) {

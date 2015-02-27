@@ -70,11 +70,11 @@ namespace TestSuite
 
 			SimpleQuote spot = new SimpleQuote(0.0);
 			SimpleQuote qRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc));
+			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc, settings));
 			SimpleQuote rRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc));
+			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc, settings));
 			SimpleQuote vol = new SimpleQuote(0.0);
-			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc));
+			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc, settings));
 
 			for (int i = 0; i < types.Length; i++)
 			{
@@ -93,7 +93,7 @@ namespace TestSuite
 					StrikedTypePayoff payoff = new PlainVanillaPayoff(types[i], strikes[j]);
 
 					BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
-																												  qTS, rTS, volTS);
+																												  qTS, rTS, volTS, settings);
 
 					IPricingEngine engine = new Engine().factory(stochProcess);
 					DividendVanillaOption option = new DividendVanillaOption(payoff, exercise, dividendDates, dividends, settings);
@@ -174,12 +174,12 @@ namespace TestSuite
 		{
 			DayCounter dc = new Actual360();
 			SimpleQuote spot = new SimpleQuote(54.625);
-			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(0.052706, dc));
-			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(0.0, dc));
-			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(0.282922, dc));
+			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(0.052706, dc, settings));
+			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(0.0, dc, settings));
+			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(0.282922, dc, settings));
 
 			BlackScholesMertonProcess process = new BlackScholesMertonProcess(new Handle<Quote>(spot),
-																				               qTS, rTS, volTS);
+																				               qTS, rTS, volTS, settings);
 
 			int timeSteps = 300;
 			int gridPoints = 300;
@@ -241,11 +241,11 @@ namespace TestSuite
 
 			SimpleQuote spot = new SimpleQuote(0.0) ;
 			SimpleQuote qRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc));
+			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc, backup));
 			SimpleQuote rRate = new SimpleQuote(0.0) ;
-			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc));
+			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc, backup));
 			SimpleQuote vol = new SimpleQuote(0.0);
-			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc));
+			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc, backup));
 
 			for (int i=0; i< types.Length; i++) 
 			{
@@ -270,7 +270,7 @@ namespace TestSuite
 						StrikedTypePayoff payoff = new PlainVanillaPayoff(types[i], strikes[j]);
 
 						BlackScholesMertonProcess stochProcess =  new BlackScholesMertonProcess(new Handle<Quote>(spot),
-																					qTS, rTS, volTS);
+																					qTS, rTS, volTS, backup);
 
 						IPricingEngine ref_engine = new AnalyticEuropeanEngine(stochProcess);
 
@@ -279,7 +279,7 @@ namespace TestSuite
 						DividendVanillaOption option = new DividendVanillaOption(payoff, exercise, dividendDates, dividends, backup);
 						option.setPricingEngine(engine);
 
-						VanillaOption ref_option = new VanillaOption(payoff, exercise);
+                        VanillaOption ref_option = new VanillaOption(payoff, exercise, backup);
 						ref_option.setPricingEngine(ref_engine);
 
 						for (int l=0; l<underlyings.Length; l++) 
@@ -338,11 +338,11 @@ namespace TestSuite
 
 			SimpleQuote spot = new SimpleQuote(0.0);
 			SimpleQuote qRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc));
+			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc, backup));
 			SimpleQuote rRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc));
+			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc, backup));
 			SimpleQuote vol = new SimpleQuote(0.0);
-			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc));
+			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc, backup));
 
 			Date exDate = today + new Period(6,TimeUnit.Months);
 			Exercise exercise = new EuropeanExercise(exDate);
@@ -357,7 +357,7 @@ namespace TestSuite
 			StrikedTypePayoff payoff = new PlainVanillaPayoff(Option.Type.Call, 40.0);
 
 			BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
-																						               qTS, rTS, volTS);
+																						               qTS, rTS, volTS, backup);
 
 			IPricingEngine engine = new AnalyticDividendEuropeanEngine(stochProcess);
 
@@ -409,11 +409,11 @@ namespace TestSuite
 
 			SimpleQuote spot = new SimpleQuote(0.0);
 			SimpleQuote qRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc));
+			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc, backup));
 			SimpleQuote rRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc));
+			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc, backup));
 			SimpleQuote vol = new SimpleQuote(0.0);
-			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc));
+			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc, backup));
 
 			for (int i=0; i< types.Length; i++) 
 			{
@@ -432,7 +432,7 @@ namespace TestSuite
 						StrikedTypePayoff payoff = new PlainVanillaPayoff(types[i], strikes[j]);
 
 						BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
-																						                       qTS, rTS, volTS);
+																						                       qTS, rTS, volTS, backup);
 
 						IPricingEngine engine = new AnalyticDividendEuropeanEngine(stochProcess);
 
@@ -441,7 +441,7 @@ namespace TestSuite
 						DividendVanillaOption option = new DividendVanillaOption(payoff, exercise,dividendDates, dividends, backup);
 						option.setPricingEngine(engine);
 
-						VanillaOption ref_option = new VanillaOption(payoff, exercise);
+						VanillaOption ref_option = new VanillaOption(payoff, exercise, backup);
 						ref_option.setPricingEngine(ref_engine);
 
 						for (int l=0; l< underlyings.Length; l++) 
@@ -513,11 +513,11 @@ namespace TestSuite
 
 			SimpleQuote spot = new SimpleQuote(0.0);
 			SimpleQuote qRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc));
+			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc, backup));
 			SimpleQuote rRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc));
+			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc, backup));
 			SimpleQuote vol = new SimpleQuote(0.0);
-			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc));
+			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc, backup));
 
 			for (int i=0; i< types.Length; i++) 
 			{
@@ -541,7 +541,7 @@ namespace TestSuite
 						StrikedTypePayoff payoff = new PlainVanillaPayoff(types[i], strikes[j]);
 
 						BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
-																					                          qTS, rTS, volTS);
+																					                          qTS, rTS, volTS, backup);
 
 						IPricingEngine engine = new AnalyticDividendEuropeanEngine(stochProcess);
 
@@ -666,11 +666,11 @@ namespace TestSuite
 
 			SimpleQuote spot = new SimpleQuote(0.0);
 			SimpleQuote qRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc));
+			Handle<YieldTermStructure> qTS = new Handle<YieldTermStructure>(Utilities.flatRate(qRate, dc, backup));
 			SimpleQuote rRate = new SimpleQuote(0.0);
-			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc));
+			Handle<YieldTermStructure> rTS = new Handle<YieldTermStructure>(Utilities.flatRate(rRate, dc, backup));
 			SimpleQuote vol = new SimpleQuote(0.0);
-			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc));
+			Handle<BlackVolTermStructure> volTS = new Handle<BlackVolTermStructure>(Utilities.flatVol(vol, dc, backup));
 
 			for (int i=0; i<types.Length; i++) 
 			{
@@ -694,7 +694,7 @@ namespace TestSuite
 						StrikedTypePayoff payoff = new PlainVanillaPayoff(types[i], strikes[j]);
 
 						BlackScholesMertonProcess stochProcess = new BlackScholesMertonProcess(new Handle<Quote>(spot),
-																					                          qTS, rTS, volTS);
+																					                          qTS, rTS, volTS, backup);
 
 						IPricingEngine engine = new FDDividendEuropeanEngine(stochProcess, timeSteps, gridPoints);
 

@@ -33,28 +33,28 @@ namespace QLNet {
         Handle<Quote> volatility_;
         DayCounter dayCounter_;
 
-        public LocalConstantVol(Date referenceDate, double volatility, DayCounter dc)
-            : base(referenceDate) {
+        public LocalConstantVol(Date referenceDate, double volatility, DayCounter dc, SavedSettings settings)
+            : base(referenceDate, settings) {
             volatility_ = new Handle<Quote>(new SimpleQuote(volatility));
             dayCounter_ = dc;
         }
 
-        public LocalConstantVol(Date referenceDate, Handle<Quote> volatility, DayCounter dc)
-            : base(referenceDate) {
+        public LocalConstantVol(Date referenceDate, Handle<Quote> volatility, DayCounter dc, SavedSettings settings)
+            : base(referenceDate, settings) {
             volatility_ = volatility;
             dayCounter_ = dc;
 
             volatility_.registerWith(update);
         }
 
-        public LocalConstantVol(int settlementDays, Calendar calendar, double volatility, DayCounter dayCounter)
-            : base(settlementDays, calendar) {
+        public LocalConstantVol(int settlementDays, Calendar calendar, double volatility, DayCounter dayCounter, SavedSettings settings)
+            : base(settlementDays, calendar, settings) {
             volatility_ = new Handle<Quote>(new SimpleQuote(volatility));
             dayCounter_ = dayCounter;
         }
 
-        public LocalConstantVol(int settlementDays, Calendar calendar, Handle<Quote> volatility, DayCounter dayCounter)
-            : base(settlementDays,calendar) {
+        public LocalConstantVol(int settlementDays, Calendar calendar, Handle<Quote> volatility, DayCounter dayCounter, SavedSettings settings)
+            : base(settlementDays,calendar, settings) {
             volatility_ = volatility;
             dayCounter_ = dayCounter;
 

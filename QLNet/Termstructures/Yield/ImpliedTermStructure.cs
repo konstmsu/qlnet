@@ -37,8 +37,8 @@ namespace QLNet {
     public class ImpliedTermStructure : YieldTermStructure {
         private Handle<YieldTermStructure> originalCurve_;
 
-        public ImpliedTermStructure(Handle<YieldTermStructure> h, Date referenceDate)
-            : base(referenceDate) {
+        public ImpliedTermStructure(Handle<YieldTermStructure> h, Date referenceDate, SavedSettings settings)
+            : base(referenceDate, settings) {
             originalCurve_ = h;
             originalCurve_.registerWith(update);
         }

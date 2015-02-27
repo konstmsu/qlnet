@@ -186,7 +186,7 @@ namespace Bonds {
                                                                      termStructureDayCounter,
                                                                      new List<Handle<Quote>>(),
                                                                      new List<Date>(),
-                                                                     tolerance);
+                                                                     tolerance, settings);
 
              // Building of the Libor forecasting curve
              // deposits
@@ -329,7 +329,7 @@ namespace Bonds {
                              termStructureDayCounter,
                              new List<Handle<Quote> >(),
                              new List<Date>(),
-                             tolerance);
+                             tolerance, settings);
 
              // Term structures that will be used for pricing:
              // the one used for discounting cash flows

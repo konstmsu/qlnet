@@ -186,18 +186,17 @@ namespace TestSuite
       }
 
 
-      GeneralizedBlackScholesProcess makeProcess(Quote u, YieldTermStructure q, YieldTermStructure r, BlackVolTermStructure vol)
+      GeneralizedBlackScholesProcess makeProcess(Quote u, YieldTermStructure q, YieldTermStructure r, BlackVolTermStructure vol, SavedSettings settings)
       {
          return new BlackScholesMertonProcess(new Handle<Quote>(u), new Handle<YieldTermStructure>(q),
-                                              new Handle<YieldTermStructure>(r), new Handle<BlackVolTermStructure>(vol));
+                                              new Handle<YieldTermStructure>(r), new Handle<BlackVolTermStructure>(vol), settings);
       }
 
 
-      VanillaOption makeOption(StrikedTypePayoff payoff, Exercise exercise, Quote u, YieldTermStructure q,
-                 YieldTermStructure r, BlackVolTermStructure vol, EngineType engineType, int binomialSteps, int samples)
+      VanillaOption makeOption(StrikedTypePayoff payoff, Exercise exercise, Quote u, YieldTermStructure q, YieldTermStructure r, BlackVolTermStructure vol, EngineType engineType, int binomialSteps, int samples, SavedSettings settings)
       {
 
-         GeneralizedBlackScholesProcess stochProcess = makeProcess(u, q, r, vol);
+         GeneralizedBlackScholesProcess stochProcess = makeProcess(u, q, r, vol, settings);
 
          IPricingEngine engine;
          switch (engineType)
@@ -206,25 +205,25 @@ namespace TestSuite
                engine = new AnalyticEuropeanEngine(stochProcess);
                break;
             case EngineType.JR:
-               engine = new BinomialVanillaEngine<JarrowRudd>(stochProcess, binomialSteps);
+               engine = new BinomialVanillaEngine<JarrowRudd>(stochProcess, binomialSteps, settings);
                break;
             case EngineType.CRR:
-               engine = new BinomialVanillaEngine<CoxRossRubinstein>(stochProcess, binomialSteps);
+               engine = new BinomialVanillaEngine<CoxRossRubinstein>(stochProcess, binomialSteps, settings);
                break;
             case EngineType.EQP:
-               engine = new BinomialVanillaEngine<AdditiveEQPBinomialTree>(stochProcess, binomialSteps);
+               engine = new BinomialVanillaEngine<AdditiveEQPBinomialTree>(stochProcess, binomialSteps, settings);
                break;
             case EngineType.TGEO:
-               engine = new BinomialVanillaEngine<Trigeorgis>(stochProcess, binomialSteps);
+               engine = new BinomialVanillaEngine<Trigeorgis>(stochProcess, binomialSteps, settings);
                break;
             case EngineType.TIAN:
-               engine = new BinomialVanillaEngine<Tian>(stochProcess, binomialSteps);
+               engine = new BinomialVanillaEngine<Tian>(stochProcess, binomialSteps, settings);
                break;
             case EngineType.LR:
-               engine = new BinomialVanillaEngine<LeisenReimer>(stochProcess, binomialSteps);
+               engine = new BinomialVanillaEngine<LeisenReimer>(stochProcess, binomialSteps, settings);
                break;
             case EngineType.JOSHI:
-               engine = new BinomialVanillaEngine<Joshi4>(stochProcess, binomialSteps);
+               engine = new BinomialVanillaEngine<Joshi4>(stochProcess, binomialSteps, settings);
                break;
             case EngineType.FiniteDifferences:
                engine = new FDEuropeanEngine(stochProcess, binomialSteps, samples);
@@ -247,7 +246,7 @@ namespace TestSuite
                throw new ArgumentException("unknown engine type");
          }
 
-         VanillaOption option = new EuropeanOption(payoff, exercise);
+         VanillaOption option = new EuropeanOption(payoff, exercise, settings);
          option.setPricingEngine(engine);
          return option;
       }
@@ -258,7 +257,8 @@ namespace TestSuite
                                  bool testGreeks)
       {
 
-         //QL_TEST_START_TIMING
+          var settings = new SavedSettings();
+          //QL_TEST_START_TIMING
 
          Dictionary<string, double> calculated = new Dictionary<string, double>(), expected = new Dictionary<string, double>();
 
@@ -278,11 +278,11 @@ namespace TestSuite
 
          SimpleQuote spot = new SimpleQuote(0.0);
          SimpleQuote vol = new SimpleQuote(0.0);
-         BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc);
+         BlackVolTermStructure volTS = Utilities.flatVol(today, vol, dc, settings);
          SimpleQuote qRate = new SimpleQuote(0.0);
-         YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc);
+         YieldTermStructure qTS = Utilities.flatRate(today, qRate, dc, settings);
          SimpleQuote rRate = new SimpleQuote(0.0);
-         YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc);
+         YieldTermStructure rTS = Utilities.flatRate(today, rRate, dc, settings);
 
          for (int i = 0; i < types.Length; i++)
          {
@@ -295,10 +295,10 @@ namespace TestSuite
                   StrikedTypePayoff payoff = new PlainVanillaPayoff(types[i], strikes[j]);
                   // reference option
                   VanillaOption refOption = makeOption(payoff, exercise, spot, qTS, rTS, volTS,
-                                            EngineType.Analytic, 0, 0);
+                                            EngineType.Analytic, 0, 0, settings);
                   // option to check
                   VanillaOption option = makeOption(payoff, exercise, spot, qTS, rTS, volTS,
-                                 engine, binomialSteps, samples);
+                                 engine, binomialSteps, samples, settings);
 
                   for (int l = 0; l < underlyings.Length; l++)
                   {

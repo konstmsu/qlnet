@@ -303,7 +303,7 @@ namespace QLNet {
 
                      // in this case you can set a pricer
                      // straight away because it only provides computation - not data
-                     YoYInflationCouponPricer pricer = new YoYInflationCouponPricer();
+                     YoYInflationCouponPricer pricer = new YoYInflationCouponPricer(settings);
                      coup.setPricer(pricer);
                      leg.Add(coup);
                   }

@@ -34,19 +34,13 @@ namespace QLNet
 
    public class YoYOptionletVolatilitySurface :  VolatilityTermStructure 
    {
-      public YoYOptionletVolatilitySurface()
-      : base (BusinessDayConvention.Following,null) {}
+      public YoYOptionletVolatilitySurface(SavedSettings settings)
+      : base (BusinessDayConvention.Following, settings, null) {}
 
       //! \name Constructor
       //! calculate the reference date based on the global evaluation date
-      public YoYOptionletVolatilitySurface(int settlementDays,
-                                           Calendar cal,
-                                           BusinessDayConvention bdc,
-                                           DayCounter dc,
-                                           Period observationLag,
-                                           Frequency frequency,
-                                           bool indexIsInterpolated)
-         : base(settlementDays, cal, bdc, dc)
+      public YoYOptionletVolatilitySurface(int settlementDays, Calendar cal, BusinessDayConvention bdc, DayCounter dc, Period observationLag, Frequency frequency, bool indexIsInterpolated, SavedSettings settings)
+         : base(settlementDays, cal, bdc, settings, dc)
       {
          baseLevel_ = null;
          observationLag_ = observationLag;
@@ -287,17 +281,10 @@ namespace QLNet
 		//! \name Constructor
 		//@{
 		//! calculate the reference date based on the global evaluation date
-		public ConstantYoYOptionletVolatility(double v,
-														  int settlementDays,
-														  Calendar cal,
-															 BusinessDayConvention bdc,
-															 DayCounter dc,
-															 Period observationLag,
-															Frequency frequency,
-															bool indexIsInterpolated,
-															double minStrike = -1.0,  // -100%
-															double maxStrike = 100.0)  // +10,000%
-			:base(settlementDays, cal, bdc, dc, observationLag, frequency, indexIsInterpolated)
+		public ConstantYoYOptionletVolatility(double v, int settlementDays, Calendar cal, BusinessDayConvention bdc, DayCounter dc, Period observationLag, Frequency frequency, bool indexIsInterpolated, SavedSettings settings, double minStrike = -1.0, double maxStrike = 100.0
+// -100%
+		    )  // +10,000%
+			:base(settlementDays, cal, bdc, dc, observationLag, frequency, indexIsInterpolated, settings)
 		{
 			volatility_ = v;
 			minStrike_ = minStrike; 

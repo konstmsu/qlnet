@@ -56,7 +56,7 @@ namespace QLNet
             DayCounter dayCounter = new DayCounter();
             try{
                 TermStructureConsistentModel tsmodel = (TermStructureConsistentModel)model_;
-                ///if (tsmodel != null)
+                //if (tsmodel != null)
                 referenceDate = tsmodel.termStructure().link.referenceDate();
                 dayCounter = tsmodel.termStructure().link.dayCounter();
             }

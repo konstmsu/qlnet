@@ -40,7 +40,7 @@ namespace QLNet
 
 
         public SwaptionVolatilityDiscrete(List<Period> optionTenors, List<Period> swapTenors, int settlementDays, Calendar cal, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
-            : base(settlementDays, cal, bdc, dc)
+            : base(settlementDays, cal, bdc, settings, dc)
         {
             nOptionTenors_ = optionTenors.Count;
             optionTenors_ = optionTenors;
@@ -68,7 +68,7 @@ namespace QLNet
         }
 
         public SwaptionVolatilityDiscrete(List<Period> optionTenors, List<Period> swapTenors, Date referenceDate, Calendar cal, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
-            : base(referenceDate, cal, bdc, dc)
+            : base(referenceDate, cal, bdc, settings, dc)
         {
             nOptionTenors_ = optionTenors.Count;
             optionTenors_ = optionTenors;
@@ -95,7 +95,7 @@ namespace QLNet
         }
 
         public SwaptionVolatilityDiscrete(List<Date> optionDates, List<Period> swapTenors, Date referenceDate, Calendar cal, BusinessDayConvention bdc, DayCounter dc, SavedSettings settings)
-           : base(referenceDate, cal, bdc, dc)
+           : base(referenceDate, cal, bdc, settings, dc)
         {
             nOptionTenors_ = optionDates.Count ;
             optionTenors_ = new InitializedList<Period>(nOptionTenors_); 

@@ -55,7 +55,7 @@ namespace TestSuite
                                                    index.fixingDays(), TimeUnit.Days);
 
             //termStructure.linkTo(new ZeroCurve(dates, rates, dayCounter));
-            termStructure.linkTo(new InterpolatedZeroCurve<Linear>(dates, rates, dayCounter, Interpolator));
+            termStructure.linkTo(new InterpolatedZeroCurve<Linear>(dates, rates, dayCounter, Interpolator, settings));
 
             return index;
         }
@@ -112,7 +112,7 @@ namespace TestSuite
 
             DayCounter dayCounter = new Actual360();
             RelinkableHandle<YieldTermStructure> termStructure= new RelinkableHandle<YieldTermStructure>();;
-            termStructure.linkTo(Utilities.flatRate(Date.Today, 0.04, dayCounter));
+            termStructure.linkTo(Utilities.flatRate(Date.Today, 0.04, dayCounter, settings));
 
             IborIndex index=new Euribor6M(termStructure, settings);
             OptionletVolatilityStructure capletVol = new ConstantOptionletVolatility(
@@ -130,7 +130,7 @@ namespace TestSuite
                 Date settlementDate =
                     calendar.advance(todaysDate, index.fixingDays(), TimeUnit.Days);
 
-                termStructure.linkTo(Utilities.flatRate(settlementDate, 0.04, dayCounter));
+                termStructure.linkTo(Utilities.flatRate(settlementDate, 0.04, dayCounter, settings));
 
                 LiborForwardModelProcess process=new LiborForwardModelProcess(60, index, settings);
 

@@ -301,7 +301,7 @@ namespace QLNet
 			SimpleQuote flatRate = new SimpleQuote(0.0);
 
 			Handle<DefaultProbabilityTermStructure> probability = new Handle<DefaultProbabilityTermStructure>(
-            new FlatHazardRate(0, new WeekendsOnly(),new Handle<Quote>(flatRate), dayCounter));
+            new FlatHazardRate(0, new WeekendsOnly(),new Handle<Quote>(flatRate), dayCounter, _settings));
 
         MidPointCdsEngine engine = new MidPointCdsEngine(probability, recoveryRate, discountCurve, _settings);
         setupArguments(engine.getArguments());
@@ -355,7 +355,7 @@ namespace QLNet
                                                 conventionalRecovery);
 
         Handle<DefaultProbabilityTermStructure> probability = new Handle<DefaultProbabilityTermStructure>(
-            new FlatHazardRate(0, new WeekendsOnly(),flatHazardRate, dayCounter));
+            new FlatHazardRate(0, new WeekendsOnly(),flatHazardRate, dayCounter, _settings));
 
         MidPointCdsEngine engine = new MidPointCdsEngine(probability, conventionalRecovery,  discountCurve, _settings, true);
         setupArguments(engine.getArguments());

@@ -37,17 +37,14 @@ namespace QLNet
    {
       #region Constructors
 
-      public ForwardRateStructure(DayCounter dc = null,
-            List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
-         : base(dc, jumps, jumpDates) {}
+      public ForwardRateStructure(SavedSettings settings, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         : base(settings, dc, jumps, jumpDates) {}
       
-      public ForwardRateStructure(Date refDate,Calendar cal = null,DayCounter dc = null,
-            List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
-           : base(refDate, cal, dc, jumps, jumpDates) {}
+      public ForwardRateStructure(Date refDate, SavedSettings settings, Calendar cal = null, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+           : base(refDate, settings, cal, dc, jumps, jumpDates) {}
 
-      public ForwardRateStructure(int settlDays,Calendar cal,DayCounter dc = null,
-            List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
-         : base(settlDays, cal, dc, jumps, jumpDates) {}
+      public ForwardRateStructure(int settlDays, Calendar cal, SavedSettings settings, DayCounter dc = null, List<Handle<Quote>> jumps = null, List<Date> jumpDates = null)
+         : base(settlDays, cal, settings, dc, jumps, jumpDates) {}
       
       #endregion
 

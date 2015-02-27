@@ -42,11 +42,11 @@ namespace TestSuite
 
 			Handle<Quote> hazardRate = new Handle<Quote>(new SimpleQuote(0.01234));
 			RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve = new RelinkableHandle<DefaultProbabilityTermStructure>();
-			probabilityCurve.linkTo(new FlatHazardRate(0, calendar, hazardRate, new Actual360()));
+			probabilityCurve.linkTo(new FlatHazardRate(0, calendar, hazardRate, new Actual360(), backup));
 
 			RelinkableHandle<YieldTermStructure> discountCurve = new RelinkableHandle<YieldTermStructure>();
 
-			discountCurve.linkTo(new FlatForward(today,0.06,new Actual360()));
+			discountCurve.linkTo(new FlatForward(today,0.06,new Actual360(), backup));
 
 			// Build the schedule
 			Date issueDate = calendar.advance(today, -1, TimeUnit.Years);
@@ -180,7 +180,7 @@ namespace TestSuite
 			DayCounter curveDayCounter = new Actual360();
 
 			RelinkableHandle<YieldTermStructure> discountCurve = new RelinkableHandle<YieldTermStructure>();
-			discountCurve.linkTo( new InterpolatedDiscountCurve<LogLinear>( discountDates, dfs, curveDayCounter,null,null,null,new LogLinear() ) );
+			discountCurve.linkTo( new InterpolatedDiscountCurve<LogLinear>( discountDates, dfs, curveDayCounter, backup, null,null,null,new LogLinear() ) );
 
 			DayCounter dayCounter = new Thirty360();
 			List<Date> dates = new List<Date>();
@@ -217,7 +217,7 @@ namespace TestSuite
 			}
 
 			RelinkableHandle<DefaultProbabilityTermStructure> piecewiseFlatHazardRate = new RelinkableHandle<DefaultProbabilityTermStructure>();
-			piecewiseFlatHazardRate.linkTo(new InterpolatedHazardRateCurve<BackwardFlat>(dates,hazardRates,new Thirty360()));
+			piecewiseFlatHazardRate.linkTo(new InterpolatedHazardRateCurve<BackwardFlat>(dates,hazardRates,new Thirty360(), backup));
 
 			// Testing credit default swap
 
@@ -291,10 +291,10 @@ namespace TestSuite
 				new RelinkableHandle<DefaultProbabilityTermStructure>();
 			probabilityCurve.linkTo(new InterpolatedHazardRateCurve<BackwardFlat>(dates,
 																							hazardRates,
-																							dayCounter));
+																							dayCounter, backup));
 
 			RelinkableHandle<YieldTermStructure> discountCurve = new RelinkableHandle<YieldTermStructure>();
-			discountCurve.linkTo(new FlatForward(today,0.03,new Actual360()));
+			discountCurve.linkTo(new FlatForward(today,0.03,new Actual360(), backup));
 
 
 			Frequency frequency = Frequency.Semiannual;
@@ -341,7 +341,7 @@ namespace TestSuite
 				latestRate = flatRate;
 
 				RelinkableHandle<DefaultProbabilityTermStructure> probability = new RelinkableHandle<DefaultProbabilityTermStructure>();
-				probability.linkTo(new FlatHazardRate(	today,new Handle<Quote>(new SimpleQuote(flatRate)),dayCounter));
+				probability.linkTo(new FlatHazardRate(	today,new Handle<Quote>(new SimpleQuote(flatRate)),dayCounter, backup));
 
 				CreditDefaultSwap cds2 = new CreditDefaultSwap(Protection.Side.Seller, notional, fixedRate,
 												schedule, convention, cdsDayCount, backup, settlesAccrual: true, paysAtDefaultTime: true);
@@ -373,11 +373,11 @@ namespace TestSuite
 			Handle<Quote> hazardRate =new  Handle<Quote>(new SimpleQuote(0.01234));
 			RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve = 
 				new RelinkableHandle<DefaultProbabilityTermStructure>();
-			probabilityCurve.linkTo(new FlatHazardRate(0, calendar, hazardRate, new Actual360()));
+			probabilityCurve.linkTo(new FlatHazardRate(0, calendar, hazardRate, new Actual360(), backup));
 
 			RelinkableHandle<YieldTermStructure> discountCurve =
 				new RelinkableHandle<YieldTermStructure>();
-			discountCurve.linkTo(new FlatForward(today,0.06,new Actual360()));
+			discountCurve.linkTo(new FlatForward(today,0.06,new Actual360(), backup));
 
 			// Build the schedule
 			Date issueDate = calendar.advance(today, -1, TimeUnit.Years);
@@ -435,11 +435,11 @@ namespace TestSuite
 			Handle<Quote> hazardRate = new Handle<Quote>(new SimpleQuote(0.01234));
 			RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve = 
 				new RelinkableHandle<DefaultProbabilityTermStructure>();
-			probabilityCurve.linkTo(new FlatHazardRate(0, calendar, hazardRate, new Actual360()));
+			probabilityCurve.linkTo(new FlatHazardRate(0, calendar, hazardRate, new Actual360(), settings));
 
 			RelinkableHandle<YieldTermStructure> discountCurve = 
 				new RelinkableHandle<YieldTermStructure>();
-			discountCurve.linkTo(new FlatForward(today,0.06,new Actual360()));
+			discountCurve.linkTo(new FlatForward(today,0.06,new Actual360(), settings));
 
 			// Build the schedule
 			Date issueDate = today;

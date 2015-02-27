@@ -85,12 +85,13 @@ namespace QLNet
     */
    public class YoYInflationCouponPricer : InflationCouponPricer
    {
-      public YoYInflationCouponPricer(Handle<YoYOptionletVolatilitySurface> capletVol = null)
+      public YoYInflationCouponPricer(SavedSettings settings, Handle<YoYOptionletVolatilitySurface> capletVol = null)
       {
          if ((object)capletVol == null)
             capletVol = new Handle<YoYOptionletVolatilitySurface>();
 
-         capletVol_ = capletVol;
+          settings_ = settings;
+          capletVol_ = capletVol;
 
          if (!capletVol.empty()) capletVol_.registerWith(update);
       }
@@ -173,7 +174,7 @@ namespace QLNet
       {
 
          Date fixingDate = coupon_.fixingDate();
-         if (fixingDate <= Settings.evaluationDate()) 
+         if (fixingDate <= settings_.evaluationDate()) 
          {
             // the amount is determined
             double a, b;
@@ -237,14 +238,15 @@ namespace QLNet
       double spread_;
       double discount_;
       double spreadLegValue_;
+       readonly SavedSettings settings_;
    }
 
    //! Black-formula pricer for capped/floored yoy inflation coupons
    public class BlackYoYInflationCouponPricer : YoYInflationCouponPricer 
    {
     
-      public BlackYoYInflationCouponPricer(Handle<YoYOptionletVolatilitySurface> capletVol)
-         : base(capletVol)
+      public BlackYoYInflationCouponPricer(Handle<YoYOptionletVolatilitySurface> capletVol, SavedSettings settings)
+         : base(settings, capletVol)
       {
          if ( capletVol == null )
             capletVol = new Handle<YoYOptionletVolatilitySurface>();
@@ -265,8 +267,8 @@ namespace QLNet
    //! Unit-Displaced-Black-formula pricer for capped/floored yoy inflation coupons
    public class UnitDisplacedBlackYoYInflationCouponPricer : YoYInflationCouponPricer 
    {
-      public UnitDisplacedBlackYoYInflationCouponPricer(Handle<YoYOptionletVolatilitySurface> capletVol = null)
-         : base(capletVol) 
+      public UnitDisplacedBlackYoYInflationCouponPricer(SavedSettings settings, Handle<YoYOptionletVolatilitySurface> capletVol = null)
+         : base(settings, capletVol) 
       {
          if ( capletVol == null )
             capletVol = new Handle<YoYOptionletVolatilitySurface>();
@@ -287,8 +289,8 @@ namespace QLNet
    //! Bachelier-formula pricer for capped/floored yoy inflation coupons
    public class BachelierYoYInflationCouponPricer : YoYInflationCouponPricer 
    {
-      public BachelierYoYInflationCouponPricer(Handle<YoYOptionletVolatilitySurface> capletVol = null)
-            : base(capletVol) 
+      public BachelierYoYInflationCouponPricer(SavedSettings settings, Handle<YoYOptionletVolatilitySurface> capletVol = null)
+            : base(settings, capletVol) 
       {
          if (capletVol == null )
             capletVol = new Handle<YoYOptionletVolatilitySurface>();
